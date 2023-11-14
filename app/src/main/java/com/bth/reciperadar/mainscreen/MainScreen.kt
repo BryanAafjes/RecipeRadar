@@ -36,7 +36,11 @@ fun MainScreen(navController: NavController) {
             .fillMaxWidth()
             .padding(horizontal = 50.dp)
     ) {
-        Image(painter = painterResource(id = R.drawable.logo), contentDescription = "RecipeRadar Logo", colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground))
+        Image(
+            painter = painterResource(id = R.drawable.logo),
+            contentDescription = "RecipeRadar Logo",
+            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
+        )
         Spacer(modifier = Modifier.height(20.dp))
         TextField(
             value = text,
