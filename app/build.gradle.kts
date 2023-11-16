@@ -1,3 +1,6 @@
+import java.io.FileInputStream
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
@@ -21,12 +24,25 @@ android {
     }
 
     buildTypes {
+        // Read properties from config.properties
+        val configPropertiesFile = file("../config.properties")
+        val buildproperties = Properties()
+        if (configPropertiesFile.exists()) {
+            buildproperties.load(FileInputStream(configPropertiesFile))
+        } else {
+            throw GradleException("config.properties file not found. Please create it in the root directory.")
+        }
+
         release {
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            buildConfigField("String", "apiUrl", "${buildproperties["release_api_url"]}")
+        }
+        debug {
+            buildConfigField("String", "apiUrl", "${buildproperties["dev_api_url"]}")
         }
     }
     compileOptions {
@@ -38,6 +54,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
     }
     composeOptions {
         kotlinCompilerExtensionVersion = "1.4.3"
