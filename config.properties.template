@@ -1,2 +1,5 @@
 dev_api_url="https://api.dev.example.com"
 release_api_url="https://api.example.com"
+
+auth0_domain="example.eu.auth0.com"
+auth0_client_id="client_id_here"

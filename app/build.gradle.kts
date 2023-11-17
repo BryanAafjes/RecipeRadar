@@ -21,6 +21,9 @@ android {
         vectorDrawables {
             useSupportLibrary = true
         }
+
+        manifestPlaceholders["auth0Domain"] = "@string/com_auth0_domain"
+        manifestPlaceholders["auth0Scheme"] = "@string/com_auth0_scheme"
     }
 
     buildTypes {
@@ -40,9 +43,13 @@ android {
                 "proguard-rules.pro"
             )
             buildConfigField("String", "apiUrl", "${buildproperties["release_api_url"]}")
+            buildConfigField("String", "auth0Domain", "${buildproperties["auth0_domain"]}")
+            buildConfigField("String", "auth0ClientId", "${buildproperties["auth0_client_id"]}")
         }
         debug {
             buildConfigField("String", "apiUrl", "${buildproperties["dev_api_url"]}")
+            buildConfigField("String", "auth0Domain", "${buildproperties["auth0_domain"]}")
+            buildConfigField("String", "auth0ClientId", "${buildproperties["auth0_client_id"]}")
         }
     }
     compileOptions {
@@ -78,6 +85,9 @@ dependencies {
 
     implementation("androidx.compose.material3:material3:1.1.2")
     implementation("androidx.compose.material:material:1.5.4")
+
+    implementation ("com.auth0.android:auth0:2.7.0")
+    implementation ("com.auth0.android:jwtdecode:2.0.1")
 
     val nav_version = "2.7.5"
 

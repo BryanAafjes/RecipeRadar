@@ -25,7 +25,7 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colorScheme.background
                 ) {
-                    val authController = remember { AuthController() }
+                    val authController = remember { AuthController(this) }
 
                     val authenticated: Boolean by authController.authenticated.collectAsState()
 
