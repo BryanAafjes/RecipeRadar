@@ -26,13 +26,14 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.bth.reciperadar.detailscreen.DetailScreen
+import com.bth.reciperadar.domain.controllers.AuthController
 import com.bth.reciperadar.mainscreen.AccountScreen
 import com.bth.reciperadar.mainscreen.MainScreen
 import com.bth.reciperadar.screen.Screen
 import linearGradient
 
 @Composable
-fun Navigation() {
+fun Navigation(authController: AuthController) {
     val navController = rememberNavController()
 
     val screens = listOf(
@@ -104,7 +105,7 @@ fun Navigation() {
                     DetailScreen(name = entry.arguments?.getString("name"))
                 }
                 composable(route = Screen.AccountScreen.route) {
-                    AccountScreen()
+                    AccountScreen(authController = authController)
                 }
             }
         }

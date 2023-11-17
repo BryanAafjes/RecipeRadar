@@ -29,9 +29,9 @@ class AuthController(val applicationContext: Context) {
             BuildConfig.auth0Domain
         )
 
-        WebAuthProvider.login(account)
-            .withScheme("https")
+        WebAuthProvider.login(_account)
             .withScope("openid profile email")
+            .withScheme("reciperadar")
             .start(applicationContext, object : Callback<Credentials, AuthenticationException> {
                 override fun onFailure(error: AuthenticationException) {
                     // Something went wrong!
@@ -43,4 +43,20 @@ class AuthController(val applicationContext: Context) {
                 }
             })
     }
+
+    fun logout() {
+        WebAuthProvider.logout(_account)
+            .withScheme("reciperadar")
+            .start(applicationContext, object: Callback<Void?, AuthenticationException> {
+                override fun onSuccess(result: Void?) {
+                    _accessToken = null
+                    _authenticated.value = false
+                }
+
+                override fun onFailure(error: AuthenticationException) {
+                    // Something went wrong!
+                }
+            })
+    }
+
 }

@@ -30,7 +30,7 @@ class MainActivity : ComponentActivity() {
                     val authenticated: Boolean by authController.authenticated.collectAsState()
 
                     if (authenticated) {
-                        Navigation()
+                        Navigation(authController = authController)
                     } else {
                         LoginScreen(authController)
                     }

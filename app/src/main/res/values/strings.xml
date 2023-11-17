@@ -1,5 +1,5 @@
 <resources>
     <string name="app_name">RecipeRadar</string>
     <string name="com_auth0_domain">reciperadar.eu.auth0.com</string>
-    <string name="com_auth0_scheme">https</string>
+    <string name="com_auth0_scheme">reciperadar</string>
 </resources>
