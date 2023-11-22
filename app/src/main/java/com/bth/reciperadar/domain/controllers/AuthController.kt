@@ -22,7 +22,8 @@ class AuthController(val applicationContext: Context) {
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    _currentUser.value = auth.currentUser
+                    _auth.currentUser?.sendEmailVerification()
+                    _currentUser.value = _auth.currentUser
                 } else {
                     Toast.makeText(
                         applicationContext,
