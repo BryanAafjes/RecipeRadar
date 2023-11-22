@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 
 class AuthController(val applicationContext: Context) {
     private var _auth: FirebaseAuth = Firebase.auth
-    private var _currentUser: MutableStateFlow<FirebaseUser?> = MutableStateFlow<FirebaseUser?>(auth.currentUser)
+    private var _currentUser: MutableStateFlow<FirebaseUser?> = MutableStateFlow<FirebaseUser?>(_auth.currentUser)
 
     val auth: FirebaseAuth
         get() = _auth
@@ -37,7 +37,7 @@ class AuthController(val applicationContext: Context) {
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
-                    _currentUser.value = auth.currentUser
+                    _currentUser.value = _auth.currentUser
                 } else {
                     Toast.makeText(
                         applicationContext,
@@ -49,7 +49,8 @@ class AuthController(val applicationContext: Context) {
     }
 
     fun logout() {
-        // UNIMPLEMENTED
+        auth.signOut()
+        _currentUser.value = null
     }
 
 }

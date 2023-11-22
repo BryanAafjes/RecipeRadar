@@ -55,14 +55,14 @@ fun StartScreen(authController: AuthController) {
     Column(
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = CenterHorizontally,
-        modifier = Modifier.fillMaxWidth().background(gradientBrush),
+        modifier = Modifier.fillMaxWidth().background(gradientBrush).padding(35.dp),
     ) {
         Image(
             painter = painterResource(id = R.drawable.logo),
             contentDescription = "RecipeRadar Logo",
             colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
         )
-        Spacer(modifier = Modifier.height(20.dp))
+        Spacer(modifier = Modifier.height(40.dp))
         Text(
             text = if (isSignIn) "Sign In" else "Create Account",
             style = MaterialTheme.typography.headlineMedium
