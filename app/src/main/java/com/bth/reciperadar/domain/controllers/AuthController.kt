@@ -49,6 +49,10 @@ class AuthController(val applicationContext: Context) {
             }
     }
 
+    fun resetPassword(email: String) {
+        auth.sendPasswordResetEmail(email);
+    }
+
     fun logout() {
         auth.signOut()
         _currentUser.value = null
