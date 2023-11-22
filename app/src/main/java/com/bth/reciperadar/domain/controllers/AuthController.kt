@@ -1,62 +1,55 @@
 package com.bth.reciperadar.domain.controllers
 
 import android.content.Context
-import com.auth0.android.Auth0
-import com.auth0.android.authentication.AuthenticationException
-import com.auth0.android.callback.Callback
-import com.auth0.android.provider.WebAuthProvider
-import com.auth0.android.result.Credentials
-import com.bth.reciperadar.BuildConfig
+import android.widget.Toast
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.flow.MutableStateFlow
 
 class AuthController(val applicationContext: Context) {
-    private val _authenticated = MutableStateFlow<Boolean>(false)
-    private lateinit var _account: Auth0
-    private var _accessToken: String? = null
+    private var _auth: FirebaseAuth = Firebase.auth
+    private var _currentUser: MutableStateFlow<FirebaseUser?> = MutableStateFlow<FirebaseUser?>(auth.currentUser)
 
-    val authenticated: MutableStateFlow<Boolean>
-        get() = _authenticated
+    val auth: FirebaseAuth
+        get() = _auth
 
-    val account: Auth0
-        get() = _account
+    val currentUser: MutableStateFlow<FirebaseUser?>
+        get() = _currentUser
 
-    val accessToken: String?
-        get() = _accessToken
-
-    fun authenticate() {
-        _account = Auth0(
-            BuildConfig.auth0ClientId,
-            BuildConfig.auth0Domain
-        )
-
-        WebAuthProvider.login(_account)
-            .withScope("openid profile email")
-            .withScheme("reciperadar")
-            .start(applicationContext, object : Callback<Credentials, AuthenticationException> {
-                override fun onFailure(error: AuthenticationException) {
-                    // Something went wrong!
+    fun createAccount(email: String, password: String) {
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    _currentUser.value = auth.currentUser
+                } else {
+                    Toast.makeText(
+                        applicationContext,
+                        "Authentication failed.",
+                        Toast.LENGTH_SHORT,
+                    ).show()
                 }
+            }
+    }
 
-                override fun onSuccess(result: Credentials) {
-                    _accessToken = result.accessToken
-                    _authenticated.value = true
+    fun authenticate(email: String, password: String) {
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    _currentUser.value = auth.currentUser
+                } else {
+                    Toast.makeText(
+                        applicationContext,
+                        "Authentication failed.",
+                        Toast.LENGTH_SHORT,
+                    ).show()
                 }
-            })
+            }
     }
 
     fun logout() {
-        WebAuthProvider.logout(_account)
-            .withScheme("reciperadar")
-            .start(applicationContext, object: Callback<Void?, AuthenticationException> {
-                override fun onSuccess(result: Void?) {
-                    _accessToken = null
-                    _authenticated.value = false
-                }
-
-                override fun onFailure(error: AuthenticationException) {
-                    // Something went wrong!
-                }
-            })
+        // UNIMPLEMENTED
     }
 
 }
