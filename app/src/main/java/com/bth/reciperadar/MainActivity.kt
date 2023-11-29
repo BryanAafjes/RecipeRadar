@@ -7,11 +7,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import com.bth.reciperadar.domain.controllers.AuthController
-import com.bth.reciperadar.loginscreen.LoginScreen
+import com.bth.reciperadar.loginscreen.StartScreen
 import com.bth.reciperadar.navigation.Navigation
 import com.bth.reciperadar.ui.theme.RecipeRadarTheme
 
@@ -27,12 +26,12 @@ class MainActivity : ComponentActivity() {
                 ) {
                     val authController = remember { AuthController(this) }
 
-                    val authenticated: Boolean by authController.authenticated.collectAsState()
+                    val currentUser = authController.currentUser.collectAsState()
 
-                    if (authenticated) {
+                    if (currentUser.value != null) {
                         Navigation(authController = authController)
                     } else {
-                        LoginScreen(authController)
+                        StartScreen(authController)
                     }
                 }
             }

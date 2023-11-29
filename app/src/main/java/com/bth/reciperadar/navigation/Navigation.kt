@@ -90,7 +90,7 @@ fun Navigation(authController: AuthController) {
                     .background(gradientBrush)
             ) {
                 composable(route = Screen.MainScreen.route) {
-                    MainScreen(navController = navController)
+                    MainScreen(navController = navController, authController = authController)
                 }
                 composable(
                     route = Screen.DetailScreen.route + "/{name}",

@@ -4,6 +4,7 @@ import java.util.Properties
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.android")
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -86,8 +87,10 @@ dependencies {
     implementation("androidx.compose.material3:material3:1.1.2")
     implementation("androidx.compose.material:material:1.5.4")
 
-    implementation ("com.auth0.android:auth0:2.7.0")
-    implementation ("com.auth0.android:jwtdecode:2.0.1")
+    // Firebase dependencies
+    implementation(platform("com.google.firebase:firebase-bom:32.6.0"))
+    implementation("com.google.firebase:firebase-analytics")
+    implementation("com.google.firebase:firebase-auth")
 
     val nav_version = "2.7.5"
 
