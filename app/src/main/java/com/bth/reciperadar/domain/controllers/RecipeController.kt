@@ -1,5 +1,7 @@
 package com.bth.reciperadar.domain.controllers
 
-class RecipeController() {
+import com.bth.reciperadar.data.repositories.RecipeRepository
+
+class RecipeController(val recipeRepository: RecipeRepository) {
 
 }
