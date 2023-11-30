@@ -1,4 +1,4 @@
-package com.bth.reciperadar.mainscreen
+package com.bth.reciperadar.presentation.screens.mainscreen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -38,7 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.bth.reciperadar.R
 import com.bth.reciperadar.domain.controllers.AuthController
-import com.bth.reciperadar.screen.Screen
+import com.bth.reciperadar.presentation.screens.screen.Screen
 
 @Composable
 fun MainScreen(navController: NavController, authController: AuthController) {

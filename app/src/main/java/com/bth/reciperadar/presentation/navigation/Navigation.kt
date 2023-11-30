@@ -1,4 +1,4 @@
-package com.bth.reciperadar.navigation
+package com.bth.reciperadar.presentation.navigation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,12 +25,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.bth.reciperadar.detailscreen.DetailScreen
+import com.bth.reciperadar.presentation.screens.detailscreen.DetailScreen
 import com.bth.reciperadar.domain.controllers.AuthController
 import com.bth.reciperadar.domain.controllers.RecipeController
 import com.bth.reciperadar.mainscreen.AccountScreen
-import com.bth.reciperadar.mainscreen.MainScreen
-import com.bth.reciperadar.screen.Screen
+import com.bth.reciperadar.presentation.screens.mainscreen.MainScreen
+import com.bth.reciperadar.presentation.screens.screen.Screen
 import linearGradient
 
 @Composable

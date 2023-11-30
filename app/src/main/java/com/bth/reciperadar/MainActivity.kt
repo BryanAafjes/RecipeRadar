@@ -12,8 +12,8 @@ import androidx.compose.ui.Modifier
 import com.bth.reciperadar.data.repositories.RecipeRepository
 import com.bth.reciperadar.domain.controllers.AuthController
 import com.bth.reciperadar.domain.controllers.RecipeController
-import com.bth.reciperadar.loginscreen.StartScreen
-import com.bth.reciperadar.navigation.Navigation
+import com.bth.reciperadar.presentation.screens.loginscreen.StartScreen
+import com.bth.reciperadar.presentation.navigation.Navigation
 import com.bth.reciperadar.ui.theme.RecipeRadarTheme
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase

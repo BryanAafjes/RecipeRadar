@@ -1,4 +1,4 @@
-package com.bth.reciperadar.loginscreen
+package com.bth.reciperadar.presentation.screens.loginscreen
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
