@@ -1,16 +1,16 @@
 package com.bth.reciperadar.data.dtos
 
 data class RecipeDto(
-    var id: String,
-    var title: String,
-    var description: String,
-    var userId: String,
-    var picturePath: String,
-    var prepTime: String,
-    var servingAmount: Int,
-    var cuisines: List<CuisineDto>,
-    var reviews: List<ReviewDto>,
-    var steps: List<StepDto>,
-    var dietaryInfo: List<DietaryInfoDto>,
-    var ingredients: List<IngredientDto>
+    var id: String = "",
+    var title: String = "",
+    var description: String = "",
+    var userId: String = "",
+    var picturePath: String = "",
+    var prepTime: String = "",
+    var servingAmount: Int = 0,
+    var cuisines: List<CuisineDto> = emptyList(),
+    var reviews: List<ReviewDto> = emptyList(),
+    var steps: List<StepDto> = emptyList(),
+    var dietaryInfo: List<DietaryInfoDto> = emptyList(),
+    var ingredients: List<IngredientDto> = emptyList()
 )

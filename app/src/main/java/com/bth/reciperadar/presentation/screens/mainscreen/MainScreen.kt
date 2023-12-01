@@ -66,8 +66,11 @@ fun MainScreen(
         showEmailVerifyNotification = authController.auth.currentUser?.isEmailVerified == false
 
         recipes = withContext(Dispatchers.IO) {
-            recipeController.getRecipes().map{ it.toViewModel() }
+            val recipeModels = recipeController.getRecipes()
+            recipeModels.map{ it.toViewModel() }
         }
+
+        var test = ""
     }
 
     Column(
