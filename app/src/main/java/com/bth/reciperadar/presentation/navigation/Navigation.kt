@@ -91,7 +91,7 @@ fun Navigation(authController: AuthController, recipeController: RecipeControlle
                     .background(gradientBrush)
             ) {
                 composable(route = Screen.MainScreen.route) {
-                    MainScreen(navController = navController, authController = authController)
+                    MainScreen(navController = navController, authController = authController, recipeController = recipeController)
                 }
                 composable(
                     route = Screen.DetailScreen.route + "/{name}",
