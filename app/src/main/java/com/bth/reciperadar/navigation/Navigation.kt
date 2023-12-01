@@ -29,6 +29,8 @@ import com.bth.reciperadar.detailscreen.DetailScreen
 import com.bth.reciperadar.domain.controllers.AuthController
 import com.bth.reciperadar.mainscreen.AccountScreen
 import com.bth.reciperadar.mainscreen.MainScreen
+import com.bth.reciperadar.listscreen.ListScreen
+import com.bth.reciperadar.storagescreen.StorageScreen
 import com.bth.reciperadar.screen.Screen
 import linearGradient
 
@@ -38,14 +40,15 @@ fun Navigation(authController: AuthController) {
 
     val screens = listOf(
         Screen.MainScreen,
+        Screen.ListScreen,
+        Screen.StorageScreen,
         Screen.AccountScreen
     )
 
     Scaffold(
         bottomBar = {
             BottomNavigation(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp)),
+                modifier = Modifier.clip(RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp)),
                 backgroundColor = MaterialTheme.colorScheme.surface
             ) {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -59,9 +62,7 @@ fun Navigation(authController: AuthController) {
                         unselectedContentColor = MaterialTheme.colorScheme.onSurface,
                         onClick = {
                             navController.navigate(screen.route) {
-                                popUpTo(navController.graph.findStartDestination().id) {
-                                    saveState = true
-                                }
+                                popUpTo(navController.graph.findStartDestination().id) { saveState = true }
                                 launchSingleTop = true
                                 restoreState = true
                             }
@@ -70,6 +71,7 @@ fun Navigation(authController: AuthController) {
                 }
             }
         }
+
     ) { padding ->
         // Create a radial gradient brush
         val gradientBrush = Brush.linearGradient(
@@ -107,6 +109,8 @@ fun Navigation(authController: AuthController) {
                 composable(route = Screen.AccountScreen.route) {
                     AccountScreen(authController = authController)
                 }
+                composable( route = Screen.ListScreen.route) { ListScreen() }
+                composable( route = Screen.StorageScreen.route) { StorageScreen() }
             }
         }
     }
