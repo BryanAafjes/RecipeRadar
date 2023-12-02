@@ -4,16 +4,16 @@ import com.bth.reciperadar.data.dtos.IngredientDto
 
 data class Ingredient (
     var id: String = "",
-    var title: String = "",
-    var ingredientTypes: List<IngredientType> = emptyList(),
-    var amount: String = ""
+    var name: String = "",
+    var ingredientTypes: List<IngredientType>? = emptyList(),
+    var amount: String? = ""
 )
 
 fun Ingredient.toDto(): IngredientDto {
     return IngredientDto(
         id = this.id,
-        title = this.title,
-        ingredientTypes = this.ingredientTypes.map { it.toDto() },
+        name = this.name,
+        ingredientTypes = this.ingredientTypes?.map { it.toDto() },
         amount = this.amount
     )
 }
@@ -21,8 +21,8 @@ fun Ingredient.toDto(): IngredientDto {
 fun IngredientDto.toDomain(): Ingredient {
     return Ingredient(
         id = this.id,
-        title = this.title,
-        ingredientTypes = this.ingredientTypes.map { it.toDomain() },
+        name = this.name,
+        ingredientTypes = this.ingredientTypes?.map { it.toDomain() },
         amount = this.amount
     )
 }

@@ -4,9 +4,9 @@ import com.bth.reciperadar.domain.models.Step
 
 data class StepViewModel (
     var title: String,
-    var description: String,
-    var number: Int,
-    var picturePath: String,
+    var description: String?,
+    var number: Int?,
+    var picturePath: String?,
 )
 
 fun Step.toViewModel(): StepViewModel {

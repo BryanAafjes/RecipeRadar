@@ -37,6 +37,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.bth.reciperadar.R
 import com.bth.reciperadar.domain.controllers.AuthController
@@ -57,7 +58,7 @@ fun MainScreen(
         mutableStateOf("")
     }
 
-    var recipes: List<RecipeViewModel> = emptyList()
+    var recipes: List<RecipeViewModel> = mutableListOf()
 
     var showEmailVerifyNotification by remember { mutableStateOf(false) }
 
@@ -70,7 +71,7 @@ fun MainScreen(
             recipeModels.map{ it.toViewModel() }
         }
 
-        var test = ""
+        var test = "test"
     }
 
     Column(
@@ -155,5 +156,6 @@ fun RecipeListView(recipes: List<RecipeViewModel>) {
 fun RecipeItem(recipe: RecipeViewModel) {
     Column {
         Text(text = recipe.title)
+        Text(text = "test")
     }
 }
