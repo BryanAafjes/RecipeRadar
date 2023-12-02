@@ -1,4 +1,4 @@
-package com.bth.reciperadar.detailscreen
+package com.bth.reciperadar.presentation.screens.detailscreen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
