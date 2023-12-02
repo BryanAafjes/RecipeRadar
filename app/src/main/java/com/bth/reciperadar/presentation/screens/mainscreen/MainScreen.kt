@@ -37,7 +37,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.bth.reciperadar.R
 import com.bth.reciperadar.domain.controllers.AuthController
@@ -58,7 +57,7 @@ fun MainScreen(
         mutableStateOf("")
     }
 
-    var recipes: List<RecipeViewModel> = mutableListOf()
+    var recipes by remember { mutableStateOf<List<RecipeViewModel>>(emptyList()) }
 
     var showEmailVerifyNotification by remember { mutableStateOf(false) }
 
@@ -70,8 +69,6 @@ fun MainScreen(
             val recipeModels = recipeController.getRecipes()
             recipeModels.map{ it.toViewModel() }
         }
-
-        var test = "test"
     }
 
     Column(
@@ -155,7 +152,19 @@ fun RecipeListView(recipes: List<RecipeViewModel>) {
 @Composable
 fun RecipeItem(recipe: RecipeViewModel) {
     Column {
-        Text(text = recipe.title)
-        Text(text = "test")
+        Text(text = "Recipe:")
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp)) {
+            Column(modifier = Modifier) {
+                Text(text = "Title:")
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "Description:")
+            }
+            Column(modifier = Modifier.padding(horizontal = 15.dp)) {
+                Text(text = recipe.title)
+                Spacer(modifier = Modifier.height(8.dp))
+                recipe.description?.let { Text(text = it) }
+            }
+        }
     }
 }
