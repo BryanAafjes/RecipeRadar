@@ -1,4 +1,4 @@
-package com.bth.reciperadar.navigation
+package com.bth.reciperadar.presentation.navigation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.fillMaxSize
@@ -25,30 +25,28 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.bth.reciperadar.detailscreen.DetailScreen
+import com.bth.reciperadar.presentation.screens.detailscreen.DetailScreen
 import com.bth.reciperadar.domain.controllers.AuthController
+import com.bth.reciperadar.domain.controllers.RecipeController
 import com.bth.reciperadar.mainscreen.AccountScreen
-import com.bth.reciperadar.mainscreen.MainScreen
-import com.bth.reciperadar.listscreen.ListScreen
-import com.bth.reciperadar.storagescreen.StorageScreen
-import com.bth.reciperadar.screen.Screen
+import com.bth.reciperadar.presentation.screens.mainscreen.MainScreen
+import com.bth.reciperadar.presentation.screens.screen.Screen
 import linearGradient
 
 @Composable
-fun Navigation(authController: AuthController) {
+fun Navigation(authController: AuthController, recipeController: RecipeController) {
     val navController = rememberNavController()
 
     val screens = listOf(
         Screen.MainScreen,
-        Screen.ListScreen,
-        Screen.StorageScreen,
         Screen.AccountScreen
     )
 
     Scaffold(
         bottomBar = {
             BottomNavigation(
-                modifier = Modifier.clip(RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp)),
+                modifier = Modifier
+                    .clip(RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp)),
                 backgroundColor = MaterialTheme.colorScheme.surface
             ) {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -62,7 +60,9 @@ fun Navigation(authController: AuthController) {
                         unselectedContentColor = MaterialTheme.colorScheme.onSurface,
                         onClick = {
                             navController.navigate(screen.route) {
-                                popUpTo(navController.graph.findStartDestination().id) { saveState = true }
+                                popUpTo(navController.graph.findStartDestination().id) {
+                                    saveState = true
+                                }
                                 launchSingleTop = true
                                 restoreState = true
                             }
@@ -71,7 +71,6 @@ fun Navigation(authController: AuthController) {
                 }
             }
         }
-
     ) { padding ->
         // Create a radial gradient brush
         val gradientBrush = Brush.linearGradient(
@@ -92,7 +91,7 @@ fun Navigation(authController: AuthController) {
                     .background(gradientBrush)
             ) {
                 composable(route = Screen.MainScreen.route) {
-                    MainScreen(navController = navController, authController = authController)
+                    MainScreen(navController = navController, authController = authController, recipeController = recipeController)
                 }
                 composable(
                     route = Screen.DetailScreen.route + "/{name}",
@@ -109,8 +108,6 @@ fun Navigation(authController: AuthController) {
                 composable(route = Screen.AccountScreen.route) {
                     AccountScreen(authController = authController)
                 }
-                composable( route = Screen.ListScreen.route) { ListScreen() }
-                composable( route = Screen.StorageScreen.route) { StorageScreen() }
             }
         }
     }

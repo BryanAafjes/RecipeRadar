@@ -1,4 +1,4 @@
-package com.bth.reciperadar.mainscreen
+package com.bth.reciperadar.presentation.screens.mainscreen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -38,19 +40,37 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.bth.reciperadar.R
 import com.bth.reciperadar.domain.controllers.AuthController
-import com.bth.reciperadar.screen.Screen
+import com.bth.reciperadar.domain.controllers.RecipeController
+import com.bth.reciperadar.presentation.screens.screen.Screen
+import com.bth.reciperadar.presentation.viewmodels.RecipeViewModel
+import com.bth.reciperadar.presentation.viewmodels.toViewModel
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Composable
-fun MainScreen(navController: NavController, authController: AuthController) {
+fun MainScreen(
+    navController: NavController,
+    authController: AuthController,
+    recipeController: RecipeController
+) {
     var text by remember {
         mutableStateOf("")
     }
+
+    var recipes: List<RecipeViewModel> = emptyList()
 
     var showEmailVerifyNotification by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         authController.auth.currentUser?.reload()
         showEmailVerifyNotification = authController.auth.currentUser?.isEmailVerified == false
+
+        recipes = withContext(Dispatchers.IO) {
+            val recipeModels = recipeController.getRecipes()
+            recipeModels.map{ it.toViewModel() }
+        }
+
+        var test = ""
     }
 
     Column(
@@ -101,6 +121,8 @@ fun MainScreen(navController: NavController, authController: AuthController) {
             }
         }
         Spacer(modifier = Modifier.height(20.dp))
+        RecipeListView(recipes = recipes)
+        Spacer(modifier = Modifier.height(20.dp))
         TextField(
             value = text,
             onValueChange = {
@@ -117,5 +139,21 @@ fun MainScreen(navController: NavController, authController: AuthController) {
         ) {
             Text(text = "To DetailScreen")
         }
+    }
+}
+
+@Composable
+fun RecipeListView(recipes: List<RecipeViewModel>) {
+    LazyColumn {
+        items(recipes) { recipe ->
+            RecipeItem(recipe)
+        }
+    }
+}
+
+@Composable
+fun RecipeItem(recipe: RecipeViewModel) {
+    Column {
+        Text(text = recipe.title)
     }
 }

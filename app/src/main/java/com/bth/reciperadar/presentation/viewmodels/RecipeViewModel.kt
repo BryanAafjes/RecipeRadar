@@ -1,8 +1,8 @@
-package com.bth.reciperadar.domain.models
+package com.bth.reciperadar.presentation.viewmodels
 
-import com.bth.reciperadar.data.dtos.RecipeDto
+import com.bth.reciperadar.domain.models.Recipe
 
-data class Recipe(
+data class RecipeViewModel(
     var id: String,
     var title: String,
     var description: String,
@@ -10,15 +10,15 @@ data class Recipe(
     var picturePath: String,
     var prepTime: String,
     var servingAmount: Int,
-    var cuisines: List<Cuisine>,
-    var reviews: List<Review>,
-    var steps: List<Step>,
-    var dietaryInfo: List<DietaryInfo>,
-    var ingredients: List<Ingredient>
+    var cuisines: List<CuisineViewModel>,
+    var reviews: List<ReviewViewModel>,
+    var steps: List<StepViewModel>,
+    var dietaryInfo: List<DietaryInfoViewModel>,
+    var ingredients: List<IngredientViewModel>
 )
 
-fun Recipe.toDto(): RecipeDto {
-    return RecipeDto(
+fun Recipe.toViewModel(): RecipeViewModel {
+    return RecipeViewModel(
         id = this.id,
         title = this.title,
         description = this.description,
@@ -26,15 +26,15 @@ fun Recipe.toDto(): RecipeDto {
         picturePath = this.picturePath,
         prepTime = this.prepTime,
         servingAmount = this.servingAmount,
-        cuisines = this.cuisines.map { it.toDto() },
-        reviews = this.reviews.map { it.toDto() },
-        steps = this.steps.map { it.toDto() },
-        dietaryInfo = this.dietaryInfo.map { it.toDto() },
-        ingredients = this.ingredients.map { it.toDto() },
+        cuisines = this.cuisines.map { it.toViewModel() },
+        reviews = this.reviews.map { it.toViewModel() },
+        steps = this.steps.map { it.toViewModel() },
+        dietaryInfo = this.dietaryInfo.map { it.toViewModel() },
+        ingredients = this.ingredients.map { it.toViewModel() }
     )
 }
 
-fun RecipeDto.toDomain(): Recipe {
+fun RecipeViewModel.toDomain(): Recipe {
     return Recipe(
         id = this.id,
         title = this.title,
@@ -47,6 +47,6 @@ fun RecipeDto.toDomain(): Recipe {
         reviews = this.reviews.map { it.toDomain() },
         steps = this.steps.map { it.toDomain() },
         dietaryInfo = this.dietaryInfo.map { it.toDomain() },
-        ingredients = this.ingredients.map { it.toDomain() },
+        ingredients = this.ingredients.map { it.toDomain() }
     )
 }

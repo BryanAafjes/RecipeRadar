@@ -1,4 +1,4 @@
-package com.bth.reciperadar.screen
+package com.bth.reciperadar.presentation.screens.screen
 
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
