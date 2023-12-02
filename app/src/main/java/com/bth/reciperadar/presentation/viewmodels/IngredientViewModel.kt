@@ -4,16 +4,16 @@ import com.bth.reciperadar.domain.models.Ingredient
 
 data class IngredientViewModel (
     var id: String,
-    var title: String,
-    var ingredientTypes: List<IngredientTypeViewModel>,
-    var amount: String,
+    var name: String,
+    var ingredientTypes: List<IngredientTypeViewModel>?,
+    var amount: String?,
 )
 
 fun Ingredient.toViewModel(): IngredientViewModel {
     return IngredientViewModel(
         id = this.id,
-        title = this.title,
-        ingredientTypes = this.ingredientTypes.map { it.toViewModel() },
+        name = this.name,
+        ingredientTypes = this.ingredientTypes?.map { it.toViewModel() },
         amount = this.amount
     )
 }
@@ -21,8 +21,8 @@ fun Ingredient.toViewModel(): IngredientViewModel {
 fun IngredientViewModel.toDomain(): Ingredient {
     return Ingredient(
         id = this.id,
-        title = this.title,
-        ingredientTypes = this.ingredientTypes.map { it.toDomain() },
+        name = this.name,
+        ingredientTypes = this.ingredientTypes?.map { it.toDomain() },
         amount = this.amount
     )
 }

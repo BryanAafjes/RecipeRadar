@@ -4,14 +4,14 @@ import com.bth.reciperadar.domain.models.DietaryInfo
 
 data class DietaryInfoViewModel (
     var id: String,
-    var title: String,
-    var description: String,
+    var name: String,
+    var description: String?,
 )
 
 fun DietaryInfoViewModel.toDomain(): DietaryInfo {
     return DietaryInfo(
         id = this.id,
-        title = this.title,
+        name = this.name,
         description = this.description
     )
 }
@@ -19,7 +19,7 @@ fun DietaryInfoViewModel.toDomain(): DietaryInfo {
 fun DietaryInfo.toViewModel(): DietaryInfoViewModel {
     return DietaryInfoViewModel(
         id = this.id,
-        title = this.title,
+        name = this.name,
         description = this.description
     )
 }

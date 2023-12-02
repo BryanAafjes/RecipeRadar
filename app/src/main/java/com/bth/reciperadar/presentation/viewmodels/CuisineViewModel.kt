@@ -4,14 +4,14 @@ import com.bth.reciperadar.domain.models.Cuisine
 
 data class CuisineViewModel (
     var id: String,
-    var title: String,
-    var description: String,
+    var name: String,
+    var description: String?,
 )
 
 fun CuisineViewModel.toDomain(): Cuisine {
     return Cuisine(
         id = this.id,
-        title = this.title,
+        name = this.name,
         description = this.description
     )
 }
@@ -19,7 +19,7 @@ fun CuisineViewModel.toDomain(): Cuisine {
 fun Cuisine.toViewModel(): CuisineViewModel {
     return CuisineViewModel(
         id = this.id,
-        title = this.title,
+        name = this.name,
         description = this.description
     )
 }

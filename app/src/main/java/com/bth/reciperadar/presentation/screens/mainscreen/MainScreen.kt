@@ -57,7 +57,7 @@ fun MainScreen(
         mutableStateOf("")
     }
 
-    var recipes: List<RecipeViewModel> = emptyList()
+    var recipes by remember { mutableStateOf<List<RecipeViewModel>>(emptyList()) }
 
     var showEmailVerifyNotification by remember { mutableStateOf(false) }
 
@@ -69,8 +69,6 @@ fun MainScreen(
             val recipeModels = recipeController.getRecipes()
             recipeModels.map{ it.toViewModel() }
         }
-
-        var test = ""
     }
 
     Column(
@@ -154,6 +152,19 @@ fun RecipeListView(recipes: List<RecipeViewModel>) {
 @Composable
 fun RecipeItem(recipe: RecipeViewModel) {
     Column {
-        Text(text = recipe.title)
+        Text(text = "Recipe:")
+        Spacer(modifier = Modifier.height(16.dp))
+        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp)) {
+            Column(modifier = Modifier) {
+                Text(text = "Title:")
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(text = "Description:")
+            }
+            Column(modifier = Modifier.padding(horizontal = 15.dp)) {
+                Text(text = recipe.title)
+                Spacer(modifier = Modifier.height(8.dp))
+                recipe.description?.let { Text(text = it) }
+            }
+        }
     }
 }
