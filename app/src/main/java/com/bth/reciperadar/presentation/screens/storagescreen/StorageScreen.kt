@@ -1,4 +1,4 @@
-package com.bth.reciperadar.storagescreen
+package com.bth.reciperadar.presentation.screens.storagescreen
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize

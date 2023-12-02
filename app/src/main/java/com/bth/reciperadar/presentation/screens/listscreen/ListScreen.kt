@@ -1,4 +1,4 @@
-package com.bth.reciperadar.listscreen
+package com.bth.reciperadar.presentation.screens.listscreen
 
 
 import androidx.compose.foundation.background

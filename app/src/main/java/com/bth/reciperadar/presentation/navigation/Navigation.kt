@@ -29,8 +29,10 @@ import com.bth.reciperadar.presentation.screens.detailscreen.DetailScreen
 import com.bth.reciperadar.domain.controllers.AuthController
 import com.bth.reciperadar.domain.controllers.RecipeController
 import com.bth.reciperadar.mainscreen.AccountScreen
+import com.bth.reciperadar.presentation.screens.listscreen.ListScreen
 import com.bth.reciperadar.presentation.screens.mainscreen.MainScreen
 import com.bth.reciperadar.presentation.screens.screen.Screen
+import com.bth.reciperadar.presentation.screens.storagescreen.StorageScreen
 import linearGradient
 
 @Composable
@@ -39,14 +41,15 @@ fun Navigation(authController: AuthController, recipeController: RecipeControlle
 
     val screens = listOf(
         Screen.MainScreen,
+        Screen.ListScreen,
+        Screen.StorageScreen,
         Screen.AccountScreen
     )
 
     Scaffold(
         bottomBar = {
             BottomNavigation(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp)),
+                modifier = Modifier.clip(RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp)),
                 backgroundColor = MaterialTheme.colorScheme.surface
             ) {
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -108,6 +111,8 @@ fun Navigation(authController: AuthController, recipeController: RecipeControlle
                 composable(route = Screen.AccountScreen.route) {
                     AccountScreen(authController = authController)
                 }
+                composable( route = Screen.ListScreen.route) { ListScreen() }
+                composable( route = Screen.StorageScreen.route) { StorageScreen() }
             }
         }
     }
