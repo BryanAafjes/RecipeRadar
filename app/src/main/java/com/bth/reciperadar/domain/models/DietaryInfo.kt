@@ -3,9 +3,9 @@ package com.bth.reciperadar.domain.models
 import com.bth.reciperadar.data.dtos.DietaryInfoDto
 
 data class DietaryInfo (
-    var id: String,
-    var title: String,
-    var description: String,
+    var id: String = "",
+    var title: String = "",
+    var description: String = ""
 )
 
 fun DietaryInfo.toDto(): DietaryInfoDto {

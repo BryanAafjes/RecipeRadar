@@ -3,8 +3,8 @@ package com.bth.reciperadar.domain.models
 import com.bth.reciperadar.data.dtos.IngredientTypeDto
 
 data class IngredientType (
-    var id: String,
-    var name: String,
+    var id: String = "",
+    var name: String = ""
 )
 
 fun IngredientType.toDto(): IngredientTypeDto {

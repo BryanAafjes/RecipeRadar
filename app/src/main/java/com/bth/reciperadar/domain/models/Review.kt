@@ -3,10 +3,10 @@ package com.bth.reciperadar.domain.models
 import com.bth.reciperadar.data.dtos.ReviewDto
 
 data class Review (
-    var id: String,
-    var recipe: Recipe,
-    var userId: String,
-    var rating: ReviewRating,
+    var id: String = "",
+    var recipe: Recipe = Recipe(),
+    var userId: String = "",
+    var rating: ReviewRating = ReviewRating()
 )
 
 fun Review.toDto(): ReviewDto {

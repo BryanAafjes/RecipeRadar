@@ -3,10 +3,10 @@ package com.bth.reciperadar.domain.models
 import com.bth.reciperadar.data.dtos.IngredientDto
 
 data class Ingredient (
-    var id: String,
-    var title: String,
-    var ingredientTypes: List<IngredientType>,
-    var amount: String,
+    var id: String = "",
+    var title: String = "",
+    var ingredientTypes: List<IngredientType> = emptyList(),
+    var amount: String = ""
 )
 
 fun Ingredient.toDto(): IngredientDto {

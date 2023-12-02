@@ -3,9 +3,9 @@ package com.bth.reciperadar.domain.models
 import com.bth.reciperadar.data.dtos.CuisineDto
 
 data class Cuisine (
-    var id: String,
-    var title: String,
-    var description: String,
+    var id: String = "",
+    var title: String = "",
+    var description: String = ""
 )
 
 fun Cuisine.toDto(): CuisineDto {
