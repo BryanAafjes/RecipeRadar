@@ -53,12 +53,8 @@ fun MainScreen(
     authController: AuthController,
     recipeController: RecipeController
 ) {
-    var text by remember {
-        mutableStateOf("")
-    }
-
+    var text by remember { mutableStateOf("") }
     var recipes by remember { mutableStateOf<List<RecipeViewModel>>(emptyList()) }
-
     var showEmailVerifyNotification by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
