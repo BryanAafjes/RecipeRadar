@@ -42,13 +42,10 @@ fun hexToComposeColor(hexColor: String): Color {
 }
 
 val itemsList: ItemsList = ItemsList()
-val elements = itemsList.elements
 
 @Preview(showBackground = true)
 @Composable
 fun Overall_look(  ) {
-    println("Compose main")
-    //var recomposeTrigger = remember { mutableStateOf(false) }
     Column( modifier = Modifier
         .fillMaxSize()
         .background(Color.Transparent)) {
@@ -97,7 +94,7 @@ fun Overall_look(  ) {
                 .fillMaxWidth()
                 .weight(8f)
                 .background(Color.Transparent),
-        ) { items( elements ) { elem -> elem.ShowElement() } }
+        ) { items( itemsList.elements ) { elem -> ShowElement(itemsList, elem, elem.itemName, elem.localCheckClsVal) } }
 
         Row( modifier = Modifier
             .fillMaxWidth()
