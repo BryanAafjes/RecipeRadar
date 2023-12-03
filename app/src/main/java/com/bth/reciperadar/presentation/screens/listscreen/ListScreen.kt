@@ -28,24 +28,13 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.material3.IconButton as IconButton
 
-@Composable
-fun ListScreen() { Overall_look() }
-
-fun hexToComposeColor(hexColor: String): Color {
-    val cleanHex = if (hexColor.startsWith("#")) hexColor.substring(1) else hexColor
-    return Color(android.graphics.Color.parseColor("#$cleanHex"))
-}
-
 val itemsList: ItemsList = ItemsList()
-
-@Preview(showBackground = true)
 @Composable
-fun Overall_look(  ) {
+fun ListScreen() {
     Column( modifier = Modifier
         .fillMaxSize()
         .background(Color.Transparent)) {
@@ -68,7 +57,7 @@ fun Overall_look(  ) {
                 .background(Color.Transparent)
                 .padding(start = 4.dp, end = 4.dp, top = 8.dp, bottom = 8.dp)
                 .weight(1f)
-            ) {
+        ) {
             OutlinedTextField(
                 value = searchText,
                 onValueChange = { searchText = it },
@@ -133,4 +122,9 @@ fun Overall_look(  ) {
             }
         }
     }
+}
+
+fun hexToComposeColor(hexColor: String): Color {
+    val cleanHex = if (hexColor.startsWith("#")) hexColor.substring(1) else hexColor
+    return Color(android.graphics.Color.parseColor("#$cleanHex"))
 }

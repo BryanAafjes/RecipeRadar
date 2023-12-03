@@ -28,7 +28,7 @@ import androidx.navigation.navArgument
 import com.bth.reciperadar.presentation.screens.detailscreen.DetailScreen
 import com.bth.reciperadar.domain.controllers.AuthController
 import com.bth.reciperadar.domain.controllers.RecipeController
-import com.bth.reciperadar.mainscreen.AccountScreen
+import com.bth.reciperadar.presentation.screens.accountscreen.AccountScreen
 import com.bth.reciperadar.presentation.screens.listscreen.ListScreen
 import com.bth.reciperadar.presentation.screens.mainscreen.MainScreen
 import com.bth.reciperadar.presentation.screens.screen.Screen

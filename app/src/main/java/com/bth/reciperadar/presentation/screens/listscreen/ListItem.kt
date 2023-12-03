@@ -33,14 +33,12 @@ class ItemsList: ViewModel() {
     private var _elements = mutableStateListOf<Item>()
     var elements: List<Item> = _elements
     fun addElement( itemName: String ) { _elements.add(Item(itemName)) }
-    fun removeElement( itemID: Item ) { println(itemID); println(_elements.toList().toString()); _elements.remove(itemID); println(_elements.toList().toString()) }
+    fun removeElement( itemID: Item ) { _elements.remove(itemID); }
     fun removeAll() { _elements.removeAll(_elements) }
 }
 
 @Composable
 fun ShowElement(itemsList: ItemsList, item: Item, itemName: String, localCheckClsVal: MutableState<Boolean>) {
-    println( "item: ${item.itemName}, $localCheckClsVal")
-    //var recomposeTrigger by remember { mutableStateOf(false) }
     Row(
         modifier = Modifier
             .clip(shape = RoundedCornerShape(18.dp))
