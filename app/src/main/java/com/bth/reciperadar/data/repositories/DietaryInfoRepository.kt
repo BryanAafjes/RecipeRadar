@@ -25,12 +25,10 @@ class DietaryInfoRepository(db: FirebaseFirestore) {
 
         return dietaryInfoList
     }
-    suspend fun getDietaryInfo(dietaryInfoIdDto: String): DietaryInfoDto? {
+    suspend fun getDietaryInfo(dietaryInfoDto: String): DietaryInfoDto? {
         return try {
-            val documentSnapshot = dietaryInfoCollection.document(dietaryInfoIdDto).get().await()
-            val dietaryInfoDto = documentSnapshot.toObject(DietaryInfoDto::class.java)
-
-            return dietaryInfoDto
+            val documentSnapshot = dietaryInfoCollection.document(dietaryInfoDto).get().await()
+            return documentSnapshot.toObject(DietaryInfoDto::class.java)
         } catch (e: Exception) {
             // Handle exceptions, such as network issues or Firestore errors
             e.printStackTrace()
