@@ -15,11 +15,11 @@ class DietaryInfoRepository(db: FirebaseFirestore) {
         val firestoreDietaryInfoReferences: List<DocumentReference> = document.get("dietary_info") as List<DocumentReference>
         firestoreDietaryInfoReferences.forEach { reference ->
             val dietaryInfoId = reference.id
-            val dietaryInfoIdDto: DietaryInfoDto? = getDietaryInfo(dietaryInfoId)
+            val dietaryInfoDto: DietaryInfoDto? = getDietaryInfo(dietaryInfoId)
 
-            if(dietaryInfoIdDto != null) {
-                dietaryInfoIdDto.id = dietaryInfoId
-                dietaryInfoList.add(dietaryInfoIdDto)
+            if(dietaryInfoDto != null) {
+                dietaryInfoDto.id = dietaryInfoId
+                dietaryInfoList.add(dietaryInfoDto)
             }
         }
 

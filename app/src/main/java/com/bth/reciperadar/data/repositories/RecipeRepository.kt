@@ -11,6 +11,7 @@ class RecipeRepository(db: FirebaseFirestore) {
     private val ingredientRepository = IngredientRepository(db)
     private val reviewRepository = ReviewRepository(db)
     private val dietaryInfoRepository = DietaryInfoRepository(db)
+    private val cuisineRepository = CuisineRepository(db)
 
     private suspend fun getRecipes(includeReferences: Boolean): List<RecipeDto> {
         return try {
@@ -27,6 +28,7 @@ class RecipeRepository(db: FirebaseFirestore) {
                         recipe.ingredients = ingredientRepository.getIngredientsForRecipe(document)
                         recipe.reviews = reviewRepository.getReviewsForRecipe(recipe.id)
                         recipe.dietaryInfo = dietaryInfoRepository.getDietaryInfoForRecipe(document)
+                        recipe.cuisines = cuisineRepository.getDietaryInfoForRecipe(document)
                     }
 
                     recipe.let {
