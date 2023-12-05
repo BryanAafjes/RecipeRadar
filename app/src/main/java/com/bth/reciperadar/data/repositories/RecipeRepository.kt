@@ -9,6 +9,7 @@ import kotlinx.coroutines.tasks.await
 class RecipeRepository(db: FirebaseFirestore) {
     private val recipesCollection = db.collection("recipes")
     private val ingredientRepository = IngredientRepository(db)
+    private val reviewRepository = ReviewRepository(db)
 
     private suspend fun getRecipes(includeReferences: Boolean): List<RecipeDto> {
         return try {
@@ -17,15 +18,20 @@ class RecipeRepository(db: FirebaseFirestore) {
 
             for (document in querySnapshot.documents) {
                 val recipe = document.toObject(RecipeDto::class.java)
-                recipe?.id = document.id
 
-                if (includeReferences) {
-                    recipe?.ingredients = ingredientRepository.getIngredientsForRecipe(document)
+                if (recipe != null) {
+                    recipe.id = document.id
+
+                    if (includeReferences) {
+                        recipe.ingredients = ingredientRepository.getIngredientsForRecipe(document)
+                        recipe.reviews = reviewRepository.getReviewsForRecipe(recipe.id)
+                    }
+
+                    recipe.let {
+                        recipesList.add(it)
+                    }
                 }
 
-                recipe?.let {
-                    recipesList.add(it)
-                }
             }
 
             return recipesList

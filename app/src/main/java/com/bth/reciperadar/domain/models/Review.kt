@@ -1,28 +1,27 @@
 package com.bth.reciperadar.domain.models
 
 import com.bth.reciperadar.data.dtos.ReviewDto
+import com.bth.reciperadar.domain.enums.ReviewRatingEnum
 
 data class Review (
     var id: String = "",
-    var recipe: Recipe? = Recipe(),
     var userId: String? = "",
-    var rating: ReviewRating = ReviewRating()
+    var rating: ReviewRatingEnum = ReviewRatingEnum.FiveStars
 )
 
 fun Review.toDto(): ReviewDto {
     return ReviewDto(
         id = this.id,
-        recipe = this.recipe?.toDto(),
         userId = this.userId,
-        rating = this.rating.toDto()
+        rating = this.rating.numericValue
     )
 }
 
 fun ReviewDto.toDomain(): Review {
     return Review(
         id = this.id,
-        recipe = this.recipe?.toDomain(),
         userId = this.userId,
-        rating = this.rating.toDomain()
+        rating = ReviewRatingEnum.values().firstOrNull { it.numericValue == this.rating }
+            ?: ReviewRatingEnum.FiveStars
     )
 }
