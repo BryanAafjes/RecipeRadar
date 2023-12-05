@@ -15,7 +15,7 @@ fun Ingredient.toDto(): IngredientDto {
         id = this.id,
         name = this.name,
         description = this.description,
-        ingredientType = this.ingredientType,
+        ingredientType = this.ingredientType?.toDto(),
         amount = this.amount
     )
 }
@@ -25,7 +25,7 @@ fun IngredientDto.toDomain(): Ingredient {
         id = this.id,
         name = this.name,
         description = this.description,
-        ingredientType = this.ingredientType,
+        ingredientType = this.ingredientType?.toDomain(),
         amount = this.amount
     )
 }
