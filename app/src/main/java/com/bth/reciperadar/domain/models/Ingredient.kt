@@ -6,7 +6,7 @@ data class Ingredient (
     var id: String = "",
     var name: String = "",
     var description: String = "",
-    var ingredientTypes: List<IngredientType>? = emptyList(),
+    var ingredientType: IngredientType? = null,
     var amount: String? = ""
 )
 
@@ -15,7 +15,7 @@ fun Ingredient.toDto(): IngredientDto {
         id = this.id,
         name = this.name,
         description = this.description,
-        ingredientTypes = this.ingredientTypes?.map { it.toDto() },
+        ingredientType = this.ingredientType,
         amount = this.amount
     )
 }
@@ -25,7 +25,7 @@ fun IngredientDto.toDomain(): Ingredient {
         id = this.id,
         name = this.name,
         description = this.description,
-        ingredientTypes = this.ingredientTypes?.map { it.toDomain() },
+        ingredientType = this.ingredientType,
         amount = this.amount
     )
 }
