@@ -11,8 +11,8 @@ class IngredientRepository(db: FirebaseFirestore) {
 
     suspend fun getIngredientsForRecipe(document: DocumentSnapshot): List<IngredientDto> {
         val ingredients = ArrayList<IngredientDto>()
-        val ingredientsArray = document.get("ingredients") as List<Map<String, Any>>
-        ingredientsArray.forEach { ingredientMap ->
+        val firestoreIngredientMaps = document.get("ingredients") as List<Map<String, Any>>
+        firestoreIngredientMaps.forEach { ingredientMap ->
             val ingredientReference = ingredientMap["ingredient"] as DocumentReference
             val ingredientId = ingredientReference.id
             val ingredientDto: IngredientDto? = getIngredient(ingredientId)
