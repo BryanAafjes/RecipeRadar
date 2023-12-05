@@ -10,7 +10,7 @@ class RecipeRepository(db: FirebaseFirestore) {
     private val recipesCollection = db.collection("recipes")
     private val ingredientRepository = IngredientRepository(db)
 
-    suspend fun getRecipes(): List<RecipeDto> {
+    private suspend fun getRecipes(includeReferences: Boolean): List<RecipeDto> {
         return try {
             val querySnapshot = recipesCollection.get().await()
             val recipesList = mutableListOf<RecipeDto>()
@@ -18,7 +18,10 @@ class RecipeRepository(db: FirebaseFirestore) {
             for (document in querySnapshot.documents) {
                 val recipe = document.toObject(RecipeDto::class.java)
                 recipe?.id = document.id
-                recipe?.ingredients = ingredientRepository.getIngredientsForRecipe(document)
+
+                if (includeReferences) {
+                    recipe?.ingredients = ingredientRepository.getIngredientsForRecipe(document)
+                }
 
                 recipe?.let {
                     recipesList.add(it)
@@ -32,5 +35,13 @@ class RecipeRepository(db: FirebaseFirestore) {
             e.printStackTrace()
             emptyList()
         }
+    }
+
+    suspend fun getRecipesWithoutReferences(): List<RecipeDto> {
+        return getRecipes(includeReferences = false)
+    }
+
+    suspend fun getRecipesWithReferences(): List<RecipeDto> {
+        return getRecipes(includeReferences = true)
     }
 }

@@ -9,7 +9,7 @@ import kotlinx.coroutines.withContext
 class RecipeController(private val recipeRepository: RecipeRepository) {
     suspend fun getRecipes(): List<Recipe> = withContext(Dispatchers.IO) {
         try {
-            val recipeDtoList = recipeRepository.getRecipes()
+            val recipeDtoList = recipeRepository.getRecipesWithoutReferences()
             return@withContext recipeDtoList.map { it.toDomain() }
         } catch (e: Exception) {
             // Handle exceptions, such as network issues or repository errors
