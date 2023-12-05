@@ -11,7 +11,7 @@ class CuisineRepository(db: FirebaseFirestore) {
 
     suspend fun getDietaryInfoForRecipe(document: DocumentSnapshot): List<CuisineDto> {
         val cuisineList = ArrayList<CuisineDto>()
-        val firestoreCuisineReferences: List<DocumentReference> = document.get("cuisine_array") as List<DocumentReference>
+        val firestoreCuisineReferences: List<DocumentReference> = document.get("cuisine_references") as List<DocumentReference>
         firestoreCuisineReferences.forEach { reference ->
             val cuisineId = reference.id
             val cuisineDto: CuisineDto? = getCuisine(cuisineId)
