@@ -23,6 +23,12 @@ class RecipeRepository(db: FirebaseFirestore) {
 
                 if (recipe != null) {
                     recipe.id = document.id
+                    recipe.prepTime = document.get("prep_time")?.toString()
+                    recipe.picturePath = document.get("picture_path")?.toString()
+                    recipe.userId = document.get("user_id")?.toString()
+
+                    val servingAmount = document.get("serving_amount") as Long
+                    recipe.servingAmount = servingAmount.toInt()
 
                     if (includeReferences) {
                         recipe.ingredients = ingredientRepository.getIngredientsForRecipe(document)
