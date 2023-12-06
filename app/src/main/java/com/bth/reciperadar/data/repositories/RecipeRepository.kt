@@ -9,6 +9,9 @@ import kotlinx.coroutines.tasks.await
 class RecipeRepository(db: FirebaseFirestore) {
     private val recipesCollection = db.collection("recipes")
     private val ingredientRepository = IngredientRepository(db)
+    private val reviewRepository = ReviewRepository(db)
+    private val dietaryInfoRepository = DietaryInfoRepository(db)
+    private val cuisineRepository = CuisineRepository(db)
 
     private suspend fun getRecipes(includeReferences: Boolean): List<RecipeDto> {
         return try {
@@ -17,15 +20,28 @@ class RecipeRepository(db: FirebaseFirestore) {
 
             for (document in querySnapshot.documents) {
                 val recipe = document.toObject(RecipeDto::class.java)
-                recipe?.id = document.id
 
-                if (includeReferences) {
-                    recipe?.ingredients = ingredientRepository.getIngredientsForRecipe(document)
+                if (recipe != null) {
+                    recipe.id = document.id
+                    recipe.prepTime = document.get("prep_time")?.toString()
+                    recipe.picturePath = document.get("picture_path")?.toString()
+                    recipe.userId = document.get("user_id")?.toString()
+
+                    val servingAmount = document.get("serving_amount") as Long
+                    recipe.servingAmount = servingAmount.toInt()
+
+                    if (includeReferences) {
+                        recipe.ingredients = ingredientRepository.getIngredientsForRecipe(document)
+                        recipe.reviews = reviewRepository.getReviewsForRecipe(recipe.id)
+                        recipe.dietaryInfo = dietaryInfoRepository.getDietaryInfoForRecipe(document)
+                        recipe.cuisines = cuisineRepository.getDietaryInfoForRecipe(document)
+                    }
+
+                    recipe.let {
+                        recipesList.add(it)
+                    }
                 }
 
-                recipe?.let {
-                    recipesList.add(it)
-                }
             }
 
             return recipesList

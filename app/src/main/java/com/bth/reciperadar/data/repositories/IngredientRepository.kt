@@ -8,6 +8,7 @@ import kotlinx.coroutines.tasks.await
 
 class IngredientRepository(db: FirebaseFirestore) {
     private val ingredientsCollection = db.collection("ingredients")
+    private val ingredientTypeRepository = IngredientTypeRepository(db)
 
     suspend fun getIngredientsForRecipe(document: DocumentSnapshot): List<IngredientDto> {
         val ingredients = ArrayList<IngredientDto>()
@@ -30,7 +31,19 @@ class IngredientRepository(db: FirebaseFirestore) {
         return try {
             val documentSnapshot = ingredientsCollection.document(ingredientId).get().await()
 
-            documentSnapshot.toObject(IngredientDto::class.java)
+            val ingredientDto = documentSnapshot.toObject(IngredientDto::class.java)
+
+            if (ingredientDto != null) {
+                val documentRef = documentSnapshot.getDocumentReference("type")
+
+                if (documentRef != null) {
+                    ingredientDto.ingredientType = ingredientTypeRepository.getIngredientType(
+                        documentRef.id
+                    )
+                }
+            }
+
+            return ingredientDto
         } catch (e: Exception) {
             // Handle exceptions, such as network issues or Firestore errors
             e.printStackTrace()

@@ -1,9 +1,9 @@
 package com.bth.reciperadar.data.dtos
 
-data class IngredientDto (
+data class IngredientDto(
     var id: String = "",
     var name: String = "",
     var description: String = "",
-    var ingredientTypes: List<IngredientTypeDto>? = emptyList(),
+    var ingredientType: IngredientTypeDto? = null,
     var amount: String? = ""
 )
