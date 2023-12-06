@@ -30,6 +30,7 @@ import com.bth.reciperadar.domain.controllers.AuthController
 import com.bth.reciperadar.domain.controllers.RecipeController
 import com.bth.reciperadar.mainscreen.AccountScreen
 import com.bth.reciperadar.presentation.screens.mainscreen.MainScreen
+import com.bth.reciperadar.presentation.screens.recipe.RecipeSearchScreen
 import com.bth.reciperadar.presentation.screens.screen.Screen
 import linearGradient
 
@@ -107,6 +108,18 @@ fun Navigation(authController: AuthController, recipeController: RecipeControlle
                 }
                 composable(route = Screen.AccountScreen.route) {
                     AccountScreen(authController = authController)
+                }
+                composable(
+                    route = Screen.RecipeSearchScreen.route + "/{searchQuery}",
+                    arguments = listOf(
+                        navArgument("searchQuery") {
+                            type = NavType.StringType
+                            defaultValue = ""
+                            nullable = false
+                        }
+                    )
+                ) { entry ->
+                    RecipeSearchScreen(searchQuery = entry.arguments?.getString("searchQuery")!!, recipeController = recipeController)
                 }
             }
         }

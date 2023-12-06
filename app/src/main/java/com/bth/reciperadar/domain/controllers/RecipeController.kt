@@ -17,4 +17,15 @@ class RecipeController(private val recipeRepository: RecipeRepository) {
             emptyList()
         }
     }
+
+    suspend fun searchRecipes(searchQuery: String): List<Recipe> = withContext(Dispatchers.IO) {
+        try {
+            val recipeDtoList = recipeRepository.searchRecipesByTitle(searchQuery)
+            return@withContext recipeDtoList.map { it.toDomain() }
+        } catch (e: Exception) {
+            // Handle exceptions, such as network issues or repository errors
+            e.printStackTrace()
+            emptyList()
+        }
+    }
 }
