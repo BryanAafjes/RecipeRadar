@@ -21,14 +21,14 @@ import com.bth.reciperadar.presentation.viewmodels.RecipeViewModel
 fun IngredientTypeAccordion(
     ingredientTypes: List<IngredientTypeViewModel>,
     expandedCategories: Set<String>,
-    onCategoryToggle: (String) -> Unit
+    onCategoryToggle: (IngredientTypeViewModel) -> Unit
 ) {
     Column {
         ingredientTypes.forEach { ingredientType ->
             IngredientTypeAccordionItem(
                 ingredientType = ingredientType,
                 isExpanded = expandedCategories.contains(ingredientType.id),
-                onToggle = { onCategoryToggle(ingredientType.id) }
+                onToggle = { onCategoryToggle(ingredientType) }
             )
             Spacer(modifier = Modifier.height(8.dp))
         }

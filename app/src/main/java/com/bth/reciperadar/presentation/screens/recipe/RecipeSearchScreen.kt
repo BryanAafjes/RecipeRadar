@@ -66,30 +66,34 @@ fun RecipeSearchScreen(
         IngredientTypeAccordion(
             ingredientTypes = ingredientTypes,
             expandedCategories = expandedCategories,
-            onCategoryToggle = { categoryId ->
+            onCategoryToggle = { toggledIngredientType ->
                 expandedCategories =
-                    if (expandedCategories.contains(categoryId)) {
-                        expandedCategories.minus(categoryId)
+                    if (expandedCategories.contains(toggledIngredientType.id)) {
+                        expandedCategories.minus(toggledIngredientType.id)
                     } else {
-                        expandedCategories.plus(categoryId)
+                        expandedCategories.plus(toggledIngredientType.id)
                     }
 
-                if (expandedCategories.contains(categoryId)) {
-                    val categoryIndex = ingredientTypes.indexOfFirst { it.id == categoryId }
+                if (expandedCategories.contains(toggledIngredientType.id)) {
+                    val categoryIndex = ingredientTypes.indexOfFirst { it.id == toggledIngredientType.id }
 
-                    // To implement: if category already has ingredients, dont retrieve ingredients again.
-                    CoroutineScope(Dispatchers.IO).launch {
-                        try {
-                            val ingredientModels = ingredientController.getIngredientsForIngredientType(categoryId)
+                    if (toggledIngredientType.ingredients == null) {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            try {
+                                val ingredientModels =
+                                    ingredientController.getIngredientsForIngredientType(
+                                        toggledIngredientType.id
+                                    )
 
-                            val updatedIngredientTypes = ingredientTypes.toMutableList()
+                                val updatedIngredientTypes = ingredientTypes.toMutableList()
 
-                            updatedIngredientTypes[categoryIndex] =
-                                updatedIngredientTypes[categoryIndex].copy(ingredients = ingredientModels.map { it.toViewModel() })
+                                updatedIngredientTypes[categoryIndex] =
+                                    updatedIngredientTypes[categoryIndex].copy(ingredients = ingredientModels.map { it.toViewModel() })
 
-                            ingredientTypes = updatedIngredientTypes
-                        } catch (e: Exception) {
-                            e.printStackTrace()
+                                ingredientTypes = updatedIngredientTypes
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
                         }
                     }
                 }
