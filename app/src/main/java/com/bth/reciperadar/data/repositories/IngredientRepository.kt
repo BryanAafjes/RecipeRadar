@@ -8,6 +8,7 @@ import kotlinx.coroutines.tasks.await
 
 class IngredientRepository(db: FirebaseFirestore) {
     private val ingredientsCollection = db.collection("ingredients")
+    private val ingredientTypesCollection = db.collection("ingredient_types")
     private val ingredientTypeRepository = IngredientTypeRepository(db)
 
     suspend fun getIngredientsForRecipe(document: DocumentSnapshot): List<IngredientDto> {
@@ -48,6 +49,55 @@ class IngredientRepository(db: FirebaseFirestore) {
             // Handle exceptions, such as network issues or Firestore errors
             e.printStackTrace()
             null
+        }
+    }
+
+    private suspend fun getIngredientsFromQueryDocuments(documents: List<DocumentSnapshot>, getIngredientType: Boolean): List<IngredientDto> {
+        val ingredients = ArrayList<IngredientDto>()
+
+        for (document in documents) {
+            val ingredientDto = document.toObject(IngredientDto::class.java)
+
+            if (ingredientDto != null) {
+                if (getIngredientType) {
+                    val documentRef = document.getDocumentReference("type")
+
+                    if (documentRef != null) {
+                        ingredientDto.ingredientType = ingredientTypeRepository.getIngredientType(
+                            documentRef.id
+                        )
+                    }
+                }
+
+                ingredientDto.id = document.id
+                ingredients.add(ingredientDto)
+            }
+        }
+        return ingredients
+    }
+
+    suspend fun getIngredients(): List<IngredientDto> {
+        return try {
+            val querySnapshot = ingredientsCollection.get().await()
+            return getIngredientsFromQueryDocuments(querySnapshot.documents, getIngredientType = true)
+        } catch (e: Exception) {
+            // Handle exceptions, such as network issues or Firestore errors
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+
+    suspend fun getIngredientsForIngredientType(ingredientTypeId: String): List<IngredientDto> {
+        return try {
+            val querySnapshot = ingredientsCollection
+                .whereEqualTo("type", ingredientTypesCollection.document(ingredientTypeId))
+                .get()
+                .await()
+            return getIngredientsFromQueryDocuments(querySnapshot.documents, getIngredientType = false)
+        } catch (e: Exception) {
+            // Handle exceptions, such as network issues or Firestore errors
+            e.printStackTrace()
+            emptyList()
         }
     }
 }

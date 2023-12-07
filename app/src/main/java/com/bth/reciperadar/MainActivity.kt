@@ -9,8 +9,12 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import com.bth.reciperadar.data.repositories.IngredientRepository
+import com.bth.reciperadar.data.repositories.IngredientTypeRepository
 import com.bth.reciperadar.data.repositories.RecipeRepository
 import com.bth.reciperadar.domain.controllers.AuthController
+import com.bth.reciperadar.domain.controllers.IngredientController
+import com.bth.reciperadar.domain.controllers.IngredientTypeController
 import com.bth.reciperadar.domain.controllers.RecipeController
 import com.bth.reciperadar.presentation.screens.loginscreen.StartScreen
 import com.bth.reciperadar.presentation.navigation.Navigation
@@ -36,14 +40,20 @@ class MainActivity : ComponentActivity() {
                     val db = Firebase.firestore
 
                     val recipeRepository = remember { RecipeRepository(db) }
+                    val ingredientRepository = remember { IngredientRepository(db) }
+                    val ingredientTypeRepository = remember { IngredientTypeRepository(db) }
 
                     // Controller instances
-                    val recipeController = remember { RecipeController(recipeRepository)}
+                    val recipeController = remember { RecipeController(recipeRepository) }
+                    val ingredientController = remember { IngredientController(ingredientRepository) }
+                    val ingredientTypeController = remember { IngredientTypeController(ingredientTypeRepository) }
 
                     if (currentUser.value != null) {
                         Navigation(
                             authController = authController,
-                            recipeController = recipeController
+                            recipeController = recipeController,
+                            ingredientController = ingredientController,
+                            ingredientTypeController = ingredientTypeController
                         )
                     } else {
                         StartScreen(authController)

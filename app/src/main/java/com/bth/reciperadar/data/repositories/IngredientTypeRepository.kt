@@ -25,4 +25,29 @@ class IngredientTypeRepository(db: FirebaseFirestore) {
             null
         }
     }
+
+    private fun getIngredientTypesFromQueryDocuments(documents: List<DocumentSnapshot>): List<IngredientTypeDto> {
+        val ingredientTypes = ArrayList<IngredientTypeDto>()
+
+        for (document in documents) {
+            val ingredientTypeDto = document.toObject(IngredientTypeDto::class.java)
+
+            if (ingredientTypeDto != null) {
+                ingredientTypeDto.id = document.id
+                ingredientTypes.add(ingredientTypeDto)
+            }
+        }
+        return ingredientTypes
+    }
+
+    suspend fun getIngredientTypes(): List<IngredientTypeDto> {
+        return try {
+            val querySnapshot = ingredientTypesCollection.get().await()
+            return getIngredientTypesFromQueryDocuments(querySnapshot.documents)
+        } catch (e: Exception) {
+            // Handle exceptions, such as network issues or Firestore errors
+            e.printStackTrace()
+            emptyList()
+        }
+    }
 }

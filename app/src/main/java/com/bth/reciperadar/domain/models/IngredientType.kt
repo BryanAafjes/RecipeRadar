@@ -4,7 +4,8 @@ import com.bth.reciperadar.data.dtos.IngredientTypeDto
 
 data class IngredientType (
     var id: String = "",
-    var name: String = ""
+    var name: String = "",
+    var ingredients: List<Ingredient>? = null
 )
 
 fun IngredientType.toDto(): IngredientTypeDto {

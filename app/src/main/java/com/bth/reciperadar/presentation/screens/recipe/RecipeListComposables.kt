@@ -16,9 +16,10 @@ import com.bth.reciperadar.presentation.viewmodels.RecipeViewModel
 
 @Composable
 fun RecipeListView(recipes: List<RecipeViewModel>) {
-    LazyColumn {
-        items(recipes) { recipe ->
+    Column {
+        recipes.forEach { recipe ->
             RecipeItem(recipe)
+            Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
