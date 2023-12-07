@@ -64,13 +64,9 @@ class RecipeRepository(db: FirebaseFirestore) {
         return getRecipes(includeReferences = true)
     }
 
-    suspend fun searchRecipesByTitle(searchQuery: String): List<RecipeDto> {
-        val searchQueryLowercase = searchQuery.lowercase()
-
-        val searchWords = searchQueryLowercase.split(" ")
-
+    suspend fun searchRecipesByTitle(lowercaseSearchWords: List<String>): List<RecipeDto> {
         val querySnapshot = recipesCollection
-            .whereArrayContainsAny("search_title", searchWords)
+            .whereArrayContainsAny("search_title", lowercaseSearchWords)
             .get()
             .await()
 
