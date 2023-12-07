@@ -1,5 +1,6 @@
 package com.bth.reciperadar.presentation.screens.recipe
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,14 +24,22 @@ import com.bth.reciperadar.domain.controllers.RecipeController
 import com.bth.reciperadar.presentation.viewmodels.IngredientTypeViewModel
 import com.bth.reciperadar.presentation.viewmodels.RecipeViewModel
 import com.bth.reciperadar.presentation.viewmodels.toViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
-fun RecipeSearchScreen(searchQuery: String, recipeController: RecipeController, ingredientController: IngredientController, ingredientTypeController: IngredientTypeController) {
+fun RecipeSearchScreen(
+    searchQuery: String,
+    recipeController: RecipeController,
+    ingredientController: IngredientController,
+    ingredientTypeController: IngredientTypeController
+) {
     var recipes by remember { mutableStateOf<List<RecipeViewModel>>(emptyList()) }
     var ingredientTypes by remember { mutableStateOf<List<IngredientTypeViewModel>>(emptyList()) }
     val state = rememberScrollState()
+    var expandedCategories by remember { mutableStateOf<Set<String>>(setOf()) }
 
     LaunchedEffect(searchQuery) {
         withContext(Dispatchers.IO) {
@@ -39,13 +48,6 @@ fun RecipeSearchScreen(searchQuery: String, recipeController: RecipeController, 
 
             val ingredientTypeModels = ingredientTypeController.getIngredientTypes()
             ingredientTypes = ingredientTypeModels.map { it.toViewModel() }
-
-            ingredientTypes = ingredientTypes.map { ingredientType ->
-                val ingredientModels = withContext(Dispatchers.IO) {
-                    ingredientController.getIngredientsForIngredientType(ingredientType.id)
-                }
-                ingredientType.copy(ingredients = ingredientModels.map { it.toViewModel() })
-            }
         }
     }
 
@@ -60,10 +62,42 @@ fun RecipeSearchScreen(searchQuery: String, recipeController: RecipeController, 
         Spacer(modifier = Modifier.height(20.dp))
         Text("Filter ingredients:")
         Spacer(modifier = Modifier.height(20.dp))
-        IngredientTypeListView(ingredientTypes = ingredientTypes)
+
+        IngredientTypeAccordion(
+            ingredientTypes = ingredientTypes,
+            expandedCategories = expandedCategories,
+            onCategoryToggle = { categoryId ->
+                expandedCategories =
+                    if (expandedCategories.contains(categoryId)) {
+                        expandedCategories.minus(categoryId)
+                    } else {
+                        expandedCategories.plus(categoryId)
+                    }
+
+                if (expandedCategories.contains(categoryId)) {
+                    val categoryIndex = ingredientTypes.indexOfFirst { it.id == categoryId }
+
+                    // To implement: if category already has ingredients, dont retrieve ingredients again.
+                    CoroutineScope(Dispatchers.IO).launch {
+                        try {
+                            val ingredientModels = ingredientController.getIngredientsForIngredientType(categoryId)
+
+                            val updatedIngredientTypes = ingredientTypes.toMutableList()
+
+                            updatedIngredientTypes[categoryIndex] =
+                                updatedIngredientTypes[categoryIndex].copy(ingredients = ingredientModels.map { it.toViewModel() })
+
+                            ingredientTypes = updatedIngredientTypes
+                        } catch (e: Exception) {
+                            e.printStackTrace()
+                        }
+                    }
+                }
+            }
+        )
+
         Spacer(modifier = Modifier.height(20.dp))
         Text("Recipes:")
-        Spacer(modifier = Modifier.height(20.dp))
         Spacer(modifier = Modifier.height(20.dp))
         RecipeListView(recipes = recipes)
         Spacer(modifier = Modifier.height(20.dp))

@@ -1,5 +1,6 @@
 package com.bth.reciperadar.presentation.screens.recipe
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,21 +18,39 @@ import com.bth.reciperadar.presentation.viewmodels.IngredientViewModel
 import com.bth.reciperadar.presentation.viewmodels.RecipeViewModel
 
 @Composable
-fun IngredientTypeListView(ingredientTypes: List<IngredientTypeViewModel>) {
+fun IngredientTypeAccordion(
+    ingredientTypes: List<IngredientTypeViewModel>,
+    expandedCategories: Set<String>,
+    onCategoryToggle: (String) -> Unit
+) {
     Column {
         ingredientTypes.forEach { ingredientType ->
-            IngredientTypeItem(ingredientType)
+            IngredientTypeAccordionItem(
+                ingredientType = ingredientType,
+                isExpanded = expandedCategories.contains(ingredientType.id),
+                onToggle = { onCategoryToggle(ingredientType.id) }
+            )
             Spacer(modifier = Modifier.height(8.dp))
         }
     }
 }
 
 @Composable
-fun IngredientTypeItem(ingredientType: IngredientTypeViewModel) {
+fun IngredientTypeAccordionItem(
+    ingredientType: IngredientTypeViewModel,
+    isExpanded: Boolean,
+    onToggle: () -> Unit
+) {
     Column {
-        Text(text = ingredientType.name)
+        Text(
+            text = ingredientType.name,
+            modifier = Modifier.clickable { onToggle() }
+        )
         Spacer(modifier = Modifier.height(16.dp))
-        ingredientType.ingredients?.let { IngredientListView(ingredients = it) }
+
+        if (isExpanded) {
+            ingredientType.ingredients?.let { IngredientListView(ingredients = it) }
+        }
     }
 }
 
