@@ -57,7 +57,7 @@ fun RecipeSearchScreen(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 50.dp)
+            .padding(horizontal = 20.dp)
             .verticalScroll(state)
     ) {
         Text(text = "Hello!")
