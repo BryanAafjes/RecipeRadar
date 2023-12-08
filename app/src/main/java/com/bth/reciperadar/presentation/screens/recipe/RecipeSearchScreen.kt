@@ -3,12 +3,16 @@ package com.bth.reciperadar.presentation.screens.recipe
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -17,7 +21,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.bth.reciperadar.R
 import com.bth.reciperadar.domain.controllers.IngredientController
 import com.bth.reciperadar.domain.controllers.IngredientTypeController
 import com.bth.reciperadar.domain.controllers.RecipeController
@@ -61,14 +68,34 @@ fun RecipeSearchScreen(
             .padding(horizontal = 20.dp)
             .verticalScroll(state)
     ) {
-        Text(text = "Hello!")
-        Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = "Filter ingredients:",
-            modifier = Modifier.clickable {
-                isIngredientDropdownVisible = !isIngredientDropdownVisible
-            }
+            text = "Recipe Search",
+            style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.Bold
         )
+        Spacer(modifier = Modifier.height(20.dp))
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { isIngredientDropdownVisible = !isIngredientDropdownVisible }
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Filter ingredients",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.weight(1f)
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_filter_list_24),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+            }
+        }
         Spacer(modifier = Modifier.height(20.dp))
         if (isIngredientDropdownVisible) {
             IngredientTypeAccordion(
@@ -118,7 +145,11 @@ fun RecipeSearchScreen(
         }
 
         Spacer(modifier = Modifier.height(20.dp))
-        Text("Recipes:")
+        Text(
+            text = "Recipe Search",
+            style = MaterialTheme.typography.headlineSmall,
+            fontWeight = FontWeight.Bold
+        )
         Spacer(modifier = Modifier.height(20.dp))
         RecipeListView(recipes = recipes)
         Spacer(modifier = Modifier.height(20.dp))
