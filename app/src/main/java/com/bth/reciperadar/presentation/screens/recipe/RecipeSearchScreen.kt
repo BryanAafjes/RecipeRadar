@@ -36,6 +36,7 @@ import com.bth.reciperadar.domain.controllers.RecipeController
 import com.bth.reciperadar.presentation.viewmodels.IngredientTypeViewModel
 import com.bth.reciperadar.presentation.viewmodels.IngredientViewModel
 import com.bth.reciperadar.presentation.viewmodels.RecipeViewModel
+import com.bth.reciperadar.presentation.viewmodels.toDomain
 import com.bth.reciperadar.presentation.viewmodels.toViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -161,7 +162,10 @@ fun RecipeSearchScreen(
         Button(
             onClick = {
                 CoroutineScope(Dispatchers.IO).launch {
-                    val recipeModels = recipeController.searchRecipes(searchTerm)
+                    val recipeModels = recipeController.searchRecipesByTitleAndIngredientFilter(
+                        searchTerm,
+                        selectedIngredients.map { it.toDomain() }
+                    )
                     recipes = recipeModels.map { it.toViewModel() }
                 }
             },
