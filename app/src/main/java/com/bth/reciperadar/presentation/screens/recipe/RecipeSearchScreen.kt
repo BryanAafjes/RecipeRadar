@@ -42,6 +42,7 @@ fun RecipeSearchScreen(
     val state = rememberScrollState()
     var expandedCategories by remember { mutableStateOf<Set<String>>(setOf()) }
     var selectedIngredients by remember { mutableStateOf<List<IngredientViewModel>>(emptyList()) }
+    var isIngredientDropdownVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(searchQuery) {
         withContext(Dispatchers.IO) {
@@ -62,53 +63,59 @@ fun RecipeSearchScreen(
     ) {
         Text(text = "Hello!")
         Spacer(modifier = Modifier.height(20.dp))
-        Text("Filter ingredients:")
+        Text(
+            text = "Filter ingredients:",
+            modifier = Modifier.clickable {
+                isIngredientDropdownVisible = !isIngredientDropdownVisible
+            }
+        )
         Spacer(modifier = Modifier.height(20.dp))
-
-        IngredientTypeAccordion(
-            ingredientTypes = ingredientTypes,
-            expandedCategories = expandedCategories,
-            selectedIngredients = selectedIngredients,
-            onIngredientSelect = { selectedIngredient ->
-                selectedIngredients = if (selectedIngredients.contains(selectedIngredient)) {
-                    selectedIngredients.minus(selectedIngredient)
-                } else {
-                    selectedIngredients.plus(selectedIngredient)
-                }
-            },
-            onCategoryToggle = { toggledIngredientType ->
-                expandedCategories =
-                    if (expandedCategories.contains(toggledIngredientType.id)) {
-                        expandedCategories.minus(toggledIngredientType.id)
+        if (isIngredientDropdownVisible) {
+            IngredientTypeAccordion(
+                ingredientTypes = ingredientTypes,
+                expandedCategories = expandedCategories,
+                selectedIngredients = selectedIngredients,
+                onIngredientSelect = { selectedIngredient ->
+                    selectedIngredients = if (selectedIngredients.contains(selectedIngredient)) {
+                        selectedIngredients.minus(selectedIngredient)
                     } else {
-                        expandedCategories.plus(toggledIngredientType.id)
+                        selectedIngredients.plus(selectedIngredient)
                     }
+                },
+                onCategoryToggle = { toggledIngredientType ->
+                    expandedCategories =
+                        if (expandedCategories.contains(toggledIngredientType.id)) {
+                            expandedCategories.minus(toggledIngredientType.id)
+                        } else {
+                            expandedCategories.plus(toggledIngredientType.id)
+                        }
 
-                if (expandedCategories.contains(toggledIngredientType.id)) {
-                    val categoryIndex = ingredientTypes.indexOfFirst { it.id == toggledIngredientType.id }
+                    if (expandedCategories.contains(toggledIngredientType.id)) {
+                        val categoryIndex = ingredientTypes.indexOfFirst { it.id == toggledIngredientType.id }
 
-                    if (toggledIngredientType.ingredients == null) {
-                        CoroutineScope(Dispatchers.IO).launch {
-                            try {
-                                val ingredientModels =
-                                    ingredientController.getIngredientsForIngredientType(
-                                        toggledIngredientType.id
-                                    )
+                        if (toggledIngredientType.ingredients == null) {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                try {
+                                    val ingredientModels =
+                                        ingredientController.getIngredientsForIngredientType(
+                                            toggledIngredientType.id
+                                        )
 
-                                val updatedIngredientTypes = ingredientTypes.toMutableList()
+                                    val updatedIngredientTypes = ingredientTypes.toMutableList()
 
-                                updatedIngredientTypes[categoryIndex] =
-                                    updatedIngredientTypes[categoryIndex].copy(ingredients = ingredientModels.map { it.toViewModel() })
+                                    updatedIngredientTypes[categoryIndex] =
+                                        updatedIngredientTypes[categoryIndex].copy(ingredients = ingredientModels.map { it.toViewModel() })
 
-                                ingredientTypes = updatedIngredientTypes
-                            } catch (e: Exception) {
-                                e.printStackTrace()
+                                    ingredientTypes = updatedIngredientTypes
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                }
                             }
                         }
                     }
                 }
-            }
-        )
+            )
+        }
 
         Spacer(modifier = Modifier.height(20.dp))
         Text("Recipes:")
