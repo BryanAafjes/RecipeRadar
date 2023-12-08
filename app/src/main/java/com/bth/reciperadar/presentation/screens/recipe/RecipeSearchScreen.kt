@@ -22,6 +22,7 @@ import com.bth.reciperadar.domain.controllers.IngredientController
 import com.bth.reciperadar.domain.controllers.IngredientTypeController
 import com.bth.reciperadar.domain.controllers.RecipeController
 import com.bth.reciperadar.presentation.viewmodels.IngredientTypeViewModel
+import com.bth.reciperadar.presentation.viewmodels.IngredientViewModel
 import com.bth.reciperadar.presentation.viewmodels.RecipeViewModel
 import com.bth.reciperadar.presentation.viewmodels.toViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -40,6 +41,7 @@ fun RecipeSearchScreen(
     var ingredientTypes by remember { mutableStateOf<List<IngredientTypeViewModel>>(emptyList()) }
     val state = rememberScrollState()
     var expandedCategories by remember { mutableStateOf<Set<String>>(setOf()) }
+    var selectedIngredients by remember { mutableStateOf<List<IngredientViewModel>>(emptyList()) }
 
     LaunchedEffect(searchQuery) {
         withContext(Dispatchers.IO) {
@@ -66,6 +68,14 @@ fun RecipeSearchScreen(
         IngredientTypeAccordion(
             ingredientTypes = ingredientTypes,
             expandedCategories = expandedCategories,
+            selectedIngredients = selectedIngredients,
+            onIngredientSelect = { selectedIngredient ->
+                selectedIngredients = if (selectedIngredients.contains(selectedIngredient)) {
+                    selectedIngredients.minus(selectedIngredient)
+                } else {
+                    selectedIngredients.plus(selectedIngredient)
+                }
+            },
             onCategoryToggle = { toggledIngredientType ->
                 expandedCategories =
                     if (expandedCategories.contains(toggledIngredientType.id)) {
