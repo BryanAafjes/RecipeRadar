@@ -86,7 +86,8 @@ class RecipeRepository(db: FirebaseFirestore) {
     suspend fun searchRecipesByTitleAndIngredientFilter(
         lowercaseSearchWords: List<String>,
         ingredientsList: List<IngredientDto>,
-        recipesShouldContainAllSelectedIngredients: Boolean
+        recipesShouldContainAllSelectedIngredients: Boolean,
+        recipesWithOnlySelectedIngredients: Boolean
     ): List<RecipeDto> {
         var recipeList = searchRecipesByTitle(lowercaseSearchWords, true)
 
@@ -96,6 +97,11 @@ class RecipeRepository(db: FirebaseFirestore) {
                     ingredientsList.all { ingredient ->
                         recipe.ingredients?.any { it.id == ingredient.id } == true
                     }
+                }
+            } else if (recipesWithOnlySelectedIngredients) {
+                recipeList.filter { recipe ->
+                    val recipeIngredientIds = recipe.ingredients?.map { it.id } ?: emptyList()
+                    ingredientsList.map { it.id }.containsAll(recipeIngredientIds)
                 }
             } else {
                 recipeList.filter { recipe ->

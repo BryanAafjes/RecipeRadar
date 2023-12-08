@@ -60,6 +60,7 @@ fun RecipeSearchScreen(
     var expandedCategories by remember { mutableStateOf<Set<String>>(setOf()) }
     var selectedIngredients by remember { mutableStateOf<List<IngredientViewModel>>(emptyList()) }
     var recipesShouldContainAllSelectedIngredients by remember { mutableStateOf(false) }
+    var recipesWithOnlySelectedIngredients by remember { mutableStateOf(false) }
     var isIngredientDropdownVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(searchQuery) {
@@ -181,6 +182,34 @@ fun RecipeSearchScreen(
                     checked = recipesShouldContainAllSelectedIngredients,
                     onCheckedChange = {
                         recipesShouldContainAllSelectedIngredients = it
+                        recipesWithOnlySelectedIngredients = false
+                    },
+                    modifier = Modifier.size(24.dp).align(Alignment.CenterVertically)
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Recipes with only (part of) selected ingredients",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.weight(1f)
+                )
+                Checkbox(
+                    checked = recipesWithOnlySelectedIngredients,
+                    onCheckedChange = {
+                        recipesWithOnlySelectedIngredients = it
+                        recipesShouldContainAllSelectedIngredients = false
                     },
                     modifier = Modifier.size(24.dp).align(Alignment.CenterVertically)
                 )
@@ -195,7 +224,8 @@ fun RecipeSearchScreen(
                     val recipeModels = recipeController.searchRecipesByTitleAndIngredientFilter(
                         searchQuery = searchTerm,
                         ingredientsList = selectedIngredients.map { it.toDomain() },
-                        recipesShouldContainAllSelectedIngredients = recipesShouldContainAllSelectedIngredients
+                        recipesShouldContainAllSelectedIngredients = recipesShouldContainAllSelectedIngredients,
+                        recipesWithOnlySelectedIngredients = recipesWithOnlySelectedIngredients
                     )
                     recipes = recipeModels.map { it.toViewModel() }
                 }
