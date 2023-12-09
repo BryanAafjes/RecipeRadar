@@ -1,8 +1,10 @@
 package com.bth.reciperadar.presentation.screens.recipe
 
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Divider
@@ -20,6 +22,7 @@ import androidx.compose.ui.unit.dp
 import com.bth.reciperadar.domain.controllers.RecipeController
 import com.bth.reciperadar.presentation.viewmodels.IngredientViewModel
 import com.bth.reciperadar.presentation.viewmodels.RecipeViewModel
+import com.bth.reciperadar.presentation.viewmodels.StepViewModel
 import com.bth.reciperadar.presentation.viewmodels.toViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -65,6 +68,21 @@ fun RecipeDetailScreen(
                     }
                 }
             }
+
+            it.steps?.let { steps ->
+                Text(
+                    text = "Steps:",
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
+                )
+                Spacer(modifier = Modifier.height(10.dp))
+                Column {
+                    steps.forEach { step ->
+                        StepItem(step)
+                    }
+                }
+            }
         }
     }
 }
@@ -84,3 +102,33 @@ fun IngredientItem(ingredient: IngredientViewModel) {
         Divider(modifier = Modifier.padding(vertical = 8.dp))
     }
 }
+
+@Composable
+fun StepItem(step: StepViewModel) {
+    Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+        Row {
+            Text(
+                text = step.number.toString(),
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.padding(end = 16.dp)
+            )
+            Column(modifier = Modifier.weight(1f)) {
+                Text(
+                    text = step.title,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
+                )
+                if(step.description != null){
+                    Text(
+                        text = step.description!!,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+            }
+        }
+        Divider(modifier = Modifier.padding(vertical = 20.dp))
+    }
+}
+
+
