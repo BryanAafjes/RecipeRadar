@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -16,6 +18,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -33,6 +36,7 @@ fun RecipeDetailScreen(
     recipeController: RecipeController
 ) {
     var recipe by remember { mutableStateOf<RecipeViewModel?>(null) }
+    var selectedIngredients by remember { mutableStateOf<List<IngredientViewModel>>(emptyList()) }
 
     LaunchedEffect(recipeId) {
         withContext(Dispatchers.IO) {
@@ -53,33 +57,51 @@ fun RecipeDetailScreen(
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(bottom = 8.dp)
             )
-
-            it.ingredients?.let { ingredients ->
-                Text(
-                    text = "Ingredients:",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                Column {
-                    ingredients.forEach { ingredient ->
-                        IngredientItem(ingredient)
+            Column(modifier = Modifier.padding(horizontal = 10.dp)) {
+                if (it.description != null) {
+                    Text(
+                        text = it.description!!,
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.padding(bottom = 8.dp)
+                    )
+                }
+                it.ingredients?.let { ingredients ->
+                    Text(
+                        text = "Ingredients:",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Column {
+                        ingredients.forEach { ingredient ->
+                            IngredientDetailItem(
+                                ingredient,
+                                selectedIngredients = selectedIngredients,
+                                onIngredientSelect = { selectedIngredient ->
+                                    selectedIngredients = if (selectedIngredients.contains(selectedIngredient)) {
+                                        selectedIngredients.minus(selectedIngredient)
+                                    } else {
+                                        selectedIngredients.plus(selectedIngredient)
+                                    }
+                                },
+                            )
+                        }
                     }
                 }
-            }
 
-            it.steps?.let { steps ->
-                Text(
-                    text = "Steps:",
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
-                )
-                Spacer(modifier = Modifier.height(10.dp))
-                Column {
-                    steps.forEach { step ->
-                        StepItem(step)
+                it.steps?.let { steps ->
+                    Text(
+                        text = "Steps:",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Column {
+                        steps.forEach { step ->
+                            StepItem(step)
+                        }
                     }
                 }
             }
@@ -88,30 +110,51 @@ fun RecipeDetailScreen(
 }
 
 @Composable
-fun IngredientItem(ingredient: IngredientViewModel) {
-    Column(modifier = Modifier.padding(horizontal = 20.dp)) {
-        Text(
-            text = "Name: ${ingredient.name}",
-            style = MaterialTheme.typography.bodyLarge,
-            fontWeight = FontWeight.Bold
-        )
-        Text(
-            text = "Amount: ${ingredient.amount}",
-            style = MaterialTheme.typography.bodyMedium
-        )
-        Divider(modifier = Modifier.padding(vertical = 8.dp))
+fun IngredientDetailItem(
+    ingredient: IngredientViewModel,
+    selectedIngredients: List<IngredientViewModel>,
+    onIngredientSelect: (IngredientViewModel) -> Unit
+) {
+    Column(modifier = Modifier.padding(horizontal = 10.dp)) {
+        Row {
+            Checkbox(
+                checked = selectedIngredients.contains(ingredient),
+                onCheckedChange = {
+                    onIngredientSelect(ingredient)
+                },
+                modifier = Modifier.align(Alignment.CenterVertically).padding(end = 10.dp)
+            )
+            Column {
+                Text(
+                    text = ingredient.name,
+                    style = MaterialTheme.typography.bodyLarge,
+                    fontWeight = FontWeight.Bold
+                )
+                if (ingredient.amount != null) {
+                    Text(
+                        text = "Amount: ${ingredient.amount}",
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.padding(start = 15.dp, top = 5.dp, bottom = 5.dp)
+                    )
+                }
+            }
+        }
+        Divider(modifier = Modifier.padding(vertical = 10.dp))
     }
 }
 
+
 @Composable
 fun StepItem(step: StepViewModel) {
-    Column(modifier = Modifier.padding(horizontal = 20.dp)) {
+    Column(modifier = Modifier.padding(horizontal = 10.dp)) {
         Row {
             Text(
                 text = step.number.toString(),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
-                modifier = Modifier.padding(end = 16.dp)
+                modifier = Modifier
+                    .padding(end = 16.dp)
+                    .align(Alignment.CenterVertically)
             )
             Column(modifier = Modifier.weight(1f)) {
                 Text(
