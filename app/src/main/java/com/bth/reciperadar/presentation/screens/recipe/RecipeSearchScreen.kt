@@ -32,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
 import com.bth.reciperadar.R
 import com.bth.reciperadar.domain.controllers.IngredientController
 import com.bth.reciperadar.domain.controllers.IngredientTypeController
@@ -49,6 +50,7 @@ import kotlinx.coroutines.withContext
 @Composable
 fun RecipeSearchScreen(
     searchQuery: String,
+    navController: NavController,
     recipeController: RecipeController,
     ingredientController: IngredientController,
     ingredientTypeController: IngredientTypeController
@@ -242,12 +244,12 @@ fun RecipeSearchScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
         Text(
-            text = "Recipe Search",
+            text = "Found recipes",
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold
         )
         Spacer(modifier = Modifier.height(20.dp))
-        RecipeListView(recipes = recipes)
+        RecipeListView(recipes = recipes, navController = navController)
         Spacer(modifier = Modifier.height(20.dp))
     }
 }

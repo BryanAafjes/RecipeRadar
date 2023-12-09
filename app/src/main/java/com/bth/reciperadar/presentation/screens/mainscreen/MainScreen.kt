@@ -80,7 +80,7 @@ fun MainScreen(
         verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 50.dp)
+            .padding(horizontal = 25.dp)
     ) {
         Image(
             painter = painterResource(id = R.drawable.logo),
@@ -141,7 +141,7 @@ fun MainScreen(
             Text(text = "Search Recipes")
         }
         Spacer(modifier = Modifier.height(20.dp))
-        RecipeListView(recipes = recipes)
+        RecipeListView(recipes = recipes, navController = navController)
         Spacer(modifier = Modifier.height(20.dp))
         TextField(
             value = text,

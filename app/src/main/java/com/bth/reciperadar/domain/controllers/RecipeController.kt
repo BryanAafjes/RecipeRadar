@@ -21,6 +21,17 @@ class RecipeController(private val recipeRepository: RecipeRepository) {
         }
     }
 
+    suspend fun getRecipeById(recipeId: String): Recipe? = withContext(Dispatchers.IO) {
+        try {
+            val recipeDto = recipeRepository.getRecipeById(recipeId, includeIngredients = true, includeReferences = true)
+            return@withContext recipeDto?.toDomain()
+        } catch (e: Exception) {
+            // Handle exceptions, such as network issues or repository errors
+            e.printStackTrace()
+            return@withContext null
+        }
+    }
+
     suspend fun searchRecipes(searchQuery: String): List<Recipe> = withContext(Dispatchers.IO) {
         try {
             val searchQueryLowercase = searchQuery.lowercase()
