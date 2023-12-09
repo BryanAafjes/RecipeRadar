@@ -5,7 +5,7 @@ import com.bth.reciperadar.domain.models.Ingredient
 data class IngredientViewModel(
     var id: String,
     var name: String,
-    var description: String,
+    var description: String?,
     var ingredientType: IngredientTypeViewModel?,
     var amount: String?,
 )

@@ -5,7 +5,7 @@ import com.bth.reciperadar.data.dtos.IngredientDto
 data class Ingredient (
     var id: String = "",
     var name: String = "",
-    var description: String = "",
+    var description: String? = "",
     var ingredientType: IngredientType? = null,
     var amount: String? = ""
 )

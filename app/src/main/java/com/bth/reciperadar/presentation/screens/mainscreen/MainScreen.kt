@@ -41,6 +41,7 @@ import androidx.navigation.NavController
 import com.bth.reciperadar.R
 import com.bth.reciperadar.domain.controllers.AuthController
 import com.bth.reciperadar.domain.controllers.RecipeController
+import com.bth.reciperadar.presentation.screens.recipe.RecipeListView
 import com.bth.reciperadar.presentation.screens.screen.Screen
 import com.bth.reciperadar.presentation.viewmodels.RecipeViewModel
 import com.bth.reciperadar.presentation.viewmodels.toViewModel
@@ -54,6 +55,10 @@ fun MainScreen(
     recipeController: RecipeController
 ) {
     var text by remember {
+        mutableStateOf("")
+    }
+
+    var searchQuery by remember {
         mutableStateOf("")
     }
 
@@ -119,6 +124,23 @@ fun MainScreen(
             }
         }
         Spacer(modifier = Modifier.height(20.dp))
+        TextField(
+            value = searchQuery,
+            onValueChange = {
+                searchQuery = it
+            },
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Button(onClick = {
+            navController.navigate(Screen.RecipeSearchScreen.withArgs(searchQuery))
+        },
+            modifier = Modifier
+                .align(Alignment.End)
+        ) {
+            Text(text = "Search Recipes")
+        }
+        Spacer(modifier = Modifier.height(20.dp))
         RecipeListView(recipes = recipes)
         Spacer(modifier = Modifier.height(20.dp))
         TextField(
@@ -136,35 +158,6 @@ fun MainScreen(
                 .align(Alignment.End)
         ) {
             Text(text = "To DetailScreen")
-        }
-    }
-}
-
-@Composable
-fun RecipeListView(recipes: List<RecipeViewModel>) {
-    LazyColumn {
-        items(recipes) { recipe ->
-            RecipeItem(recipe)
-        }
-    }
-}
-
-@Composable
-fun RecipeItem(recipe: RecipeViewModel) {
-    Column {
-        Text(text = "Recipe:")
-        Spacer(modifier = Modifier.height(16.dp))
-        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 15.dp)) {
-            Column(modifier = Modifier) {
-                Text(text = "Title:")
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(text = "Description:")
-            }
-            Column(modifier = Modifier.padding(horizontal = 15.dp)) {
-                Text(text = recipe.title)
-                Spacer(modifier = Modifier.height(8.dp))
-                recipe.description?.let { Text(text = it) }
-            }
         }
     }
 }

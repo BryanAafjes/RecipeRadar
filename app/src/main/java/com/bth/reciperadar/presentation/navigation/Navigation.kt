@@ -27,14 +27,22 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.bth.reciperadar.presentation.screens.detailscreen.DetailScreen
 import com.bth.reciperadar.domain.controllers.AuthController
+import com.bth.reciperadar.domain.controllers.IngredientController
+import com.bth.reciperadar.domain.controllers.IngredientTypeController
 import com.bth.reciperadar.domain.controllers.RecipeController
 import com.bth.reciperadar.mainscreen.AccountScreen
 import com.bth.reciperadar.presentation.screens.mainscreen.MainScreen
+import com.bth.reciperadar.presentation.screens.recipe.RecipeSearchScreen
 import com.bth.reciperadar.presentation.screens.screen.Screen
 import linearGradient
 
 @Composable
-fun Navigation(authController: AuthController, recipeController: RecipeController) {
+fun Navigation(
+    authController: AuthController,
+    recipeController: RecipeController,
+    ingredientController: IngredientController,
+    ingredientTypeController: IngredientTypeController
+) {
     val navController = rememberNavController()
 
     val screens = listOf(
@@ -107,6 +115,23 @@ fun Navigation(authController: AuthController, recipeController: RecipeControlle
                 }
                 composable(route = Screen.AccountScreen.route) {
                     AccountScreen(authController = authController)
+                }
+                composable(
+                    route = Screen.RecipeSearchScreen.route + "/{searchQuery}",
+                    arguments = listOf(
+                        navArgument("searchQuery") {
+                            type = NavType.StringType
+                            defaultValue = ""
+                            nullable = false
+                        }
+                    )
+                ) { entry ->
+                    RecipeSearchScreen(
+                        searchQuery = entry.arguments?.getString("searchQuery")!!,
+                        recipeController = recipeController,
+                        ingredientController = ingredientController,
+                        ingredientTypeController = ingredientTypeController
+                    )
                 }
             }
         }
