@@ -164,59 +164,60 @@ fun RecipeSearchScreen(
             )
         }
 
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Row(
+        if (selectedIngredients.isNotEmpty()) {
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
             ) {
-                Text(
-                    text = "Any recipes with any of the selected ingredients",
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.weight(1f)
-                )
-                Checkbox(
-                    checked = anyRecipesWithSelectedIngredients,
-                    onCheckedChange = {
-                        anyRecipesWithSelectedIngredients = it
-                        dontAllowExtraIngredients = false
-                    },
-                    modifier = Modifier.size(24.dp).align(Alignment.CenterVertically)
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = "Any recipes with any of the selected ingredients",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Checkbox(
+                        checked = anyRecipesWithSelectedIngredients,
+                        onCheckedChange = {
+                            anyRecipesWithSelectedIngredients = it
+                            dontAllowExtraIngredients = false
+                        },
+                        modifier = Modifier.size(24.dp).align(Alignment.CenterVertically)
+                    )
+                }
             }
-        }
 
-        Spacer(modifier = Modifier.height(20.dp))
+            Spacer(modifier = Modifier.height(20.dp))
 
-        Card(
-            modifier = Modifier
-                .fillMaxWidth()
-        ) {
-            Row(
+            Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
             ) {
-                Text(
-                    text = "Don't allow extra ingredients",
-                    style = MaterialTheme.typography.bodyLarge,
-                    modifier = Modifier.weight(1f)
-                )
-                Checkbox(
-                    checked = dontAllowExtraIngredients,
-                    onCheckedChange = {
-                        dontAllowExtraIngredients = it
-                        anyRecipesWithSelectedIngredients = false
-                    },
-                    modifier = Modifier.size(24.dp).align(Alignment.CenterVertically)
-                )
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                ) {
+                    Text(
+                        text = "Don't allow extra ingredients",
+                        style = MaterialTheme.typography.bodyLarge,
+                        modifier = Modifier.weight(1f)
+                    )
+                    Checkbox(
+                        checked = dontAllowExtraIngredients,
+                        onCheckedChange = {
+                            dontAllowExtraIngredients = it
+                            anyRecipesWithSelectedIngredients = false
+                        },
+                        modifier = Modifier.size(24.dp).align(Alignment.CenterVertically)
+                    )
+                }
             }
+            Spacer(modifier = Modifier.height(20.dp))
         }
-
-        Spacer(modifier = Modifier.height(20.dp))
 
         Button(
             onClick = {
