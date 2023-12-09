@@ -175,7 +175,7 @@ fun RecipeSearchScreen(
                         .padding(16.dp)
                 ) {
                     Text(
-                        text = "Any recipes with any of the selected ingredients",
+                        text = "Use any of the selected ingredients",
                         style = MaterialTheme.typography.bodyLarge,
                         modifier = Modifier.weight(1f)
                     )
