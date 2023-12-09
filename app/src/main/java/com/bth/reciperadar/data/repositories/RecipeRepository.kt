@@ -79,39 +79,4 @@ class RecipeRepository(db: FirebaseFirestore) {
             emptyList()
         }
     }
-
-    suspend fun searchRecipesByTitleAndIngredientFilter(
-        lowercaseSearchWords: List<String>,
-        ingredientsList: List<IngredientDto>,
-        anyRecipesWithSelectedIngredients: Boolean,
-        dontAllowExtraIngredients: Boolean
-    ): List<RecipeDto> {
-        var recipeList = searchRecipesByTitle(lowercaseSearchWords, true)
-
-        if (ingredientsList.isNotEmpty()) {
-            recipeList = if (anyRecipesWithSelectedIngredients) {
-                // Any with selected ingredients
-                recipeList.filter { recipe ->
-                    ingredientsList.any { ingredient ->
-                        recipe.ingredients?.any { it.id == ingredient.id } == true
-                    }
-                }
-            } else if (dontAllowExtraIngredients) {
-                // Don't allow optional ingredients
-                recipeList.filter { recipe ->
-                    val recipeIngredientIds = recipe.ingredients?.map { it.id } ?: emptyList()
-                    ingredientsList.map { it.id }.containsAll(recipeIngredientIds)
-                }
-            } else {
-                // Allow optional ingredients
-                recipeList.filter { recipe ->
-                    ingredientsList.all { ingredient ->
-                        recipe.ingredients?.any { it.id == ingredient.id } == true
-                    }
-                }
-            }
-        }
-
-        return recipeList
-    }
 }

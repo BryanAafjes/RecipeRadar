@@ -45,13 +45,33 @@ class RecipeController(private val recipeRepository: RecipeRepository) {
             val searchQueryLowercase = searchQuery.lowercase()
             val searchWords = searchQueryLowercase.split(" ")
 
-            val recipeDtoList = recipeRepository.searchRecipesByTitleAndIngredientFilter(
-                searchWords,
-                ingredientsList.map { it.toDto() },
-                anyRecipesWithSelectedIngredients = anyRecipesWithSelectedIngredients,
-                dontAllowExtraIngredients = dontAllowExtraIngredients
-            )
-            return@withContext recipeDtoList.map { it.toDomain() }
+            var recipeList = recipeRepository.searchRecipesByTitle(searchWords, true).map { it.toDomain() }
+
+            if (ingredientsList.isNotEmpty()) {
+                recipeList = if (anyRecipesWithSelectedIngredients) {
+                    // Any with selected ingredients
+                    recipeList.filter { recipe ->
+                        ingredientsList.any { ingredient ->
+                            recipe.ingredients?.any { it.id == ingredient.id } == true
+                        }
+                    }
+                } else if (dontAllowExtraIngredients) {
+                    // Don't allow optional ingredients
+                    recipeList.filter { recipe ->
+                        val recipeIngredientIds = recipe.ingredients?.map { it.id } ?: emptyList()
+                        ingredientsList.map { it.id }.containsAll(recipeIngredientIds)
+                    }
+                } else {
+                    // Allow optional ingredients
+                    recipeList.filter { recipe ->
+                        ingredientsList.all { ingredient ->
+                            recipe.ingredients?.any { it.id == ingredient.id } == true
+                        }
+                    }
+                }
+            }
+
+            return@withContext recipeList
         } catch (e: Exception) {
             // Handle exceptions, such as network issues or repository errors
             e.printStackTrace()
