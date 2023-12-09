@@ -59,8 +59,8 @@ fun RecipeSearchScreen(
     val state = rememberScrollState()
     var expandedCategories by remember { mutableStateOf<Set<String>>(setOf()) }
     var selectedIngredients by remember { mutableStateOf<List<IngredientViewModel>>(emptyList()) }
-    var recipesShouldContainAllSelectedIngredients by remember { mutableStateOf(false) }
-    var recipesWithOnlySelectedIngredients by remember { mutableStateOf(false) }
+    var anyRecipesWithSelectedIngredients by remember { mutableStateOf(false) }
+    var dontAllowExtraIngredients by remember { mutableStateOf(false) }
     var isIngredientDropdownVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(searchQuery) {
@@ -174,15 +174,15 @@ fun RecipeSearchScreen(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = "Recipes should contain all selected ingredients",
+                    text = "Any recipes with any of the selected ingredients",
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.weight(1f)
                 )
                 Checkbox(
-                    checked = recipesShouldContainAllSelectedIngredients,
+                    checked = anyRecipesWithSelectedIngredients,
                     onCheckedChange = {
-                        recipesShouldContainAllSelectedIngredients = it
-                        recipesWithOnlySelectedIngredients = false
+                        anyRecipesWithSelectedIngredients = it
+                        dontAllowExtraIngredients = false
                     },
                     modifier = Modifier.size(24.dp).align(Alignment.CenterVertically)
                 )
@@ -201,15 +201,15 @@ fun RecipeSearchScreen(
                     .padding(16.dp)
             ) {
                 Text(
-                    text = "Recipes with only (part of) selected ingredients",
+                    text = "Don't allow extra ingredients",
                     style = MaterialTheme.typography.bodyLarge,
                     modifier = Modifier.weight(1f)
                 )
                 Checkbox(
-                    checked = recipesWithOnlySelectedIngredients,
+                    checked = dontAllowExtraIngredients,
                     onCheckedChange = {
-                        recipesWithOnlySelectedIngredients = it
-                        recipesShouldContainAllSelectedIngredients = false
+                        dontAllowExtraIngredients = it
+                        anyRecipesWithSelectedIngredients = false
                     },
                     modifier = Modifier.size(24.dp).align(Alignment.CenterVertically)
                 )
@@ -224,8 +224,8 @@ fun RecipeSearchScreen(
                     val recipeModels = recipeController.searchRecipesByTitleAndIngredientFilter(
                         searchQuery = searchTerm,
                         ingredientsList = selectedIngredients.map { it.toDomain() },
-                        recipesShouldContainAllSelectedIngredients = recipesShouldContainAllSelectedIngredients,
-                        recipesWithOnlySelectedIngredients = recipesWithOnlySelectedIngredients
+                        anyRecipesWithSelectedIngredients = anyRecipesWithSelectedIngredients,
+                        dontAllowExtraIngredients = dontAllowExtraIngredients
                     )
                     recipes = recipeModels.map { it.toViewModel() }
                 }

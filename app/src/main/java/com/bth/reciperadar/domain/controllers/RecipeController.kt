@@ -38,8 +38,8 @@ class RecipeController(private val recipeRepository: RecipeRepository) {
     suspend fun searchRecipesByTitleAndIngredientFilter(
         searchQuery: String,
         ingredientsList: List<Ingredient>,
-        recipesShouldContainAllSelectedIngredients: Boolean,
-        recipesWithOnlySelectedIngredients: Boolean
+        anyRecipesWithSelectedIngredients: Boolean,
+        dontAllowExtraIngredients: Boolean
     ): List<Recipe> = withContext(Dispatchers.IO) {
         try {
             val searchQueryLowercase = searchQuery.lowercase()
@@ -48,8 +48,8 @@ class RecipeController(private val recipeRepository: RecipeRepository) {
             val recipeDtoList = recipeRepository.searchRecipesByTitleAndIngredientFilter(
                 searchWords,
                 ingredientsList.map { it.toDto() },
-                recipesShouldContainAllSelectedIngredients,
-                recipesWithOnlySelectedIngredients
+                anyRecipesWithSelectedIngredients = anyRecipesWithSelectedIngredients,
+                dontAllowExtraIngredients = dontAllowExtraIngredients
             )
             return@withContext recipeDtoList.map { it.toDomain() }
         } catch (e: Exception) {

@@ -2,11 +2,8 @@ package com.bth.reciperadar.data.repositories
 
 import com.bth.reciperadar.data.dtos.IngredientDto
 import com.bth.reciperadar.data.dtos.RecipeDto
-import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
-import com.google.firebase.firestore.QuerySnapshot
 import kotlinx.coroutines.tasks.await
 
 class RecipeRepository(db: FirebaseFirestore) {
@@ -86,26 +83,29 @@ class RecipeRepository(db: FirebaseFirestore) {
     suspend fun searchRecipesByTitleAndIngredientFilter(
         lowercaseSearchWords: List<String>,
         ingredientsList: List<IngredientDto>,
-        recipesShouldContainAllSelectedIngredients: Boolean,
-        recipesWithOnlySelectedIngredients: Boolean
+        anyRecipesWithSelectedIngredients: Boolean,
+        dontAllowExtraIngredients: Boolean
     ): List<RecipeDto> {
         var recipeList = searchRecipesByTitle(lowercaseSearchWords, true)
 
         if (ingredientsList.isNotEmpty()) {
-            recipeList = if (recipesShouldContainAllSelectedIngredients) {
+            recipeList = if (anyRecipesWithSelectedIngredients) {
+                // Any with selected ingredients
                 recipeList.filter { recipe ->
-                    ingredientsList.all { ingredient ->
+                    ingredientsList.any { ingredient ->
                         recipe.ingredients?.any { it.id == ingredient.id } == true
                     }
                 }
-            } else if (recipesWithOnlySelectedIngredients) {
+            } else if (dontAllowExtraIngredients) {
+                // Don't allow optional ingredients
                 recipeList.filter { recipe ->
                     val recipeIngredientIds = recipe.ingredients?.map { it.id } ?: emptyList()
                     ingredientsList.map { it.id }.containsAll(recipeIngredientIds)
                 }
             } else {
+                // Allow optional ingredients
                 recipeList.filter { recipe ->
-                    ingredientsList.any { ingredient ->
+                    ingredientsList.all { ingredient ->
                         recipe.ingredients?.any { it.id == ingredient.id } == true
                     }
                 }
