@@ -14,6 +14,40 @@ class RecipeRepository(db: FirebaseFirestore) {
     private val dietaryInfoRepository = DietaryInfoRepository(db)
     private val cuisineRepository = CuisineRepository(db)
 
+    suspend fun getRecipeById(recipeId: String, includeIngredients: Boolean, includeReferences: Boolean): RecipeDto? {
+        return try {
+            val documentSnapshot = recipesCollection.document(recipeId).get().await()
+            val recipe = documentSnapshot.toObject(RecipeDto::class.java)
+
+            if (recipe != null) {
+                recipe.id = documentSnapshot.id
+                recipe.prepTime = documentSnapshot.get("prep_time")?.toString()
+                recipe.picturePath = documentSnapshot.get("picture_path")?.toString()
+                recipe.userId = documentSnapshot.get("user_id")?.toString()
+
+                val servingAmount = documentSnapshot.get("serving_amount") as Long
+                recipe.servingAmount = servingAmount.toInt()
+
+                if (includeIngredients) {
+                    recipe.ingredients = ingredientRepository.getIngredientsForRecipe(documentSnapshot)
+                }
+                if (includeReferences) {
+                    recipe.reviews = reviewRepository.getReviewsForRecipe(recipe.id)
+                    recipe.dietaryInfo =
+                        dietaryInfoRepository.getDietaryInfoForRecipe(documentSnapshot)
+                    recipe.cuisines = cuisineRepository.getDietaryInfoForRecipe(documentSnapshot)
+                }
+            }
+
+            return recipe
+        } catch (e: Exception) {
+            // Handle exceptions, such as network issues or Firestore errors
+            e.printStackTrace()
+            null
+        }
+    }
+
+
     private suspend fun getRecipes(includeReferences: Boolean): List<RecipeDto> {
         return try {
             val querySnapshot = recipesCollection.get().await()

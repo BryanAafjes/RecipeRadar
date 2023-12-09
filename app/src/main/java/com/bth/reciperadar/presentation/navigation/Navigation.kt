@@ -32,6 +32,7 @@ import com.bth.reciperadar.domain.controllers.IngredientTypeController
 import com.bth.reciperadar.domain.controllers.RecipeController
 import com.bth.reciperadar.mainscreen.AccountScreen
 import com.bth.reciperadar.presentation.screens.mainscreen.MainScreen
+import com.bth.reciperadar.presentation.screens.recipe.RecipeDetailScreen
 import com.bth.reciperadar.presentation.screens.recipe.RecipeSearchScreen
 import com.bth.reciperadar.presentation.screens.screen.Screen
 import linearGradient
@@ -128,9 +129,25 @@ fun Navigation(
                 ) { entry ->
                     RecipeSearchScreen(
                         searchQuery = entry.arguments?.getString("searchQuery")!!,
+                        navController = navController,
                         recipeController = recipeController,
                         ingredientController = ingredientController,
                         ingredientTypeController = ingredientTypeController
+                    )
+                }
+                composable(
+                    route = Screen.RecipeDetailScreen.route + "/{recipeId}",
+                    arguments = listOf(
+                        navArgument("recipeId") {
+                            type = NavType.StringType
+                            defaultValue = ""
+                            nullable = false
+                        }
+                    )
+                ) { entry ->
+                    RecipeDetailScreen(
+                        recipeId = entry.arguments?.getString("recipeId")!!,
+                        recipeController = recipeController
                     )
                 }
             }
