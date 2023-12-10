@@ -23,6 +23,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.bth.reciperadar.domain.controllers.RecipeController
+import com.bth.reciperadar.presentation.viewmodels.DietaryInfoViewModel
 import com.bth.reciperadar.presentation.viewmodels.IngredientViewModel
 import com.bth.reciperadar.presentation.viewmodels.RecipeViewModel
 import com.bth.reciperadar.presentation.viewmodels.StepViewModel
@@ -86,6 +87,21 @@ fun RecipeDetailScreen(
                                     }
                                 },
                             )
+                        }
+                    }
+                }
+
+                it.dietaryInfo?.let { dietaryInfoList ->
+                    Text(
+                        text = "Dietary Information:",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Column {
+                        dietaryInfoList.forEach { dietaryInfo ->
+                            DietaryInfoItem(dietaryInfo)
                         }
                     }
                 }
@@ -169,6 +185,24 @@ fun StepItem(step: StepViewModel) {
                     )
                 }
             }
+        }
+        Divider(modifier = Modifier.padding(vertical = 20.dp))
+    }
+}
+
+@Composable
+fun DietaryInfoItem(dietaryInfo: DietaryInfoViewModel) {
+    Column(modifier = Modifier.padding(horizontal = 10.dp)) {
+        Text(
+            text = dietaryInfo.name,
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold
+        )
+        if(dietaryInfo.description != null){
+            Text(
+                text = dietaryInfo.description!!,
+                style = MaterialTheme.typography.bodyMedium
+            )
         }
         Divider(modifier = Modifier.padding(vertical = 20.dp))
     }
