@@ -24,6 +24,7 @@ class CuisineRepository(db: FirebaseFirestore) {
 
         return cuisineList
     }
+
     suspend fun getCuisine(cuisineId: String): CuisineDto? {
         return try {
             val documentSnapshot = cuisineCollection.document(cuisineId).get().await()
@@ -34,6 +35,29 @@ class CuisineRepository(db: FirebaseFirestore) {
             // Handle exceptions, such as network issues or Firestore errors
             e.printStackTrace()
             null
+        }
+    }
+
+    suspend fun getCuisines(): List<CuisineDto> {
+        return try {
+            val querySnapshot = cuisineCollection.get().await()
+            val cuisineList = ArrayList<CuisineDto>()
+
+            for(document in querySnapshot.documents) {
+                val cuisine = document.toObject(CuisineDto::class.java)
+
+                if(cuisine != null) {
+                    cuisine.id = document.id
+
+                    cuisineList.add(cuisine)
+                }
+            }
+
+            return cuisineList
+        } catch (e: Exception) {
+            // Handle exceptions, such as network issues or Firestore errors
+            e.printStackTrace()
+            emptyList()
         }
     }
 }
