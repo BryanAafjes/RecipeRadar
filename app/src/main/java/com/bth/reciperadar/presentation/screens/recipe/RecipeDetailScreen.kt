@@ -8,6 +8,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
@@ -23,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import com.bth.reciperadar.domain.controllers.RecipeController
+import com.bth.reciperadar.presentation.viewmodels.CuisineViewModel
 import com.bth.reciperadar.presentation.viewmodels.DietaryInfoViewModel
 import com.bth.reciperadar.presentation.viewmodels.IngredientViewModel
 import com.bth.reciperadar.presentation.viewmodels.RecipeViewModel
@@ -38,6 +41,8 @@ fun RecipeDetailScreen(
 ) {
     var recipe by remember { mutableStateOf<RecipeViewModel?>(null) }
     var selectedIngredients by remember { mutableStateOf<List<IngredientViewModel>>(emptyList()) }
+    val state = rememberScrollState()
+
 
     LaunchedEffect(recipeId) {
         withContext(Dispatchers.IO) {
@@ -50,7 +55,8 @@ fun RecipeDetailScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(16.dp)
+                .padding(20.dp)
+                .verticalScroll(state)
         ) {
             Text(
                 text = it.title,
@@ -66,6 +72,37 @@ fun RecipeDetailScreen(
                         modifier = Modifier.padding(bottom = 8.dp)
                     )
                 }
+
+                it.cuisines?.let { cuisineList ->
+                    Text(
+                        text = "Cuisine(s):",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Column {
+                        cuisineList.forEach { cuisine ->
+                            CuisineItem(cuisine)
+                        }
+                    }
+                }
+
+                it.dietaryInfo?.let { dietaryInfoList ->
+                    Text(
+                        text = "Dietary Information:",
+                        style = MaterialTheme.typography.headlineSmall,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
+                    )
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Column {
+                        dietaryInfoList.forEach { dietaryInfo ->
+                            DietaryInfoItem(dietaryInfo)
+                        }
+                    }
+                }
+
                 it.ingredients?.let { ingredients ->
                     Text(
                         text = "Ingredients:",
@@ -87,21 +124,6 @@ fun RecipeDetailScreen(
                                     }
                                 },
                             )
-                        }
-                    }
-                }
-
-                it.dietaryInfo?.let { dietaryInfoList ->
-                    Text(
-                        text = "Dietary Information:",
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
-                    )
-                    Spacer(modifier = Modifier.height(10.dp))
-                    Column {
-                        dietaryInfoList.forEach { dietaryInfo ->
-                            DietaryInfoItem(dietaryInfo)
                         }
                     }
                 }
@@ -201,6 +223,24 @@ fun DietaryInfoItem(dietaryInfo: DietaryInfoViewModel) {
         if(dietaryInfo.description != null){
             Text(
                 text = dietaryInfo.description!!,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
+        Divider(modifier = Modifier.padding(vertical = 20.dp))
+    }
+}
+
+@Composable
+fun CuisineItem(cuisineItem: CuisineViewModel) {
+    Column(modifier = Modifier.padding(horizontal = 10.dp)) {
+        Text(
+            text = cuisineItem.name,
+            style = MaterialTheme.typography.bodyLarge,
+            fontWeight = FontWeight.Bold
+        )
+        if(cuisineItem.description != null){
+            Text(
+                text = cuisineItem.description!!,
                 style = MaterialTheme.typography.bodyMedium
             )
         }
