@@ -1,6 +1,5 @@
 package com.bth.reciperadar.presentation.screens.recipe
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,12 +27,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.bth.reciperadar.R
+import com.bth.reciperadar.domain.controllers.CuisineController
+import com.bth.reciperadar.domain.controllers.DietaryInfoController
 import com.bth.reciperadar.domain.controllers.IngredientController
 import com.bth.reciperadar.domain.controllers.IngredientTypeController
 import com.bth.reciperadar.domain.controllers.RecipeController
@@ -53,7 +53,9 @@ fun RecipeSearchScreen(
     navController: NavController,
     recipeController: RecipeController,
     ingredientController: IngredientController,
-    ingredientTypeController: IngredientTypeController
+    ingredientTypeController: IngredientTypeController,
+    cuisineController: CuisineController,
+    dietaryInfoController: DietaryInfoController
 ) {
     var searchTerm by remember { mutableStateOf(searchQuery) }
     var recipes by remember { mutableStateOf<List<RecipeViewModel>>(emptyList()) }

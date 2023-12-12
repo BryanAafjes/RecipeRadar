@@ -27,6 +27,8 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
 import com.bth.reciperadar.presentation.screens.detailscreen.DetailScreen
 import com.bth.reciperadar.domain.controllers.AuthController
+import com.bth.reciperadar.domain.controllers.CuisineController
+import com.bth.reciperadar.domain.controllers.DietaryInfoController
 import com.bth.reciperadar.domain.controllers.IngredientController
 import com.bth.reciperadar.domain.controllers.IngredientTypeController
 import com.bth.reciperadar.domain.controllers.RecipeController
@@ -42,7 +44,9 @@ fun Navigation(
     authController: AuthController,
     recipeController: RecipeController,
     ingredientController: IngredientController,
-    ingredientTypeController: IngredientTypeController
+    ingredientTypeController: IngredientTypeController,
+    cuisineController: CuisineController,
+    dietaryInfoController: DietaryInfoController
 ) {
     val navController = rememberNavController()
 
@@ -132,7 +136,9 @@ fun Navigation(
                         navController = navController,
                         recipeController = recipeController,
                         ingredientController = ingredientController,
-                        ingredientTypeController = ingredientTypeController
+                        ingredientTypeController = ingredientTypeController,
+                        cuisineController = cuisineController,
+                        dietaryInfoController = dietaryInfoController
                     )
                 }
                 composable(
