@@ -11,11 +11,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.ClickableText
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Email
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
@@ -43,7 +46,28 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import com.bth.reciperadar.R
 import com.bth.reciperadar.domain.controllers.AuthController
+import com.google.firebase.auth.FirebaseAuth
 import linearGradient
+import java.util.regex.Pattern
+
+class FieldState(private val _data: String = "", private val _isInvalid: Boolean = true) {
+    val data: String
+        get() = _data
+
+    val isInvalid: Boolean
+        get() = data.isBlank() || _isInvalid
+}
+
+class Credentials(private val _email: FieldState, private val _password: FieldState) {
+    val email: String
+        get() = _email.data
+
+    val password: String
+        get() = _password.data
+
+    val areValid: Boolean
+        get() = !(_email.isInvalid || _password.isInvalid)
+}
 
 @Composable
 fun StartScreen(authController: AuthController) {
@@ -65,7 +89,7 @@ fun StartScreen(authController: AuthController) {
             .padding(35.dp),
     ) {
         if(passwordResetForm) {
-            PasswordResetFIeld(authController = authController) { newValue ->
+            PasswordResetField(authController = authController) { newValue ->
                 passwordResetForm = newValue
             }
         }
@@ -88,8 +112,8 @@ fun StartScreen(authController: AuthController) {
 }
 
 @Composable
-fun PasswordResetFIeld(authController: AuthController, passwordResetForm: (Boolean) -> Unit) {
-    var email by remember { mutableStateOf("") }
+fun PasswordResetField(authController: AuthController, passwordResetForm: (Boolean) -> Unit) {
+    var showErrorPopup by remember { mutableStateOf(false) }
 
     Image(
         painter = painterResource(id = R.drawable.logo),
@@ -98,18 +122,32 @@ fun PasswordResetFIeld(authController: AuthController, passwordResetForm: (Boole
     )
     Spacer(modifier = Modifier.height(60.dp))
 
-    EmailInputField(email = email, onEmailChange = { email = it })
+    val email = emailInputField()
 
     Spacer(modifier = Modifier.height(16.dp))
 
     Button(
         onClick = {
-            authController.resetPassword(email)
-            passwordResetForm(false)
+            if (!email.isInvalid) {
+                authController.resetPassword(email.data)
+                passwordResetForm(false)
+            } else {
+                showErrorPopup = true
+            }
         },
-        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp),
     ) {
         Text("Reset password")
+
+        // TODO: Improve the error popup
+        DropdownMenu(expanded = showErrorPopup, onDismissRequest = { showErrorPopup = false }) {
+            DropdownMenuItem(
+                text = { Text("The provided email is invalid") },
+                onClick = { showErrorPopup = false }
+            )
+        }
     }
 
     Spacer(modifier = Modifier.height(8.dp))
@@ -130,8 +168,6 @@ fun PasswordResetFIeld(authController: AuthController, passwordResetForm: (Boole
 
 @Composable
 fun SignInField(authController: AuthController) {
-    var email by remember { mutableStateOf("") }
-    var password by remember { mutableStateOf("") }
     var isSignIn by remember { mutableStateOf(true) }
 
     Image(
@@ -142,26 +178,23 @@ fun SignInField(authController: AuthController) {
 
     Spacer(modifier = Modifier.height(60.dp))
 
-    EmailPasswordInputFields(email = email, password = password, onEmailChange = { email = it }, onPasswordChange = { password = it })
+    val credentials = credentialsInputFields(isSignIn)
 
     Spacer(modifier = Modifier.height(16.dp))
 
     AuthButton(
-        onClick = {
-            if (isSignIn) {
-                authController.authenticate(email, password)
-            } else {
-                authController.createAccount(email, password)
-            }
-        },
-        text = if (isSignIn) "Sign In" else "Create Account"
+        authController = authController,
+        credentials = credentials,
+        isSignIn = isSignIn
     )
 
     Spacer(modifier = Modifier.height(8.dp))
 
     Button(
         onClick = { isSignIn = !isSignIn },
-        modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(bottom = 8.dp),
         colors = ButtonDefaults.textButtonColors(
             containerColor = Color.Transparent,
             contentColor = MaterialTheme.colorScheme.onBackground,
@@ -173,18 +206,34 @@ fun SignInField(authController: AuthController) {
 }
 
 @Composable
-fun EmailPasswordInputFields(email: String, password: String, onEmailChange: (String) -> Unit, onPasswordChange: (String) -> Unit) {
+fun credentialsInputFields(isSignIn: Boolean): Credentials {
+    var emailState = FieldState()
+    var passwordState = FieldState()
+
     Column {
-        EmailInputField(email = email, onEmailChange = onEmailChange)
-        PasswordInputField(password = password, onPasswordChange = onPasswordChange)
+        emailState = emailInputField()
+        passwordState = passwordInputField(isSignIn)
     }
+
+    return Credentials(emailState, passwordState)
 }
 
 @Composable
-fun EmailInputField(email: String, onEmailChange: (String) -> Unit) {
+fun emailInputField(): FieldState {
+    val errorText = "Invalid email"
+    var email by remember { mutableStateOf("") }
+    var isInvalid by remember { mutableStateOf(false) }
+
+    fun validate(email: String) {
+        isInvalid = !android.util.Patterns.EMAIL_ADDRESS.matcher(email).matches()
+    }
+
     TextField(
         value = email,
-        onValueChange = onEmailChange,
+        onValueChange = {
+            email = it
+            validate(email)
+        },
         label = { Text("Email") },
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Email),
         leadingIcon = {
@@ -192,17 +241,56 @@ fun EmailInputField(email: String, onEmailChange: (String) -> Unit) {
         },
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 8.dp)
+            .padding(bottom = 8.dp),
+        singleLine = true,
+        supportingText = {
+            if (isInvalid) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    text = errorText,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+        },
+        keyboardActions = KeyboardActions { validate(email) }
     )
+
+    return FieldState(email, isInvalid)
 }
 
 @Composable
-fun PasswordInputField(password: String, onPasswordChange: (String) -> Unit) {
+fun passwordInputField(isSignIn: Boolean): FieldState {
+    val errorText = "Invalid password"
+    var password by remember { mutableStateOf("") }
     var passwordVisibility by remember { mutableStateOf(false) }
+    var isInvalid by remember { mutableStateOf(false) }
+
+    val passwordRegex = Pattern.compile("^" +
+            "(?=.*[0-9])" +         // At least 1 digit
+            "(?=.*[a-z])" +         // At least 1 lower case letter
+            "(?=.*[A-Z])" +         // At least 1 upper case letter
+            "(?=.*[a-zA-Z])" +      // Any letter
+            "(?=.*[@#$%^&+=])" +    // At least 1 special character
+            "(?=\\S+$)" +           // No white spaces
+            ".{8,}" +               // At least 8 characters
+            "$"
+    );
+
+    fun validate(password: String) {
+        // Only check the password strength at Sign Up
+        isInvalid = if (!isSignIn) {
+            !passwordRegex.matcher(password).matches()
+        } else {
+            false
+        }
+    }
 
     OutlinedTextField(
         value = password,
-        onValueChange = onPasswordChange,
+        onValueChange = {
+            password = it
+            validate(password)
+        },
         label = { Text("Password") },
         trailingIcon = {
             IconButton(onClick = { passwordVisibility = !passwordVisibility }) {
@@ -219,17 +307,51 @@ fun PasswordInputField(password: String, onPasswordChange: (String) -> Unit) {
         visualTransformation = if (passwordVisibility) VisualTransformation.None else PasswordVisualTransformation(),
         modifier = Modifier
             .fillMaxWidth()
-            .padding(bottom = 8.dp)
+            .padding(bottom = 8.dp),
+        singleLine = true,
+        supportingText = {
+            if (isInvalid) {
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    // TODO: Improve the error message by adding a password requirement checklist panel
+                    text = errorText,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+        },
+        keyboardActions = KeyboardActions { validate(password) }
     )
+
+    return FieldState(password, isInvalid)
 }
 
 @Composable
-fun AuthButton(onClick: () -> Unit, text: String) {
+fun AuthButton(authController: AuthController, credentials: Credentials, isSignIn: Boolean) {
+    var showErrorPopup by remember { mutableStateOf(false) }
+
     Button(
-        onClick = onClick,
+        onClick = {
+            if (credentials.areValid) {
+                if (isSignIn) {
+                    authController.authenticate(credentials.email, credentials.password)
+                } else {
+                    authController.createAccount(credentials.email, credentials.password)
+                }
+            } else {
+                showErrorPopup = true
+            }
+        },
         modifier = Modifier.fillMaxWidth(),
     ) {
-        Text(text = text)
+        Text(text = if (isSignIn) "Sign In" else "Create Account")
+
+        // TODO: Improve the error popup
+        DropdownMenu(expanded = showErrorPopup, onDismissRequest = { showErrorPopup = false }) {
+            DropdownMenuItem(
+                text = { Text("The email or password is invalid") },
+                onClick = { showErrorPopup = false }
+            )
+        }
     }
 }
 

@@ -25,6 +25,7 @@ class AuthController(val applicationContext: Context) {
                     _auth.currentUser?.sendEmailVerification()
                     _currentUser.value = _auth.currentUser
                 } else {
+                    // TODO: Replace the toast with something prettier
                     Toast.makeText(
                         applicationContext,
                         "Authentication failed.",
@@ -40,6 +41,7 @@ class AuthController(val applicationContext: Context) {
                 if (task.isSuccessful) {
                     _currentUser.value = _auth.currentUser
                 } else {
+                    // TODO: Replace the toast with something prettier
                     Toast.makeText(
                         applicationContext,
                         "Authentication failed.",
