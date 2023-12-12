@@ -87,7 +87,7 @@ fun IngredientTypeAccordionItem(
                             selectedIngredients = selectedIngredients,
                             onIngredientSelect = onIngredientSelect
                         )
-                        Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(5.dp))
                     }
                 }
             }
