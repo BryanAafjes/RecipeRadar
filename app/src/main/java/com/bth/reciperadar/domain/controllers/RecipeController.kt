@@ -1,11 +1,11 @@
 package com.bth.reciperadar.domain.controllers
 
-import com.bth.reciperadar.data.dtos.IngredientDto
 import com.bth.reciperadar.data.repositories.RecipeRepository
 import com.bth.reciperadar.domain.models.Ingredient
 import com.bth.reciperadar.domain.models.Recipe
 import com.bth.reciperadar.domain.models.toDomain
-import com.bth.reciperadar.domain.models.toDto
+import com.bth.reciperadar.presentation.viewmodels.CuisineViewModel
+import com.bth.reciperadar.presentation.viewmodels.DietaryInfoViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -46,11 +46,13 @@ class RecipeController(private val recipeRepository: RecipeRepository) {
         }
     }
 
-    suspend fun searchRecipesByTitleAndIngredientFilter(
+    suspend fun searchRecipesByTitleAndFilters(
         searchQuery: String,
         ingredientsList: List<Ingredient>,
+        cuisinesList: List<CuisineViewModel>,
+        dietaryInfoList: List<DietaryInfoViewModel>,
         anyRecipesWithSelectedIngredients: Boolean,
-        dontAllowExtraIngredients: Boolean
+        dontAllowExtraIngredients: Boolean,
     ): List<Recipe> = withContext(Dispatchers.IO) {
         try {
             val searchQueryLowercase = searchQuery.lowercase()
@@ -78,6 +80,22 @@ class RecipeController(private val recipeRepository: RecipeRepository) {
                         ingredientsList.all { ingredient ->
                             recipe.ingredients?.any { it.id == ingredient.id } == true
                         }
+                    }
+                }
+            }
+
+            if (cuisinesList.isNotEmpty()) {
+                recipeList = recipeList.filter { recipe ->
+                    cuisinesList.all { cuisine ->
+                        recipe.cuisines?.any { it.id == cuisine.id } == true
+                    }
+                }
+            }
+
+            if (dietaryInfoList.isNotEmpty()) {
+                recipeList = recipeList.filter { recipe ->
+                    dietaryInfoList.all { dietaryInfo ->
+                        recipe.dietaryInfo?.any { it.id == dietaryInfo.id } == true
                     }
                 }
             }

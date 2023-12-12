@@ -106,7 +106,7 @@ class RecipeRepository(db: FirebaseFirestore) {
                 .get()
                 .await()
 
-            return getRecipesFromQueryDocuments(querySnapshot.documents, includeIngredients, false)
+            return getRecipesFromQueryDocuments(querySnapshot.documents, includeIngredients, true)
         } catch (e: Exception) {
             // Handle exceptions, such as network issues or Firestore errors
             e.printStackTrace()

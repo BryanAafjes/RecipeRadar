@@ -280,12 +280,54 @@ fun RecipeSearchScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { isDietaryInfoDropdownVisible = !isDietaryInfoDropdownVisible }
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Filter diet",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.weight(1f)
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_filter_list_24),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(5.dp))
+
+        if (isDietaryInfoDropdownVisible) {
+            DietaryInfoAccordion(
+                dietaryInfoList = dietaryInfo,
+                selectedDietaryInfo = selectedDietaryInfo,
+                onDietaryInfoSelect = { dietaryInfoItem ->
+                    selectedDietaryInfo = if (selectedDietaryInfo.contains(dietaryInfoItem)) {
+                        selectedDietaryInfo.minus(dietaryInfoItem)
+                    } else {
+                        selectedDietaryInfo.plus(dietaryInfoItem)
+                    }
+                }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
         Button(
             onClick = {
                 CoroutineScope(Dispatchers.IO).launch {
-                    val recipeModels = recipeController.searchRecipesByTitleAndIngredientFilter(
+                    val recipeModels = recipeController.searchRecipesByTitleAndFilters(
                         searchQuery = searchTerm,
                         ingredientsList = selectedIngredients.map { it.toDomain() },
+                        cuisinesList = selectedCuisines,
+                        dietaryInfoList = selectedDietaryInfo,
                         anyRecipesWithSelectedIngredients = anyRecipesWithSelectedIngredients,
                         dontAllowExtraIngredients = dontAllowExtraIngredients
                     )
