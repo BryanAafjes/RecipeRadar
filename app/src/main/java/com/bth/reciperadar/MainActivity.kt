@@ -9,10 +9,14 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import com.bth.reciperadar.data.repositories.CuisineRepository
+import com.bth.reciperadar.data.repositories.DietaryInfoRepository
 import com.bth.reciperadar.data.repositories.IngredientRepository
 import com.bth.reciperadar.data.repositories.IngredientTypeRepository
 import com.bth.reciperadar.data.repositories.RecipeRepository
 import com.bth.reciperadar.domain.controllers.AuthController
+import com.bth.reciperadar.domain.controllers.CuisineController
+import com.bth.reciperadar.domain.controllers.DietaryInfoController
 import com.bth.reciperadar.domain.controllers.IngredientController
 import com.bth.reciperadar.domain.controllers.IngredientTypeController
 import com.bth.reciperadar.domain.controllers.RecipeController
@@ -42,18 +46,24 @@ class MainActivity : ComponentActivity() {
                     val recipeRepository = remember { RecipeRepository(db) }
                     val ingredientRepository = remember { IngredientRepository(db) }
                     val ingredientTypeRepository = remember { IngredientTypeRepository(db) }
+                    val cuisineRepository = remember { CuisineRepository(db) }
+                    val dietaryInfoRepository = remember { DietaryInfoRepository(db) }
 
                     // Controller instances
                     val recipeController = remember { RecipeController(recipeRepository) }
                     val ingredientController = remember { IngredientController(ingredientRepository) }
                     val ingredientTypeController = remember { IngredientTypeController(ingredientTypeRepository) }
+                    val cuisineController = remember { CuisineController(cuisineRepository) }
+                    val dietaryInfoController = remember { DietaryInfoController(dietaryInfoRepository) }
 
                     if (currentUser.value != null) {
                         Navigation(
                             authController = authController,
                             recipeController = recipeController,
                             ingredientController = ingredientController,
-                            ingredientTypeController = ingredientTypeController
+                            ingredientTypeController = ingredientTypeController,
+                            cuisineController = cuisineController,
+                            dietaryInfoController = dietaryInfoController
                         )
                     } else {
                         StartScreen(authController)

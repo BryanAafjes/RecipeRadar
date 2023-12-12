@@ -1,6 +1,5 @@
 package com.bth.reciperadar.presentation.screens.recipe
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -28,15 +27,18 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.bth.reciperadar.R
+import com.bth.reciperadar.domain.controllers.CuisineController
+import com.bth.reciperadar.domain.controllers.DietaryInfoController
 import com.bth.reciperadar.domain.controllers.IngredientController
 import com.bth.reciperadar.domain.controllers.IngredientTypeController
 import com.bth.reciperadar.domain.controllers.RecipeController
+import com.bth.reciperadar.presentation.viewmodels.CuisineViewModel
+import com.bth.reciperadar.presentation.viewmodels.DietaryInfoViewModel
 import com.bth.reciperadar.presentation.viewmodels.IngredientTypeViewModel
 import com.bth.reciperadar.presentation.viewmodels.IngredientViewModel
 import com.bth.reciperadar.presentation.viewmodels.RecipeViewModel
@@ -53,7 +55,9 @@ fun RecipeSearchScreen(
     navController: NavController,
     recipeController: RecipeController,
     ingredientController: IngredientController,
-    ingredientTypeController: IngredientTypeController
+    ingredientTypeController: IngredientTypeController,
+    cuisineController: CuisineController,
+    dietaryInfoController: DietaryInfoController
 ) {
     var searchTerm by remember { mutableStateOf(searchQuery) }
     var recipes by remember { mutableStateOf<List<RecipeViewModel>>(emptyList()) }
@@ -64,6 +68,12 @@ fun RecipeSearchScreen(
     var anyRecipesWithSelectedIngredients by remember { mutableStateOf(false) }
     var dontAllowExtraIngredients by remember { mutableStateOf(false) }
     var isIngredientDropdownVisible by remember { mutableStateOf(false) }
+    var cuisines by remember { mutableStateOf<List<CuisineViewModel>>(emptyList()) }
+    var selectedCuisines by remember { mutableStateOf<List<CuisineViewModel>>(emptyList()) }
+    var dietaryInfo by remember { mutableStateOf<List<DietaryInfoViewModel>>(emptyList()) }
+    var selectedDietaryInfo by remember { mutableStateOf<List<DietaryInfoViewModel>>(emptyList()) }
+    var isCuisineDropdownVisible by remember { mutableStateOf(false) }
+    var isDietaryInfoDropdownVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(searchQuery) {
         withContext(Dispatchers.IO) {
@@ -72,6 +82,12 @@ fun RecipeSearchScreen(
 
             val ingredientTypeModels = ingredientTypeController.getIngredientTypes()
             ingredientTypes = ingredientTypeModels.map { it.toViewModel() }
+
+            val cuisineModels = cuisineController.getCuisines()
+            cuisines = cuisineModels.map { it.toViewModel() }
+
+            val dietaryModels = dietaryInfoController.getDietaryInfo()
+            dietaryInfo = dietaryModels.map { it.toViewModel() }
         }
     }
 
@@ -118,8 +134,9 @@ fun RecipeSearchScreen(
                 )
             }
         }
-        Spacer(modifier = Modifier.height(20.dp))
+
         if (isIngredientDropdownVisible) {
+            Spacer(modifier = Modifier.height(5.dp))
             IngredientTypeAccordion(
                 ingredientTypes = ingredientTypes,
                 expandedCategories = expandedCategories,
@@ -167,6 +184,7 @@ fun RecipeSearchScreen(
         }
 
         if (selectedIngredients.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(20.dp))
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -218,15 +236,98 @@ fun RecipeSearchScreen(
                     )
                 }
             }
-            Spacer(modifier = Modifier.height(20.dp))
         }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { isCuisineDropdownVisible = !isCuisineDropdownVisible }
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Filter cuisines",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.weight(1f)
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_filter_list_24),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(5.dp))
+
+        if (isCuisineDropdownVisible) {
+            CuisineAccordion(
+                cuisines = cuisines,
+                selectedCuisines = selectedCuisines,
+                onCuisineSelect = { selectedCuisine ->
+                    selectedCuisines = if (selectedCuisines.contains(selectedCuisine)) {
+                        selectedCuisines.minus(selectedCuisine)
+                    } else {
+                        selectedCuisines.plus(selectedCuisine)
+                    }
+                }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
+
+        Card(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clickable { isDietaryInfoDropdownVisible = !isDietaryInfoDropdownVisible }
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
+                Text(
+                    text = "Filter diet",
+                    style = MaterialTheme.typography.bodyLarge,
+                    modifier = Modifier.weight(1f)
+                )
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_filter_list_24),
+                    contentDescription = null,
+                    tint = MaterialTheme.colorScheme.onSurface
+                )
+            }
+        }
+        Spacer(modifier = Modifier.height(5.dp))
+
+        if (isDietaryInfoDropdownVisible) {
+            DietaryInfoAccordion(
+                dietaryInfoList = dietaryInfo,
+                selectedDietaryInfo = selectedDietaryInfo,
+                onDietaryInfoSelect = { dietaryInfoItem ->
+                    selectedDietaryInfo = if (selectedDietaryInfo.contains(dietaryInfoItem)) {
+                        selectedDietaryInfo.minus(dietaryInfoItem)
+                    } else {
+                        selectedDietaryInfo.plus(dietaryInfoItem)
+                    }
+                }
+            )
+        }
+
+        Spacer(modifier = Modifier.height(20.dp))
 
         Button(
             onClick = {
                 CoroutineScope(Dispatchers.IO).launch {
-                    val recipeModels = recipeController.searchRecipesByTitleAndIngredientFilter(
+                    val recipeModels = recipeController.searchRecipesByTitleAndFilters(
                         searchQuery = searchTerm,
                         ingredientsList = selectedIngredients.map { it.toDomain() },
+                        cuisinesList = selectedCuisines,
+                        dietaryInfoList = selectedDietaryInfo,
                         anyRecipesWithSelectedIngredients = anyRecipesWithSelectedIngredients,
                         dontAllowExtraIngredients = dontAllowExtraIngredients
                     )

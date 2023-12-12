@@ -1,7 +1,6 @@
 package com.bth.reciperadar.data.repositories
 
 import com.bth.reciperadar.data.dtos.DietaryInfoDto
-import com.bth.reciperadar.data.dtos.IngredientDto
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -33,6 +32,29 @@ class DietaryInfoRepository(db: FirebaseFirestore) {
             // Handle exceptions, such as network issues or Firestore errors
             e.printStackTrace()
             null
+        }
+    }
+
+    suspend fun getDietaryInfoList(): List<DietaryInfoDto> {
+        return try {
+            val querySnapshot = dietaryInfoCollection.get().await()
+            val dietaryInfoList = ArrayList<DietaryInfoDto>()
+
+            for(document in querySnapshot.documents) {
+                val dietaryInfoDto = document.toObject(DietaryInfoDto::class.java)
+
+                if(dietaryInfoDto != null) {
+                    dietaryInfoDto.id = document.id
+
+                    dietaryInfoList.add(dietaryInfoDto)
+                }
+            }
+
+            return dietaryInfoList
+        } catch (e: Exception) {
+            // Handle exceptions, such as network issues or Firestore errors
+            e.printStackTrace()
+            emptyList()
         }
     }
 }
