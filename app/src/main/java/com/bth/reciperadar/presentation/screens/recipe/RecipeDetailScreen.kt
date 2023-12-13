@@ -73,6 +73,24 @@ fun RecipeDetailScreen(
                     )
                 }
 
+                if (it.prepTime != null) {
+                    Text(
+                        text = "Preparation time: ${ it.prepTime!! }",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(top = 10.dp, bottom = 8.dp)
+                    )
+                }
+
+                if (it.servingAmount != null) {
+                    Text(
+                        text = "Amount of servings: ${ it.servingAmount!! }",
+                        style = MaterialTheme.typography.bodyLarge,
+                        fontWeight = FontWeight.Bold,
+                        modifier = Modifier.padding(top = 10.dp, bottom = 8.dp)
+                    )
+                }
+
                 it.cuisines?.let { cuisineList ->
                     Text(
                         text = "Cuisine(s):",
