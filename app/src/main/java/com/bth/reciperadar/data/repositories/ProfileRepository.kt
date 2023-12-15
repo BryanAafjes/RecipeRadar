@@ -2,7 +2,9 @@ package com.bth.reciperadar.data.repositories
 
 import com.bth.reciperadar.data.dtos.ProfileDto
 import com.bth.reciperadar.data.dtos.RecipeDto
+import com.bth.reciperadar.data.dtos.toFirebaseMap
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
 
 class ProfileRepository(db: FirebaseFirestore) {
@@ -35,17 +37,18 @@ class ProfileRepository(db: FirebaseFirestore) {
         }
     }
 
-    suspend fun doesProfileExist(userId: String): Boolean {
+    suspend fun createOrUpdateProfile(profileDto: ProfileDto): Boolean {
         return try {
-            val querySnapshot = profileCollection
-                .whereEqualTo("user_id", userId)
-                .limit(1)
-                .get()
+            profileDto.id = profileDto.id.ifEmpty {
+                profileCollection.document().id
+            }
+
+            profileCollection.document(profileDto.id)
+                .set(profileDto.toFirebaseMap(), SetOptions.merge())
                 .await()
 
-            return !querySnapshot.isEmpty
+            true
         } catch (e: Exception) {
-            // Handle exceptions, such as network issues or Firestore errors
             e.printStackTrace()
             false
         }

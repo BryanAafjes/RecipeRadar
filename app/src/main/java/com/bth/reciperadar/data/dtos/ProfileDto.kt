@@ -8,3 +8,14 @@ data class ProfileDto(
     var picturePath: String? = "",
     var dietaryInfo: List<DietaryInfoDto>? = emptyList(),
 )
+
+fun ProfileDto.toFirebaseMap(): Map<String, Any?> {
+    val dietaryInfoReferences = dietaryInfo?.map { it.id } ?: emptyList<String>()
+
+    return mapOf(
+        "user_id" to userId,
+        "username" to username,
+        "dietary_info_references" to dietaryInfoReferences,
+        "picture_path" to picturePath
+    )
+}
