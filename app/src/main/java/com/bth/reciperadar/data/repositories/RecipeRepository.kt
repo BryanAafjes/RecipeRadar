@@ -1,6 +1,5 @@
 package com.bth.reciperadar.data.repositories
 
-import com.bth.reciperadar.data.dtos.IngredientDto
 import com.bth.reciperadar.data.dtos.RecipeDto
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -34,7 +33,7 @@ class RecipeRepository(db: FirebaseFirestore) {
                 if (includeReferences) {
                     recipe.reviews = reviewRepository.getReviewsForRecipe(recipe.id)
                     recipe.dietaryInfo =
-                        dietaryInfoRepository.getDietaryInfoForRecipe(documentSnapshot)
+                        dietaryInfoRepository.getDietaryInfoForReferences(documentSnapshot)
                     recipe.cuisines = cuisineRepository.getDietaryInfoForRecipe(documentSnapshot)
                 }
             }
@@ -79,7 +78,7 @@ class RecipeRepository(db: FirebaseFirestore) {
                 }
                 if (includeReferences) {
                     recipe.reviews = reviewRepository.getReviewsForRecipe(recipe.id)
-                    recipe.dietaryInfo = dietaryInfoRepository.getDietaryInfoForRecipe(document)
+                    recipe.dietaryInfo = dietaryInfoRepository.getDietaryInfoForReferences(document)
                     recipe.cuisines = cuisineRepository.getDietaryInfoForRecipe(document)
                 }
 

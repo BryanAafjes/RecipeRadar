@@ -9,7 +9,7 @@ import kotlinx.coroutines.tasks.await
 class DietaryInfoRepository(db: FirebaseFirestore) {
     private val dietaryInfoCollection = db.collection("dietary_info")
 
-    suspend fun getDietaryInfoForRecipe(document: DocumentSnapshot): List<DietaryInfoDto> {
+    suspend fun getDietaryInfoForReferences(document: DocumentSnapshot): List<DietaryInfoDto> {
         val dietaryInfoList = ArrayList<DietaryInfoDto>()
         val firestoreDietaryInfoReferences: List<DocumentReference> = document.get("dietary_info_references") as List<DocumentReference>
         firestoreDietaryInfoReferences.forEach { reference ->
@@ -24,6 +24,7 @@ class DietaryInfoRepository(db: FirebaseFirestore) {
 
         return dietaryInfoList
     }
+
     suspend fun getDietaryInfo(dietaryInfoDto: String): DietaryInfoDto? {
         return try {
             val documentSnapshot = dietaryInfoCollection.document(dietaryInfoDto).get().await()
