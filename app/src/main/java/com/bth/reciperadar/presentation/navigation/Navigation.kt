@@ -2,8 +2,11 @@ package com.bth.reciperadar.presentation.navigation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -13,6 +16,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -71,7 +75,28 @@ fun Navigation(
             ) {
                 screens.forEach { screen ->
                     BottomNavigationItem(
-                        icon = { Icon(imageVector = screen.icon, contentDescription = screen.label) },
+                        icon = {
+                            if (navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .background(MaterialTheme.colorScheme.primary, shape = CircleShape),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = screen.icon,
+                                        contentDescription = screen.label,
+                                        tint = MaterialTheme.colorScheme.onPrimary
+                                    )
+                                }
+                            } else {
+                                Icon(
+                                    imageVector = screen.icon,
+                                    contentDescription = screen.label,
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                        },
                         // label = { Text(text = screen.label) },
                         selected = navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true,
                         selectedContentColor = MaterialTheme.colorScheme.primary,
