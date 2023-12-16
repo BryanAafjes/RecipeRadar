@@ -8,7 +8,7 @@ data class Profile(
     var username: String = "",
     var email: String? = "",
     var picturePath: String? = "",
-    var dietaryInfo: List<DietaryInfo>? = emptyList(),
+    var dietaryInfo: List<DietaryInfo> = emptyList(),
 )
 
 fun Profile.toDto(): ProfileDto {
@@ -18,7 +18,7 @@ fun Profile.toDto(): ProfileDto {
         username = this.username,
         email = this.email,
         picturePath = this.picturePath,
-        dietaryInfo = this.dietaryInfo?.map { it.toDto() },
+        dietaryInfo = this.dietaryInfo.map { it.toDto() },
     )
 }
 
@@ -29,6 +29,6 @@ fun ProfileDto.toDomain(): Profile {
         username = this.username,
         email = this.email,
         picturePath = this.picturePath,
-        dietaryInfo = this.dietaryInfo?.map { it.toDomain() },
+        dietaryInfo = this.dietaryInfo.map { it.toDomain() },
     )
 }

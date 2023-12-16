@@ -6,11 +6,11 @@ data class ProfileDto(
     var username: String = "",
     var email: String? = "",
     var picturePath: String? = "",
-    var dietaryInfo: List<DietaryInfoDto>? = emptyList(),
+    var dietaryInfo: List<DietaryInfoDto> = emptyList(),
 )
 
 fun ProfileDto.toFirebaseMap(): Map<String, Any?> {
-    val dietaryInfoReferences = dietaryInfo?.map { it.id } ?: emptyList<String>()
+    val dietaryInfoReferences = dietaryInfo.map { it.id } ?: emptyList<String>()
 
     return mapOf(
         "user_id" to userId,

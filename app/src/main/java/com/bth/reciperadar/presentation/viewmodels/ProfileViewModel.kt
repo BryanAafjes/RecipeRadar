@@ -8,7 +8,7 @@ data class ProfileViewModel(
     var username: String = "",
     var email: String? = "",
     var picturePath: String? = "",
-    var dietaryInfo: List<DietaryInfoViewModel>? = emptyList(),
+    var dietaryInfo: List<DietaryInfoViewModel> = emptyList(),
 )
 
 fun Profile.toViewModel(): ProfileViewModel {
@@ -18,7 +18,7 @@ fun Profile.toViewModel(): ProfileViewModel {
         username = this.username,
         email = this.email,
         picturePath = this.picturePath,
-        dietaryInfo = this.dietaryInfo?.map { it.toViewModel() },
+        dietaryInfo = this.dietaryInfo.map { it.toViewModel() },
     )
 }
 
@@ -29,6 +29,6 @@ fun ProfileViewModel.toDomain(): Profile {
         username = this.username,
         email = this.email,
         picturePath = this.picturePath,
-        dietaryInfo = this.dietaryInfo?.map { it.toDomain() },
+        dietaryInfo = this.dietaryInfo.map { it.toDomain() },
     )
 }

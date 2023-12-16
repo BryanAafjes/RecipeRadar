@@ -33,9 +33,11 @@ import com.bth.reciperadar.domain.controllers.CuisineController
 import com.bth.reciperadar.domain.controllers.DietaryInfoController
 import com.bth.reciperadar.domain.controllers.IngredientController
 import com.bth.reciperadar.domain.controllers.IngredientTypeController
+import com.bth.reciperadar.domain.controllers.ProfileController
 import com.bth.reciperadar.domain.controllers.RecipeController
-import com.bth.reciperadar.mainscreen.AccountScreen
+import com.bth.reciperadar.presentation.screens.profilescreens.ProfileScreen
 import com.bth.reciperadar.presentation.screens.mainscreen.MainScreen
+import com.bth.reciperadar.presentation.screens.profilescreens.EditProfileScreen
 import com.bth.reciperadar.presentation.screens.recipe.RecipeDetailScreen
 import com.bth.reciperadar.presentation.screens.recipe.RecipeSearchScreen
 import com.bth.reciperadar.presentation.screens.screen.Screen
@@ -48,7 +50,8 @@ fun Navigation(
     ingredientController: IngredientController,
     ingredientTypeController: IngredientTypeController,
     cuisineController: CuisineController,
-    dietaryInfoController: DietaryInfoController
+    dietaryInfoController: DietaryInfoController,
+    profileController: ProfileController
 ) {
     val navController = rememberNavController()
 
@@ -56,7 +59,7 @@ fun Navigation(
 
     val screens = listOf(
         Screen.MainScreen,
-        Screen.AccountScreen
+        Screen.ProfileScreen
     )
 
     Scaffold(
@@ -146,8 +149,20 @@ fun Navigation(
                 ) { entry ->
                     DetailScreen(name = entry.arguments?.getString("name"))
                 }
-                composable(route = Screen.AccountScreen.route) {
-                    AccountScreen(authController = authController)
+                composable(route = Screen.ProfileScreen.route) {
+                    ProfileScreen(
+                        navController = navController,
+                        authController = authController,
+                        profileController = profileController
+                    )
+                }
+                composable(route = Screen.EditProfileScreen.route) {
+                    EditProfileScreen(
+                        navController = navController,
+                        authController = authController,
+                        profileController = profileController,
+                        dietaryInfoController = dietaryInfoController
+                    )
                 }
                 composable(
                     route = Screen.RecipeSearchScreen.route + "/{searchQuery}",
