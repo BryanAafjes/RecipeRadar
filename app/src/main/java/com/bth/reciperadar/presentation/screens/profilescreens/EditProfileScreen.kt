@@ -85,7 +85,7 @@ fun EditProfileScreen(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Text(
-                text = "My Profile",
+                text = "Edit Profile",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.padding(vertical = 20.dp)
@@ -120,8 +120,6 @@ fun EditProfileScreen(
 
         }
 
-        Text("EDITING PROFILE", modifier = Modifier.align(CenterHorizontally))
-
         Spacer(modifier = Modifier.height(20.dp))
 
         if (profile != null) {
@@ -134,6 +132,8 @@ fun EditProfileScreen(
                 modifier = Modifier.fillMaxWidth()
             )
         }
+
+        Spacer(modifier = Modifier.height(20.dp))
 
         Card(
             modifier = Modifier
