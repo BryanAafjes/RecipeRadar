@@ -1,6 +1,7 @@
 package com.bth.reciperadar.presentation.navigation
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.gestures.detectTransformGestures
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -16,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
@@ -50,6 +52,8 @@ fun Navigation(
 ) {
     val navController = rememberNavController()
 
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+
     val screens = listOf(
         Screen.MainScreen,
         Screen.AccountScreen
@@ -62,13 +66,11 @@ fun Navigation(
                     .clip(RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp)),
                 backgroundColor = MaterialTheme.colorScheme.surface
             ) {
-                val navBackStackEntry by navController.currentBackStackEntryAsState()
-                val currentDestination = navBackStackEntry?.destination
                 screens.forEach { screen ->
                     BottomNavigationItem(
                         icon = { Icon(imageVector = screen.icon, contentDescription = screen.label) },
                         // label = { Text(text = screen.label) },
-                        selected = currentDestination?.hierarchy?.any { it.route == screen.route } == true,
+                        selected = navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true,
                         selectedContentColor = Color.Blue,
                         unselectedContentColor = MaterialTheme.colorScheme.onSurface,
                         onClick = {
@@ -102,6 +104,32 @@ fun Navigation(
                     .fillMaxSize()
                     .padding(padding)
                     .background(gradientBrush)
+                    .pointerInput(Unit) {
+                        detectTransformGestures { _, pan, _, _ ->
+                            val currentIndex = screens.indexOfFirst { it.route == navBackStackEntry?.destination?.route }
+                            val threshold = 100f
+
+                            if (pan.x > threshold && currentIndex > 0) {
+                                val previousScreen = screens[currentIndex - 1]
+                                navController.navigate(previousScreen.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            } else if (pan.x < -threshold && currentIndex < screens.size - 1) {
+                                val nextScreen = screens[currentIndex + 1]
+                                navController.navigate(nextScreen.route) {
+                                    popUpTo(navController.graph.findStartDestination().id) {
+                                        saveState = true
+                                    }
+                                    launchSingleTop = true
+                                    restoreState = true
+                                }
+                            }
+                        }
+                    }
             ) {
                 composable(route = Screen.MainScreen.route) {
                     MainScreen(navController = navController, authController = authController, recipeController = recipeController)
