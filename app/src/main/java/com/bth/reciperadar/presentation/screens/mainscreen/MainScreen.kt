@@ -40,9 +40,11 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.bth.reciperadar.R
 import com.bth.reciperadar.domain.controllers.AuthController
+import com.bth.reciperadar.domain.controllers.ProfileController
 import com.bth.reciperadar.domain.controllers.RecipeController
 import com.bth.reciperadar.presentation.screens.recipe.RecipeListView
 import com.bth.reciperadar.presentation.screens.screen.Screen
+import com.bth.reciperadar.presentation.viewmodels.ProfileViewModel
 import com.bth.reciperadar.presentation.viewmodels.RecipeViewModel
 import com.bth.reciperadar.presentation.viewmodels.toViewModel
 import kotlinx.coroutines.Dispatchers
@@ -52,10 +54,11 @@ import kotlinx.coroutines.withContext
 fun MainScreen(
     navController: NavController,
     authController: AuthController,
-    recipeController: RecipeController
+    recipeController: RecipeController,
+    profileController: ProfileController
 ) {
-    var text by remember {
-        mutableStateOf("")
+    var profile by remember {
+        mutableStateOf<ProfileViewModel?>(null)
     }
 
     var searchQuery by remember {
@@ -74,21 +77,22 @@ fun MainScreen(
             val recipeModels = recipeController.getRecipes()
             recipeModels.map{ it.toViewModel() }
         }
+
+        profile = profileController.getProfile()?.toViewModel()
     }
 
     Column(
-        verticalArrangement = Arrangement.Center,
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 25.dp)
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.logo),
-            contentDescription = "RecipeRadar Logo",
-            colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.onBackground)
+        Text(
+            text = "Hi, ${profile?.username ?: ""} \uD83D\uDC4B",
+            style = MaterialTheme.typography.headlineLarge,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(top = 50.dp, bottom = 20.dp)
         )
         if (showEmailVerifyNotification) {
-            Spacer(modifier = Modifier.height(20.dp))
             Surface(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -122,13 +126,14 @@ fun MainScreen(
                     }
                 }
             }
+            Spacer(modifier = Modifier.height(20.dp))
         }
-        Spacer(modifier = Modifier.height(20.dp))
         TextField(
             value = searchQuery,
             onValueChange = {
                 searchQuery = it
             },
+            label = { Text("Search by recipe name") },
             modifier = Modifier.fillMaxWidth()
         )
         Spacer(modifier = Modifier.height(8.dp))
@@ -142,22 +147,5 @@ fun MainScreen(
         }
         Spacer(modifier = Modifier.height(20.dp))
         RecipeListView(recipes = recipes, navController = navController)
-        Spacer(modifier = Modifier.height(20.dp))
-        TextField(
-            value = text,
-            onValueChange = {
-                text = it
-            },
-            modifier = Modifier.fillMaxWidth()
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Button(onClick = {
-                navController.navigate(Screen.DetailScreen.withArgs(text))
-            },
-            modifier = Modifier
-                .align(Alignment.End)
-        ) {
-            Text(text = "To DetailScreen")
-        }
     }
 }

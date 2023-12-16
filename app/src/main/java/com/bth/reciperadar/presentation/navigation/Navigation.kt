@@ -31,7 +31,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.bth.reciperadar.presentation.screens.detailscreen.DetailScreen
 import com.bth.reciperadar.domain.controllers.AuthController
 import com.bth.reciperadar.domain.controllers.CuisineController
 import com.bth.reciperadar.domain.controllers.DietaryInfoController
@@ -160,19 +159,12 @@ fun Navigation(
                     }
             ) {
                 composable(route = Screen.MainScreen.route) {
-                    MainScreen(navController = navController, authController = authController, recipeController = recipeController)
-                }
-                composable(
-                    route = Screen.DetailScreen.route + "/{name}",
-                    arguments = listOf(
-                        navArgument("name") {
-                            type = NavType.StringType
-                            defaultValue = "Bryan"
-                            nullable = false
-                        }
+                    MainScreen(
+                        navController = navController,
+                        authController = authController,
+                        recipeController = recipeController,
+                        profileController = profileController
                     )
-                ) { entry ->
-                    DetailScreen(name = entry.arguments?.getString("name"))
                 }
                 composable(route = Screen.ProfileScreen.route) {
                     ProfileScreen(
