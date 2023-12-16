@@ -74,7 +74,7 @@ fun Navigation(
                         icon = { Icon(imageVector = screen.icon, contentDescription = screen.label) },
                         // label = { Text(text = screen.label) },
                         selected = navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true,
-                        selectedContentColor = Color.Blue,
+                        selectedContentColor = MaterialTheme.colorScheme.primary,
                         unselectedContentColor = MaterialTheme.colorScheme.onSurface,
                         onClick = {
                             navController.navigate(screen.route) {

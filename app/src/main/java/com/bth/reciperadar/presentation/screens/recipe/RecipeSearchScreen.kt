@@ -106,7 +106,8 @@ fun RecipeSearchScreen(
         Text(
             text = "Recipe Search",
             style = MaterialTheme.typography.headlineLarge,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.padding(top = 30.dp)
         )
         Spacer(modifier = Modifier.height(20.dp))
         TextField(
