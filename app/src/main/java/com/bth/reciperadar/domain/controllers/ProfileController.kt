@@ -4,7 +4,9 @@ import com.bth.reciperadar.data.repositories.ProfileRepository
 import com.bth.reciperadar.domain.models.Profile
 import com.bth.reciperadar.domain.models.toDomain
 import com.bth.reciperadar.domain.models.toDto
+import com.google.firebase.storage.FirebaseStorage
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 
 class ProfileController(
@@ -22,6 +24,23 @@ class ProfileController(
 
                     if (profile != null) {
                         profile.email = authController.auth.currentUser?.email
+
+                        if(profile.picturePath != null) {
+                            try {
+                                val downloadURL = FirebaseStorage
+                                    .getInstance()
+                                    .getReference(profile.picturePath!!)
+                                    .downloadUrl
+                                    .await()
+
+                                if (downloadURL != null) {
+                                    profile.picturePath = downloadURL.toString()
+                                }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                profile.picturePath = null
+                            }
+                        }
                     }
 
                     return@withContext profile

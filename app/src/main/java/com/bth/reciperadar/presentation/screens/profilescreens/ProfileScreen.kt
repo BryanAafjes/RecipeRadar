@@ -1,5 +1,6 @@
 package com.bth.reciperadar.presentation.screens.profilescreens
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -7,6 +8,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Button
@@ -28,10 +31,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.bth.reciperadar.domain.controllers.AuthController
 import com.bth.reciperadar.domain.controllers.ProfileController
 import com.bth.reciperadar.presentation.screens.screen.Screen
@@ -96,9 +101,18 @@ fun ProfileScreen(
                     ),
             ) {
                 Column(Modifier.padding(20.dp)) {
-                    Text("*PROFILE PICTURE HERE*", modifier = Modifier.align(CenterHorizontally))
-
-                    Divider(modifier = Modifier.padding(vertical = 20.dp), color = MaterialTheme.colorScheme.onBackground)
+                    if(profile!!.picturePath != null) {
+                        Image(
+                            painter = rememberImagePainter(data = profile!!.picturePath),
+                            contentDescription = "Profile Picture",
+                            modifier = Modifier
+                                .height(200.dp)
+                                .width(200.dp)
+                                .align(CenterHorizontally)
+                                .clip(CircleShape)
+                        )
+                        Divider(modifier = Modifier.padding(vertical = 20.dp), color = MaterialTheme.colorScheme.onBackground)
+                    }
 
                     Card(
                         colors =
