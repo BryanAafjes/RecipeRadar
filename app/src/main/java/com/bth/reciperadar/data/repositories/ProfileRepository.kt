@@ -1,14 +1,14 @@
 package com.bth.reciperadar.data.repositories
 
 import com.bth.reciperadar.data.dtos.ProfileDto
-import com.bth.reciperadar.data.dtos.RecipeDto
-import com.bth.reciperadar.data.dtos.toFirebaseMap
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.tasks.await
 
 class ProfileRepository(db: FirebaseFirestore) {
     private val profileCollection = db.collection("profiles")
+    private val dietaryInfoCollection = db.collection("dietary_info")
 
     private val dietaryInfoRepository = DietaryInfoRepository(db)
 
@@ -53,4 +53,18 @@ class ProfileRepository(db: FirebaseFirestore) {
             false
         }
     }
+
+    fun ProfileDto.toFirebaseMap(): Map<String, Any?> {
+        val dietaryInfoReferences = dietaryInfo.map { it.id }.map {
+            dietaryInfoCollection.document(it)
+        } ?: emptyList<DocumentReference>()
+
+        return mapOf(
+            "user_id" to userId,
+            "username" to username,
+            "dietary_info_references" to dietaryInfoReferences,
+            "picture_path" to picturePath
+        )
+    }
+
 }
