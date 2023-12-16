@@ -67,6 +67,16 @@ fun EditProfileScreen(
             val profileModel = profileController.getProfile()
             profile = profileModel?.toViewModel()
 
+            if (profile == null) {
+                profile = ProfileViewModel(
+                    id = "",
+                    userId = "",
+                    picturePath = "",
+                    username = "",
+                    dietaryInfo = emptyList()
+                )
+            }
+
             val dietaryModels = dietaryInfoController.getDietaryInfo()
             dietaryInfoList = dietaryModels.map { it.toViewModel() }
 

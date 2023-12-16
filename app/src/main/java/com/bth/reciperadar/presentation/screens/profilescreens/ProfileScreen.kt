@@ -90,30 +90,39 @@ fun ProfileScreen(
             }
         }
 
-        Text("*PROFILE PICTURE HERE*", modifier = Modifier.align(CenterHorizontally))
+        if (profile == null) {
+            Text("Click the edit icon to create a public profile", modifier = Modifier.align(CenterHorizontally))
+        }
+        else {
+            Text("*PROFILE PICTURE HERE*", modifier = Modifier.align(CenterHorizontally))
 
-        Divider(modifier = Modifier.padding(vertical = 10.dp))
+            Divider(modifier = Modifier.padding(vertical = 10.dp))
 
-        Text("Username: ${profile?.username}",
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(vertical = 10.dp)
-        )
-        Text("Email: ${profile?.email}",
-            color = MaterialTheme.colorScheme.onBackground,
-            modifier = Modifier.padding(vertical = 10.dp)
-        )
+            Text(
+                "Username: ${profile?.username}",
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(vertical = 10.dp)
+            )
+            Text(
+                "Email: ${profile?.email}",
+                color = MaterialTheme.colorScheme.onBackground,
+                modifier = Modifier.padding(vertical = 10.dp)
+            )
 
-        if (profile?.dietaryInfo != null) {
-            if (profile?.dietaryInfo!!.isNotEmpty()) {
-                Text("Dietary Preferences:",
-                    color = MaterialTheme.colorScheme.onBackground,
-                    modifier = Modifier.padding(vertical = 10.dp)
-                )
-                profile?.dietaryInfo?.forEach { dietaryInfo ->
-                    Text(dietaryInfo.name,
+            if (profile?.dietaryInfo != null) {
+                if (profile?.dietaryInfo!!.isNotEmpty()) {
+                    Text(
+                        "Dietary Preferences:",
                         color = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.padding(vertical = 10.dp)
                     )
+                    profile?.dietaryInfo?.forEach { dietaryInfo ->
+                        Text(
+                            dietaryInfo.name,
+                            color = MaterialTheme.colorScheme.onBackground,
+                            modifier = Modifier.padding(vertical = 10.dp)
+                        )
+                    }
                 }
             }
         }

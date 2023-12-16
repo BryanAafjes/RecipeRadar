@@ -14,13 +14,17 @@ class ProfileRepository(db: FirebaseFirestore) {
 
     suspend fun getProfileById(userId: String): ProfileDto? {
         return try {
-            val documentSnapshot = profileCollection
+            val querySnapshot = profileCollection
                 .whereEqualTo("user_id", userId)
                 .limit(1)
                 .get()
                 .await()
-                .first()
 
+            if (querySnapshot.isEmpty) {
+                return null
+            }
+
+            val documentSnapshot = querySnapshot.first()
             val profileDto = documentSnapshot.toObject(ProfileDto::class.java)
 
             profileDto.id = documentSnapshot.id
