@@ -36,6 +36,7 @@ import com.bth.reciperadar.domain.controllers.CuisineController
 import com.bth.reciperadar.domain.controllers.DietaryInfoController
 import com.bth.reciperadar.domain.controllers.IngredientController
 import com.bth.reciperadar.domain.controllers.IngredientTypeController
+import com.bth.reciperadar.domain.controllers.ProfileController
 import com.bth.reciperadar.domain.controllers.RecipeController
 import com.bth.reciperadar.presentation.viewmodels.CuisineViewModel
 import com.bth.reciperadar.presentation.viewmodels.DietaryInfoViewModel
@@ -57,7 +58,8 @@ fun RecipeSearchScreen(
     ingredientController: IngredientController,
     ingredientTypeController: IngredientTypeController,
     cuisineController: CuisineController,
-    dietaryInfoController: DietaryInfoController
+    dietaryInfoController: DietaryInfoController,
+    profileController: ProfileController
 ) {
     var searchTerm by remember { mutableStateOf(searchQuery) }
     var recipes by remember { mutableStateOf<List<RecipeViewModel>>(emptyList()) }
@@ -88,6 +90,9 @@ fun RecipeSearchScreen(
 
             val dietaryModels = dietaryInfoController.getDietaryInfo()
             dietaryInfo = dietaryModels.map { it.toViewModel() }
+
+            val selectedDietaryInfoModels = profileController.getProfile()?.dietaryInfo ?: emptyList()
+            selectedDietaryInfo = selectedDietaryInfoModels.map { it.toViewModel() }
         }
     }
 

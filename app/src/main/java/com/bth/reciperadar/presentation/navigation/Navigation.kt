@@ -181,7 +181,8 @@ fun Navigation(
                         ingredientController = ingredientController,
                         ingredientTypeController = ingredientTypeController,
                         cuisineController = cuisineController,
-                        dietaryInfoController = dietaryInfoController
+                        dietaryInfoController = dietaryInfoController,
+                        profileController = profileController
                     )
                 }
                 composable(
