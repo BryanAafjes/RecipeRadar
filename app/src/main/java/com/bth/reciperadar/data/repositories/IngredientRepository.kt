@@ -1,5 +1,6 @@
 package com.bth.reciperadar.data.repositories
 
+import com.bth.reciperadar.data.dtos.DietaryInfoDto
 import com.bth.reciperadar.data.dtos.IngredientDto
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
@@ -28,6 +29,23 @@ class IngredientRepository(db: FirebaseFirestore) {
 
         return ingredients
     }
+
+    suspend fun getIngredientsForReferences(document: DocumentSnapshot): List<IngredientDto> {
+        val ingredientList = ArrayList<IngredientDto>()
+        val firestoreIngredientReferences: List<DocumentReference> = document.get("ingredient_references") as List<DocumentReference>
+        firestoreIngredientReferences.forEach { ingredientReference ->
+            val ingredientId = ingredientReference.id
+            val ingredientDto: IngredientDto? = getIngredient(ingredientId)
+
+            if(ingredientDto != null) {
+                ingredientDto.id = ingredientId
+                ingredientList.add(ingredientDto)
+            }
+        }
+
+        return ingredientList
+    }
+
     suspend fun getIngredient(ingredientId: String): IngredientDto? {
         return try {
             val documentSnapshot = ingredientsCollection.document(ingredientId).get().await()
