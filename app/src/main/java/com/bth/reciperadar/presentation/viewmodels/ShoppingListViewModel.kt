@@ -8,7 +8,7 @@ data class ShoppingListViewModel(
     var ingredients: List<IngredientViewModel> = emptyList(),
 )
 
-fun ShoppingList.toDto(): ShoppingListViewModel {
+fun ShoppingList.toViewModel(): ShoppingListViewModel {
     return ShoppingListViewModel(
         id = this.id,
         userId = this.userId,

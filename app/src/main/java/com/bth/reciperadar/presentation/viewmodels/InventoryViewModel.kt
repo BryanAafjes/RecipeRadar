@@ -8,7 +8,7 @@ data class InventoryViewModel(
     var ingredients: List<IngredientViewModel> = emptyList(),
 )
 
-fun Inventory.toDto(): InventoryViewModel {
+fun Inventory.toViewModel(): InventoryViewModel {
     return InventoryViewModel(
         id = this.id,
         userId = this.userId,

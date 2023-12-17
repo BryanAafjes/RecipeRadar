@@ -13,15 +13,19 @@ import com.bth.reciperadar.data.repositories.CuisineRepository
 import com.bth.reciperadar.data.repositories.DietaryInfoRepository
 import com.bth.reciperadar.data.repositories.IngredientRepository
 import com.bth.reciperadar.data.repositories.IngredientTypeRepository
+import com.bth.reciperadar.data.repositories.InventoryRepository
 import com.bth.reciperadar.data.repositories.ProfileRepository
 import com.bth.reciperadar.data.repositories.RecipeRepository
+import com.bth.reciperadar.data.repositories.ShoppingListRepository
 import com.bth.reciperadar.domain.controllers.AuthController
 import com.bth.reciperadar.domain.controllers.CuisineController
 import com.bth.reciperadar.domain.controllers.DietaryInfoController
 import com.bth.reciperadar.domain.controllers.IngredientController
 import com.bth.reciperadar.domain.controllers.IngredientTypeController
+import com.bth.reciperadar.domain.controllers.InventoryController
 import com.bth.reciperadar.domain.controllers.ProfileController
 import com.bth.reciperadar.domain.controllers.RecipeController
+import com.bth.reciperadar.domain.controllers.ShoppingListController
 import com.bth.reciperadar.presentation.screens.loginscreen.StartScreen
 import com.bth.reciperadar.presentation.navigation.Navigation
 import com.bth.reciperadar.ui.theme.RecipeRadarTheme
@@ -51,6 +55,8 @@ class MainActivity : ComponentActivity() {
                     val cuisineRepository = remember { CuisineRepository(db) }
                     val dietaryInfoRepository = remember { DietaryInfoRepository(db) }
                     val profileRepository = remember { ProfileRepository(db) }
+                    val shoppingListRepository = remember { ShoppingListRepository(db) }
+                    val inventoryRepository = remember { InventoryRepository(db) }
 
                     // Controller instances
                     val recipeController = remember { RecipeController(recipeRepository) }
@@ -59,6 +65,8 @@ class MainActivity : ComponentActivity() {
                     val cuisineController = remember { CuisineController(cuisineRepository) }
                     val dietaryInfoController = remember { DietaryInfoController(dietaryInfoRepository) }
                     val profileController = remember { ProfileController(authController, profileRepository) }
+                    val shoppingListController = remember { ShoppingListController(authController, shoppingListRepository) }
+                    val inventoryController = remember { InventoryController(authController, inventoryRepository) }
 
                     if (currentUser.value != null) {
                         Navigation(
@@ -68,7 +76,9 @@ class MainActivity : ComponentActivity() {
                             ingredientTypeController = ingredientTypeController,
                             cuisineController = cuisineController,
                             dietaryInfoController = dietaryInfoController,
-                            profileController = profileController
+                            profileController = profileController,
+                            shoppingListController = shoppingListController,
+                            inventoryController = inventoryController
                         )
                     } else {
                         StartScreen(authController)

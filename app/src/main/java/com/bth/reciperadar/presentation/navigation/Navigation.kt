@@ -40,16 +40,18 @@ import com.bth.reciperadar.domain.controllers.CuisineController
 import com.bth.reciperadar.domain.controllers.DietaryInfoController
 import com.bth.reciperadar.domain.controllers.IngredientController
 import com.bth.reciperadar.domain.controllers.IngredientTypeController
+import com.bth.reciperadar.domain.controllers.InventoryController
 import com.bth.reciperadar.domain.controllers.ProfileController
 import com.bth.reciperadar.domain.controllers.RecipeController
+import com.bth.reciperadar.domain.controllers.ShoppingListController
+import com.bth.reciperadar.presentation.screens.ingredientlistscreen.ShoppingListScreen
 import com.bth.reciperadar.presentation.screens.profilescreens.ProfileScreen
-import com.bth.reciperadar.presentation.screens.listscreen.ListScreen
 import com.bth.reciperadar.presentation.screens.mainscreen.MainScreen
 import com.bth.reciperadar.presentation.screens.profilescreens.EditProfileScreen
 import com.bth.reciperadar.presentation.screens.recipe.RecipeDetailScreen
 import com.bth.reciperadar.presentation.screens.recipe.RecipeSearchScreen
 import com.bth.reciperadar.presentation.screens.screen.Screen
-import com.bth.reciperadar.presentation.screens.storagescreen.StorageScreen
+import com.bth.reciperadar.presentation.screens.inventoryscreen.StorageScreen
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -64,7 +66,9 @@ fun Navigation(
     ingredientTypeController: IngredientTypeController,
     cuisineController: CuisineController,
     dietaryInfoController: DietaryInfoController,
-    profileController: ProfileController
+    profileController: ProfileController,
+    shoppingListController: ShoppingListController,
+    inventoryController: InventoryController
 ) {
     val navController = rememberNavController()
 
@@ -241,7 +245,9 @@ fun Navigation(
                         recipeController = recipeController
                     )
                 }
-                composable( route = Screen.ListScreen.route) { ListScreen() }
+                composable( route = Screen.ListScreen.route) {
+                    ShoppingListScreen(ingredientController, shoppingListController)
+                }
                 composable( route = Screen.StorageScreen.route) { StorageScreen() }
             }
         }

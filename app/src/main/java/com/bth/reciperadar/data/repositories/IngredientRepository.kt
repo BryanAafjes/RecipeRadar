@@ -2,6 +2,7 @@ package com.bth.reciperadar.data.repositories
 
 import com.bth.reciperadar.data.dtos.DietaryInfoDto
 import com.bth.reciperadar.data.dtos.IngredientDto
+import com.bth.reciperadar.data.dtos.RecipeDto
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -112,6 +113,21 @@ class IngredientRepository(db: FirebaseFirestore) {
                 .get()
                 .await()
             return getIngredientsFromQueryDocuments(querySnapshot.documents, getIngredientType = false)
+        } catch (e: Exception) {
+            // Handle exceptions, such as network issues or Firestore errors
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+
+    suspend fun searchIngredientsByTitle(lowercaseSearchWords: List<String>): List<IngredientDto> {
+        return try {
+            val querySnapshot = ingredientsCollection
+                .whereArrayContainsAny("search_name", lowercaseSearchWords)
+                .get()
+                .await()
+
+            return getIngredientsFromQueryDocuments(querySnapshot.documents, false)
         } catch (e: Exception) {
             // Handle exceptions, such as network issues or Firestore errors
             e.printStackTrace()
