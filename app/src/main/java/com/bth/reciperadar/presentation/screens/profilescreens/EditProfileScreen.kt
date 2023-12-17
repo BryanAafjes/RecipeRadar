@@ -69,9 +69,6 @@ fun EditProfileScreen(
     val pickMedia = rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
             selectedImageUri = uri
-            Log.d("PhotoPicker", "Selected URI: $uri")
-        } else {
-            Log.d("PhotoPicker", "No media selected")
         }
     }
 
@@ -164,10 +161,24 @@ fun EditProfileScreen(
 
         Spacer(modifier = Modifier.height(20.dp))
 
-        Button(onClick = {
-            pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
-        }) {
+        Button(
+            onClick = {
+                pickMedia.launch(PickVisualMediaRequest(ActivityResultContracts.PickVisualMedia.ImageOnly))
+            },
+            modifier = Modifier.align(Alignment.CenterHorizontally)
+        ) {
             Text("Select Profile Picture")
+        }
+
+        if (selectedImageUri != null) {
+            Spacer(modifier = Modifier.height(10.dp))
+            Card(modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                Text(
+                    "Profile picture selected ✅",
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.align(Alignment.CenterHorizontally).padding(10.dp)
+                )
+            }
         }
 
         Spacer(modifier = Modifier.height(20.dp))
