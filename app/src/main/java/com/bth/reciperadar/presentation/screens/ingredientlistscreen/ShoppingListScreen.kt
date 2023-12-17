@@ -4,7 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -60,60 +60,44 @@ fun ShoppingListScreen(
         }
     }
 
-    Column( modifier = Modifier
-        .fillMaxSize()
-        .background(Color.Transparent)
-    ) {
+    Column(modifier = Modifier.padding(horizontal = 20.dp).fillMaxHeight().fillMaxWidth()) {
         Text(
             text = "Shopping List",
             color = MaterialTheme.colorScheme.onBackground,
             textAlign = TextAlign.Start,
             fontSize = 30.sp,
-            fontWeight = FontWeight(800),
-            modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .padding(start = 30.dp, top = 15.dp, bottom = 5.dp)
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier.fillMaxWidth().padding(vertical = 20.dp)
         )
-        Row (
-            modifier = Modifier
-                .background(Color.Transparent)
-                .padding(start = 4.dp, end = 4.dp, top = 8.dp, bottom = 8.dp)
-                .weight(1f)
-        ) {
-            OutlinedTextField(
-                value = searchText,
-                onValueChange = { searchText = it },
-                placeholder = { Text(text = "Type ingredient name to add:") },
-                singleLine = true,
-                trailingIcon = { IconButton( onClick = {
-                    CoroutineScope(Dispatchers.IO).launch {
-                        try {
-                            val foundIngredient = ingredientController.searchIngredientsByName(searchText)
+        OutlinedTextField(
+            value = searchText,
+            onValueChange = { searchText = it },
+            placeholder = { Text(text = "Type ingredient name to add:") },
+            singleLine = true,
+            trailingIcon = { IconButton( onClick = {
+                CoroutineScope(Dispatchers.IO).launch {
+                    try {
+                        val foundIngredient = ingredientController.searchIngredientsByName(searchText)
 
-                            if (foundIngredient != null){
-                                ingredients = ingredients.plus(foundIngredient.toViewModel())
-                            }
-
-                            searchText = ""
-                        } catch (e: Exception) {
-                            e.printStackTrace()
+                        if (foundIngredient != null){
+                            ingredients = ingredients.plus(foundIngredient.toViewModel())
                         }
+
+                        searchText = ""
+                    } catch (e: Exception) {
+                        e.printStackTrace()
                     }
-                } ) {
-                    Icon(
-                        imageVector = Icons.Default.Check,
-                        contentDescription = "search_icon"
-                    )
-                }},
-                shape = RoundedCornerShape(20.dp, 20.dp, 20.dp, 20.dp),
-                colors = OutlinedTextFieldDefaults.colors( focusedBorderColor = MaterialTheme.colorScheme.primary ) ,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .background(Color.Transparent)
-                    .padding(horizontal = 20.dp)
-            )
-        }
+                }
+            } ) {
+                Icon(
+                    imageVector = Icons.Default.Check,
+                    contentDescription = "search_icon"
+                )
+            }},
+            shape = RoundedCornerShape(20.dp, 20.dp, 20.dp, 20.dp),
+            colors = OutlinedTextFieldDefaults.colors( focusedBorderColor = MaterialTheme.colorScheme.primary ) ,
+            modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp)
+        )
 
         Row(
             modifier = Modifier.fillMaxWidth()
@@ -138,36 +122,36 @@ fun ShoppingListScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(Color.Transparent)
-                .padding(6.dp)
+                .padding(vertical = 20.dp)
                 .weight(1f),
-            Arrangement.SpaceEvenly
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.Bottom
         ) {
             IconButton( modifier = Modifier
                 .clip(shape = RoundedCornerShape(15.dp, 15.dp, 15.dp, 15.dp))
                 .background(Color.Red)
-                .height(100.dp)
-                .padding(6.dp)
+                .height(75.dp)
                 .fillMaxWidth(0.45f),
                 onClick = { ingredients = emptyList() } ) {
                 Text(text = "Clear List",
                     textAlign = TextAlign.Center,
-                    color = Color.White,
-                    fontSize = 17.sp,
-                    fontWeight = FontWeight(800) )
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
+                )
             }
 
             IconButton( modifier = Modifier
                 .clip(shape = RoundedCornerShape(15.dp, 15.dp, 15.dp, 15.dp))
                 .background(Color.Green)
-                .height(100.dp)
-                .padding(6.dp)
+                .height(75.dp)
                 .fillMaxWidth(0.8f),
                 onClick = { /*TODO*/ } ) {
                 Text("Add ingredients to storage",
                     textAlign = TextAlign.Center,
-                    color = Color.White,
-                    fontSize = 17.sp,
-                    fontWeight = FontWeight(800)
+                    color = MaterialTheme.colorScheme.onBackground,
+                    style = MaterialTheme.typography.bodyMedium,
+                    fontWeight = FontWeight.Bold
                 )
             }
         }

@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -20,6 +19,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
@@ -55,7 +55,7 @@ fun IngredientListItem(
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
+            .padding(vertical = 5.dp)
             .clip(MaterialTheme.shapes.small)
             .background(MaterialTheme.colorScheme.background)
             .border(
@@ -68,27 +68,25 @@ fun IngredientListItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(16.dp)
+                .padding(5.dp)
         ) {
             Checkbox(
                 checked = selectedIngredients.contains(ingredient),
                 onCheckedChange = {
                     onIngredientSelect(ingredient)
                 },
-                modifier = Modifier.size(24.dp)
+                modifier = Modifier.size(24.dp).align(CenterVertically).padding(horizontal = 20.dp)
             )
 
             Text(
                 text = ingredient.name,
                 style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier.weight(1f)
+                modifier = Modifier.weight(1f).align(CenterVertically).padding(horizontal = 20.dp)
             )
 
             IconButton( onClick = { onIngredientRemove(ingredient) } ) {
                 Icon(
-                    modifier = Modifier
-                        .fillMaxHeight()
-                        .fillMaxWidth(),
+                    modifier = Modifier.size(24.dp),
                     imageVector = Icons.Default.Close,
                     contentDescription = "search_icon",
                     tint = MaterialTheme.colorScheme.onBackground
