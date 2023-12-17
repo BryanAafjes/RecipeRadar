@@ -39,11 +39,13 @@ import com.bth.reciperadar.domain.controllers.IngredientTypeController
 import com.bth.reciperadar.domain.controllers.ProfileController
 import com.bth.reciperadar.domain.controllers.RecipeController
 import com.bth.reciperadar.presentation.screens.profilescreens.ProfileScreen
+import com.bth.reciperadar.presentation.screens.listscreen.ListScreen
 import com.bth.reciperadar.presentation.screens.mainscreen.MainScreen
 import com.bth.reciperadar.presentation.screens.profilescreens.EditProfileScreen
 import com.bth.reciperadar.presentation.screens.recipe.RecipeDetailScreen
 import com.bth.reciperadar.presentation.screens.recipe.RecipeSearchScreen
 import com.bth.reciperadar.presentation.screens.screen.Screen
+import com.bth.reciperadar.presentation.screens.storagescreen.StorageScreen
 import linearGradient
 
 @Composable
@@ -62,14 +64,15 @@ fun Navigation(
 
     val screens = listOf(
         Screen.MainScreen,
+        Screen.ListScreen,
+        Screen.StorageScreen,
         Screen.ProfileScreen
     )
 
     Scaffold(
         bottomBar = {
             BottomNavigation(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp)),
+                modifier = Modifier.clip(RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp)),
                 backgroundColor = MaterialTheme.colorScheme.surface
             ) {
                 screens.forEach { screen ->
@@ -216,6 +219,8 @@ fun Navigation(
                         recipeController = recipeController
                     )
                 }
+                composable( route = Screen.ListScreen.route) { ListScreen() }
+                composable( route = Screen.StorageScreen.route) { StorageScreen() }
             }
         }
     }
