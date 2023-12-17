@@ -5,8 +5,10 @@ import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,11 +19,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -58,8 +62,9 @@ fun EditProfileScreen(
     var selectedDietaryInfoList by remember { mutableStateOf<List<DietaryInfoViewModel>>(emptyList()) }
     var isDietaryInfoDropdownVisible by remember { mutableStateOf(false) }
     var username by remember { mutableStateOf("") }
-
+    var loading by remember { mutableStateOf(false) }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
+    var navigationCompleted by remember { mutableStateOf(false) }
 
     val pickMedia = rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
@@ -93,6 +98,15 @@ fun EditProfileScreen(
         }
     }
 
+    DisposableEffect(loading) {
+        onDispose {
+            if (!loading && !navigationCompleted) {
+                navController.navigate(Screen.ProfileScreen.route)
+                navigationCompleted = true
+            }
+        }
+    }
+
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -113,6 +127,8 @@ fun EditProfileScreen(
             Button(
                 onClick = {
                     if (profile != null) {
+                        loading = true
+
                         CoroutineScope(Dispatchers.IO).launch {
                             try {
                                 profile!!.dietaryInfo = selectedDietaryInfoList
@@ -121,11 +137,11 @@ fun EditProfileScreen(
                                 profileController.createOrUpdateProfile(profile!!.toDomain(), selectedImageUri)
                             } catch (e: Exception) {
                                 e.printStackTrace()
+                            } finally {
+                                loading = false
                             }
                         }
                     }
-
-                    navController.navigate(Screen.ProfileScreen.route)
                 },
                 colors = ButtonDefaults.buttonColors(
                     containerColor = MaterialTheme.colorScheme.primary,
@@ -134,6 +150,14 @@ fun EditProfileScreen(
                 modifier = Modifier.padding(horizontal = 10.dp, vertical = 2.dp).width(120.dp)
             ) {
                 Text(text = "Save")
+            }
+
+            if (loading) {
+                Box(
+                    modifier = Modifier.background(MaterialTheme.colorScheme.background)
+                ) {
+                    CircularProgressIndicator(modifier = Modifier.align(Alignment.Center))
+                }
             }
 
         }
