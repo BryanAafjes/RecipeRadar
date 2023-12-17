@@ -101,9 +101,9 @@ fun ProfileScreen(
                     ),
             ) {
                 Column(Modifier.padding(20.dp)) {
-                    if(profile!!.picturePath != null) {
+                    if(profile!!.pictureDownloadUri != null) {
                         Image(
-                            painter = rememberImagePainter(data = profile!!.picturePath),
+                            painter = rememberImagePainter(data = profile!!.pictureDownloadUri),
                             contentDescription = "Profile Picture",
                             modifier = Modifier
                                 .height(200.dp)

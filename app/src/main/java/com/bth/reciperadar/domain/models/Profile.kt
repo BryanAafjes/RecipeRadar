@@ -8,6 +8,7 @@ data class Profile(
     var username: String = "",
     var email: String? = "",
     var picturePath: String? = "",
+    var pictureDownloadUri: String? = null,
     var dietaryInfo: List<DietaryInfo> = emptyList(),
 )
 

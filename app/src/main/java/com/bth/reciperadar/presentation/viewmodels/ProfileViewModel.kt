@@ -8,6 +8,7 @@ data class ProfileViewModel(
     var username: String = "",
     var email: String? = "",
     var picturePath: String? = "",
+    var pictureDownloadUri: String? = null,
     var dietaryInfo: List<DietaryInfoViewModel> = emptyList(),
 )
 
@@ -18,6 +19,7 @@ fun Profile.toViewModel(): ProfileViewModel {
         username = this.username,
         email = this.email,
         picturePath = this.picturePath,
+        pictureDownloadUri = this.pictureDownloadUri,
         dietaryInfo = this.dietaryInfo.map { it.toViewModel() },
     )
 }

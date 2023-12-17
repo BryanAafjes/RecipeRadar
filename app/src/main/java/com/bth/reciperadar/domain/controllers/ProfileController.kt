@@ -36,7 +36,7 @@ class ProfileController(
                                     .await()
 
                                 if (downloadURL != null) {
-                                    profile.picturePath = downloadURL.toString()
+                                    profile.pictureDownloadUri = downloadURL.toString()
                                 }
                             } catch (e: Exception) {
                                 e.printStackTrace()
