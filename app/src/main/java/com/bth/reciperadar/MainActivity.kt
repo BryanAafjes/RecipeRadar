@@ -13,12 +13,14 @@ import com.bth.reciperadar.data.repositories.CuisineRepository
 import com.bth.reciperadar.data.repositories.DietaryInfoRepository
 import com.bth.reciperadar.data.repositories.IngredientRepository
 import com.bth.reciperadar.data.repositories.IngredientTypeRepository
+import com.bth.reciperadar.data.repositories.ProfileRepository
 import com.bth.reciperadar.data.repositories.RecipeRepository
 import com.bth.reciperadar.domain.controllers.AuthController
 import com.bth.reciperadar.domain.controllers.CuisineController
 import com.bth.reciperadar.domain.controllers.DietaryInfoController
 import com.bth.reciperadar.domain.controllers.IngredientController
 import com.bth.reciperadar.domain.controllers.IngredientTypeController
+import com.bth.reciperadar.domain.controllers.ProfileController
 import com.bth.reciperadar.domain.controllers.RecipeController
 import com.bth.reciperadar.presentation.screens.loginscreen.StartScreen
 import com.bth.reciperadar.presentation.navigation.Navigation
@@ -48,6 +50,7 @@ class MainActivity : ComponentActivity() {
                     val ingredientTypeRepository = remember { IngredientTypeRepository(db) }
                     val cuisineRepository = remember { CuisineRepository(db) }
                     val dietaryInfoRepository = remember { DietaryInfoRepository(db) }
+                    val profileRepository = remember { ProfileRepository(db) }
 
                     // Controller instances
                     val recipeController = remember { RecipeController(recipeRepository) }
@@ -55,6 +58,7 @@ class MainActivity : ComponentActivity() {
                     val ingredientTypeController = remember { IngredientTypeController(ingredientTypeRepository) }
                     val cuisineController = remember { CuisineController(cuisineRepository) }
                     val dietaryInfoController = remember { DietaryInfoController(dietaryInfoRepository) }
+                    val profileController = remember { ProfileController(authController, profileRepository) }
 
                     if (currentUser.value != null) {
                         Navigation(
@@ -63,7 +67,8 @@ class MainActivity : ComponentActivity() {
                             ingredientController = ingredientController,
                             ingredientTypeController = ingredientTypeController,
                             cuisineController = cuisineController,
-                            dietaryInfoController = dietaryInfoController
+                            dietaryInfoController = dietaryInfoController,
+                            profileController = profileController
                         )
                     } else {
                         StartScreen(authController)

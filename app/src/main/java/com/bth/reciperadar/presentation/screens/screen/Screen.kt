@@ -11,7 +11,8 @@ import androidx.compose.ui.graphics.vector.ImageVector
 sealed class Screen(val route: String, val icon: ImageVector, val label: String) {
     object MainScreen : Screen("main_screen", Icons.Default.Home, "MainScreen")
     object DetailScreen : Screen("detail_screen", Icons.Default.List, "DetailScreen")
-    object AccountScreen : Screen("account_screen", Icons.Default.Person, "AccountScreen")
+    object ProfileScreen : Screen("profile_screen", Icons.Default.Person, "ProfileScreen")
+    object EditProfileScreen : Screen("edit_profile_screen", Icons.Default.Person, "EditProfileScreen")
     object RecipeSearchScreen: Screen("recipe_search_screen", Icons.Default.Search, "RecipeSearchScreen")
     object RecipeDetailScreen: Screen("recipe_detail_screen", Icons.Default.Info, "RecipeDetailScreen")
 

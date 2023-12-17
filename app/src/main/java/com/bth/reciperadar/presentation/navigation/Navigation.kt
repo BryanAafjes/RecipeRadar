@@ -2,8 +2,11 @@ package com.bth.reciperadar.presentation.navigation
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTransformGestures
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
@@ -13,6 +16,7 @@ import androidx.compose.material.Surface
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
@@ -27,15 +31,16 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.bth.reciperadar.presentation.screens.detailscreen.DetailScreen
 import com.bth.reciperadar.domain.controllers.AuthController
 import com.bth.reciperadar.domain.controllers.CuisineController
 import com.bth.reciperadar.domain.controllers.DietaryInfoController
 import com.bth.reciperadar.domain.controllers.IngredientController
 import com.bth.reciperadar.domain.controllers.IngredientTypeController
+import com.bth.reciperadar.domain.controllers.ProfileController
 import com.bth.reciperadar.domain.controllers.RecipeController
-import com.bth.reciperadar.mainscreen.AccountScreen
+import com.bth.reciperadar.presentation.screens.profilescreens.ProfileScreen
 import com.bth.reciperadar.presentation.screens.mainscreen.MainScreen
+import com.bth.reciperadar.presentation.screens.profilescreens.EditProfileScreen
 import com.bth.reciperadar.presentation.screens.recipe.RecipeDetailScreen
 import com.bth.reciperadar.presentation.screens.recipe.RecipeSearchScreen
 import com.bth.reciperadar.presentation.screens.screen.Screen
@@ -48,7 +53,8 @@ fun Navigation(
     ingredientController: IngredientController,
     ingredientTypeController: IngredientTypeController,
     cuisineController: CuisineController,
-    dietaryInfoController: DietaryInfoController
+    dietaryInfoController: DietaryInfoController,
+    profileController: ProfileController
 ) {
     val navController = rememberNavController()
 
@@ -56,7 +62,7 @@ fun Navigation(
 
     val screens = listOf(
         Screen.MainScreen,
-        Screen.AccountScreen
+        Screen.ProfileScreen
     )
 
     Scaffold(
@@ -68,10 +74,31 @@ fun Navigation(
             ) {
                 screens.forEach { screen ->
                     BottomNavigationItem(
-                        icon = { Icon(imageVector = screen.icon, contentDescription = screen.label) },
+                        icon = {
+                            if (navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(40.dp)
+                                        .background(MaterialTheme.colorScheme.primary, shape = CircleShape),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = screen.icon,
+                                        contentDescription = screen.label,
+                                        tint = MaterialTheme.colorScheme.onPrimary
+                                    )
+                                }
+                            } else {
+                                Icon(
+                                    imageVector = screen.icon,
+                                    contentDescription = screen.label,
+                                    tint = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                        },
                         // label = { Text(text = screen.label) },
                         selected = navBackStackEntry?.destination?.hierarchy?.any { it.route == screen.route } == true,
-                        selectedContentColor = Color.Blue,
+                        selectedContentColor = MaterialTheme.colorScheme.primary,
                         unselectedContentColor = MaterialTheme.colorScheme.onSurface,
                         onClick = {
                             navController.navigate(screen.route) {
@@ -132,22 +159,26 @@ fun Navigation(
                     }
             ) {
                 composable(route = Screen.MainScreen.route) {
-                    MainScreen(navController = navController, authController = authController, recipeController = recipeController)
-                }
-                composable(
-                    route = Screen.DetailScreen.route + "/{name}",
-                    arguments = listOf(
-                        navArgument("name") {
-                            type = NavType.StringType
-                            defaultValue = "Bryan"
-                            nullable = false
-                        }
+                    MainScreen(
+                        navController = navController,
+                        authController = authController,
+                        recipeController = recipeController,
+                        profileController = profileController
                     )
-                ) { entry ->
-                    DetailScreen(name = entry.arguments?.getString("name"))
                 }
-                composable(route = Screen.AccountScreen.route) {
-                    AccountScreen(authController = authController)
+                composable(route = Screen.ProfileScreen.route) {
+                    ProfileScreen(
+                        navController = navController,
+                        authController = authController,
+                        profileController = profileController
+                    )
+                }
+                composable(route = Screen.EditProfileScreen.route) {
+                    EditProfileScreen(
+                        navController = navController,
+                        profileController = profileController,
+                        dietaryInfoController = dietaryInfoController
+                    )
                 }
                 composable(
                     route = Screen.RecipeSearchScreen.route + "/{searchQuery}",
@@ -166,7 +197,8 @@ fun Navigation(
                         ingredientController = ingredientController,
                         ingredientTypeController = ingredientTypeController,
                         cuisineController = cuisineController,
-                        dietaryInfoController = dietaryInfoController
+                        dietaryInfoController = dietaryInfoController,
+                        profileController = profileController
                     )
                 }
                 composable(
