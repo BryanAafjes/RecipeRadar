@@ -176,7 +176,6 @@ fun Navigation(
                 composable(route = Screen.EditProfileScreen.route) {
                     EditProfileScreen(
                         navController = navController,
-                        authController = authController,
                         profileController = profileController,
                         dietaryInfoController = dietaryInfoController
                     )
