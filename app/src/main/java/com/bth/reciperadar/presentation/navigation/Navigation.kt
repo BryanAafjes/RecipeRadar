@@ -250,7 +250,8 @@ fun Navigation(
                     RecipeDetailScreen(
                         recipeId = entry.arguments?.getString("recipeId")!!,
                         recipeController = recipeController,
-                        shoppingListController = shoppingListController
+                        shoppingListController = shoppingListController,
+                        inventoryController = inventoryController
                     )
                 }
                 composable( route = Screen.ListScreen.route) {

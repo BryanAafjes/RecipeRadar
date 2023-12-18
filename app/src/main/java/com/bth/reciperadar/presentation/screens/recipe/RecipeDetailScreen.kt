@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
 import androidx.compose.material3.IconButton
@@ -30,8 +31,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.bth.reciperadar.domain.controllers.InventoryController
 import com.bth.reciperadar.domain.controllers.RecipeController
 import com.bth.reciperadar.domain.controllers.ShoppingListController
+import com.bth.reciperadar.presentation.screens.screen.Screen
 import com.bth.reciperadar.presentation.viewmodels.CuisineViewModel
 import com.bth.reciperadar.presentation.viewmodels.DietaryInfoViewModel
 import com.bth.reciperadar.presentation.viewmodels.IngredientViewModel
@@ -48,7 +51,8 @@ import kotlinx.coroutines.withContext
 fun RecipeDetailScreen(
     recipeId: String,
     recipeController: RecipeController,
-    shoppingListController: ShoppingListController
+    shoppingListController: ShoppingListController,
+    inventoryController: InventoryController
 ) {
     var recipe by remember { mutableStateOf<RecipeViewModel?>(null) }
     var selectedIngredients by remember { mutableStateOf<List<IngredientViewModel>>(emptyList()) }
@@ -189,6 +193,26 @@ fun RecipeDetailScreen(
                                 },
                             )
                         }
+                    }
+                    Button(
+                        onClick = {
+                            CoroutineScope(Dispatchers.IO).launch {
+                                try {
+                                    if (selectedIngredients.isNotEmpty()) {
+                                        inventoryController.removeIngredientListFromInventory(
+                                            selectedIngredients.map { it.toDomain() }
+                                        )
+
+                                        selectedIngredients = emptyList()
+                                    }
+                                } catch (e: Exception) {
+                                    e.printStackTrace()
+                                }
+                            }
+                        },
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "Remove selected ingredients from inventory")
                     }
                 }
 

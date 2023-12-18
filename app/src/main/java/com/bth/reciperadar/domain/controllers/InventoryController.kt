@@ -65,4 +65,26 @@ class InventoryController(
             false
         }
     }
+
+    suspend fun removeIngredientListFromInventory(ingredients: List<Ingredient>): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val inventory = getInventory()
+
+                if (inventory != null){
+                    inventory.ingredients = inventory.ingredients.filterNot { inventoryIngredient ->
+                        ingredients.any { ingredientToRemove -> inventoryIngredient.id == ingredientToRemove.id }
+                    }
+
+                    createOrUpdateInventory(inventory = inventory)
+                    return@withContext true
+                }
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            false
+        }
+    }
 }
