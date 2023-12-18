@@ -126,7 +126,7 @@ fun IngredientItem(
             )
 
             Checkbox(
-                checked = selectedIngredients.contains(ingredient),
+                checked = selectedIngredients.any { it.id == ingredient.id },
                 onCheckedChange = {
                     onIngredientSelect(ingredient)
                 },

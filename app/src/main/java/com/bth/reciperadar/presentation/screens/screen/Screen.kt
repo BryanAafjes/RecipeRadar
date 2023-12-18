@@ -25,4 +25,14 @@ sealed class Screen(val route: String, val icon: ImageVector, val label: String)
             args.forEach { arg -> append("/$arg") }
         }
     }
+
+    fun withArgs(args: Map<String, Any?>): String {
+        return buildString {
+            append(route)
+            args.forEach { (argName, argValue) ->
+                append("/$argValue")
+            }
+        }
+    }
+
 }

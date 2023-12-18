@@ -1,11 +1,11 @@
 package com.bth.reciperadar.domain.controllers
 
 import com.bth.reciperadar.data.repositories.RecipeRepository
+import com.bth.reciperadar.domain.models.Cuisine
+import com.bth.reciperadar.domain.models.DietaryInfo
 import com.bth.reciperadar.domain.models.Ingredient
 import com.bth.reciperadar.domain.models.Recipe
 import com.bth.reciperadar.domain.models.toDomain
-import com.bth.reciperadar.presentation.viewmodels.CuisineViewModel
-import com.bth.reciperadar.presentation.viewmodels.DietaryInfoViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -32,10 +32,14 @@ class RecipeController(private val recipeRepository: RecipeRepository) {
         }
     }
 
-    suspend fun searchRecipes(searchQuery: String): List<Recipe> = withContext(Dispatchers.IO) {
+    suspend fun searchRecipes(searchQuery: String?): List<Recipe> = withContext(Dispatchers.IO) {
         try {
-            val searchQueryLowercase = searchQuery.lowercase()
-            val searchWords = searchQueryLowercase.split(" ")
+            val searchWords: List<String>? = if (searchQuery != null) {
+                val searchQueryLowercase = searchQuery.lowercase()
+                searchQueryLowercase.split(" ")
+            } else {
+                null
+            }
 
             val recipeDtoList = recipeRepository.searchRecipesByTitle(searchWords, false)
             return@withContext recipeDtoList.map { it.toDomain() }
@@ -47,16 +51,20 @@ class RecipeController(private val recipeRepository: RecipeRepository) {
     }
 
     suspend fun searchRecipesByTitleAndFilters(
-        searchQuery: String,
+        searchQuery: String?,
         ingredientsList: List<Ingredient>,
-        cuisinesList: List<CuisineViewModel>,
-        dietaryInfoList: List<DietaryInfoViewModel>,
+        cuisinesList: List<Cuisine>,
+        dietaryInfoList: List<DietaryInfo>,
         anyRecipesWithSelectedIngredients: Boolean,
         dontAllowExtraIngredients: Boolean,
     ): List<Recipe> = withContext(Dispatchers.IO) {
         try {
-            val searchQueryLowercase = searchQuery.lowercase()
-            val searchWords = searchQueryLowercase.split(" ")
+            val searchWords: List<String>? = if (searchQuery != null) {
+                val searchQueryLowercase = searchQuery.lowercase()
+                searchQueryLowercase.split(" ")
+            } else {
+                null
+            }
 
             var recipeList = recipeRepository.searchRecipesByTitle(searchWords, true).map { it.toDomain() }
 

@@ -59,7 +59,7 @@ fun MainScreen(
     }
 
     var searchQuery by remember {
-        mutableStateOf("")
+        mutableStateOf<String?>("")
     }
 
     var recipes by remember { mutableStateOf<List<RecipeViewModel>>(emptyList()) }
@@ -126,7 +126,7 @@ fun MainScreen(
             Spacer(modifier = Modifier.height(20.dp))
         }
         OutlinedTextField(
-            value = searchQuery,
+            value = searchQuery ?: "",
             onValueChange = {
                 searchQuery = it
             },
@@ -134,9 +134,17 @@ fun MainScreen(
             singleLine = true,
             trailingIcon = {
                 IconButton(onClick = {
-                    if (searchQuery != "") {
-                        navController.navigate(Screen.RecipeSearchScreen.withArgs(searchQuery))
+                    if (searchQuery == "") {
+                        searchQuery = null
                     }
+                    navController.navigate(
+                        Screen.RecipeSearchScreen.withArgs(
+                            mapOf(
+                                "searchQuery" to searchQuery,
+                                "searchWithIngredients" to false
+                            )
+                        )
+                    )
                 }) {
                     Icon(imageVector = Icons.Default.Search, contentDescription = null)
                 }
@@ -147,8 +155,14 @@ fun MainScreen(
         )
         Spacer(modifier = Modifier.height(20.dp))
         Button(onClick = {
-            navController.navigate(Screen.RecipeSearchScreen.withArgs(searchQuery))
-        },
+            navController.navigate(
+                Screen.RecipeSearchScreen.withArgs(
+                    mapOf(
+                        "searchQuery" to null,
+                        "searchWithIngredients" to true
+                    )
+                )
+            )        },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "Look for a recipe with your ingredients")
