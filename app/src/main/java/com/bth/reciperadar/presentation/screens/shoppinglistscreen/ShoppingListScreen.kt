@@ -1,4 +1,4 @@
-package com.bth.reciperadar.presentation.screens.ingredientlistscreen
+package com.bth.reciperadar.presentation.screens.shoppinglistscreen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
