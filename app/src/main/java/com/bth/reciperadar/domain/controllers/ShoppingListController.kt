@@ -1,6 +1,7 @@
 package com.bth.reciperadar.domain.controllers
 
 import com.bth.reciperadar.data.repositories.ShoppingListRepository
+import com.bth.reciperadar.domain.models.Ingredient
 import com.bth.reciperadar.domain.models.ShoppingList
 import com.bth.reciperadar.domain.models.toDomain
 import com.bth.reciperadar.domain.models.toDto
@@ -42,6 +43,26 @@ class ShoppingListController(
                 e.printStackTrace()
                 false
             }
+        }
+    }
+
+    suspend fun addIngredientListToShoppingList(ingredients: List<Ingredient>): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val shoppingList = getShoppingList()
+
+                if (shoppingList != null){
+                    shoppingList.ingredients = shoppingList.ingredients.plus(ingredients)
+
+                    createOrUpdateShoppingList(shoppingList = shoppingList)
+                    return@withContext true
+                }
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            false
         }
     }
 }

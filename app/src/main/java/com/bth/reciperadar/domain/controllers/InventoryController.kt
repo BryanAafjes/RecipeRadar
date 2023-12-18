@@ -1,6 +1,7 @@
 package com.bth.reciperadar.domain.controllers
 
 import com.bth.reciperadar.data.repositories.InventoryRepository
+import com.bth.reciperadar.domain.models.Ingredient
 import com.bth.reciperadar.domain.models.Inventory
 import com.bth.reciperadar.domain.models.toDomain
 import com.bth.reciperadar.domain.models.toDto
@@ -27,7 +28,7 @@ class InventoryController(
         }
     }
 
-    suspend fun createOrUpdateProfile(inventory: Inventory): Boolean {
+    suspend fun createOrUpdateInventory(inventory: Inventory): Boolean {
         return withContext(Dispatchers.IO) {
             try {
                 val userId = authController.auth.currentUser?.uid
@@ -42,6 +43,26 @@ class InventoryController(
                 e.printStackTrace()
                 false
             }
+        }
+    }
+
+    suspend fun addIngredientListToInventory(ingredients: List<Ingredient>): Boolean {
+        return withContext(Dispatchers.IO) {
+            try {
+                val inventory = getInventory()
+
+                if (inventory != null){
+                    inventory.ingredients = inventory.ingredients.plus(ingredients)
+
+                    createOrUpdateInventory(inventory = inventory)
+                    return@withContext true
+                }
+
+            } catch (e: Exception) {
+                e.printStackTrace()
+            }
+
+            false
         }
     }
 }

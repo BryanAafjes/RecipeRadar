@@ -246,7 +246,7 @@ fun Navigation(
                     )
                 }
                 composable( route = Screen.ListScreen.route) {
-                    ShoppingListScreen(ingredientController, shoppingListController)
+                    ShoppingListScreen(ingredientController, shoppingListController, inventoryController)
                 }
                 composable( route = Screen.StorageScreen.route) {
                     InventoryScreen(ingredientController, inventoryController)

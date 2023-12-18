@@ -35,6 +35,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bth.reciperadar.domain.controllers.IngredientController
+import com.bth.reciperadar.domain.controllers.InventoryController
 import com.bth.reciperadar.domain.controllers.ShoppingListController
 import com.bth.reciperadar.presentation.viewmodels.IngredientViewModel
 import com.bth.reciperadar.presentation.viewmodels.ShoppingListViewModel
@@ -51,7 +52,8 @@ import androidx.compose.material3.IconButton as IconButton
 @Composable
 fun ShoppingListScreen(
     ingredientController: IngredientController,
-    shoppingListController: ShoppingListController
+    shoppingListController: ShoppingListController,
+    inventoryController: InventoryController
 ) {
     var searchText by remember { mutableStateOf( "") }
     var shoppingList by remember { mutableStateOf<ShoppingListViewModel?>(ShoppingListViewModel("", "", emptyList())) }
@@ -204,9 +206,25 @@ fun ShoppingListScreen(
                     .background(SuccessGreen)
                     .height(75.dp)
                     .fillMaxWidth(0.8f),
-                    onClick = { /*TODO*/ }) {
+                    onClick = {
+                        CoroutineScope(Dispatchers.IO).launch {
+                            try {
+                                if (selectedIngredients.isNotEmpty()) {
+                                    inventoryController.addIngredientListToInventory(
+                                        selectedIngredients.map { it.toDomain() }
+                                    )
+
+                                    ingredients = ingredients.minus(selectedIngredients)
+
+                                    selectedIngredients = emptyList()
+                                }
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                            }
+                        }
+                    }) {
                     Text(
-                        "Add ingredients to storage",
+                        "Add selected ingredients to inventory",
                         textAlign = TextAlign.Center,
                         color = MaterialTheme.colorScheme.onBackground,
                         style = MaterialTheme.typography.bodyMedium,

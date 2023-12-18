@@ -31,11 +31,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.bth.reciperadar.domain.controllers.IngredientController
 import com.bth.reciperadar.domain.controllers.InventoryController
-import com.bth.reciperadar.domain.controllers.ShoppingListController
-import com.bth.reciperadar.presentation.screens.shoppinglistscreen.IngredientList
 import com.bth.reciperadar.presentation.viewmodels.IngredientViewModel
 import com.bth.reciperadar.presentation.viewmodels.InventoryViewModel
-import com.bth.reciperadar.presentation.viewmodels.ShoppingListViewModel
 import com.bth.reciperadar.presentation.viewmodels.toDomain
 import com.bth.reciperadar.presentation.viewmodels.toViewModel
 import com.bth.reciperadar.ui.theme.WarningRed
@@ -74,7 +71,7 @@ fun InventoryScreen(
                 try {
                     if (inventory != null) {
                         inventory!!.ingredients = ingredients
-                        inventoryController.createOrUpdateProfile(inventory?.toDomain()!!)
+                        inventoryController.createOrUpdateInventory(inventory?.toDomain()!!)
                     }
                 } catch (e: Exception) {
                     e.printStackTrace()
