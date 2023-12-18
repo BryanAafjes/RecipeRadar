@@ -1,5 +1,6 @@
 package com.bth.reciperadar.presentation.screens.mainscreen
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
@@ -30,12 +32,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Alignment.Companion.CenterHorizontally
+import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import coil.compose.rememberImagePainter
 import com.bth.reciperadar.domain.controllers.AuthController
 import com.bth.reciperadar.domain.controllers.ProfileController
 import com.bth.reciperadar.domain.controllers.RecipeController
@@ -83,12 +88,28 @@ fun MainScreen(
             .fillMaxWidth()
             .padding(horizontal = 25.dp)
     ) {
-        Text(
-            text = "Hi, ${profile?.username ?: ""} \uD83D\uDC4B",
-            style = MaterialTheme.typography.headlineLarge,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(top = 40.dp, bottom = 20.dp)
-        )
+        Row(modifier = Modifier.padding(top = 40.dp, bottom = 20.dp)) {
+            Text(
+                text = "Hi, ${profile?.username ?: ""} \uD83D\uDC4B",
+                style = MaterialTheme.typography.headlineLarge,
+                fontWeight = FontWeight.Bold,
+                modifier = Modifier.weight(1f).align(CenterVertically)
+            )
+            if (profile != null) {
+                if(profile!!.pictureDownloadUri != null) {
+                    Image(
+                        painter = rememberImagePainter(data = profile!!.pictureDownloadUri),
+                        contentDescription = "Profile Picture",
+                        modifier = Modifier
+                            .height(50.dp)
+                            .width(50.dp)
+                            .clip(CircleShape)
+                            .align(CenterVertically)
+                    )
+                }
+            }
+        }
+
         if (showEmailVerifyNotification) {
             Surface(
                 modifier = Modifier
