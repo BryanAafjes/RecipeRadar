@@ -1,5 +1,7 @@
 package com.bth.reciperadar.presentation.screens.recipe
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,9 +11,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Checkbox
 import androidx.compose.material3.Divider
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,27 +26,33 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.bth.reciperadar.domain.controllers.RecipeController
+import com.bth.reciperadar.domain.controllers.ShoppingListController
 import com.bth.reciperadar.presentation.viewmodels.CuisineViewModel
 import com.bth.reciperadar.presentation.viewmodels.DietaryInfoViewModel
 import com.bth.reciperadar.presentation.viewmodels.IngredientViewModel
 import com.bth.reciperadar.presentation.viewmodels.RecipeViewModel
 import com.bth.reciperadar.presentation.viewmodels.StepViewModel
+import com.bth.reciperadar.presentation.viewmodels.toDomain
 import com.bth.reciperadar.presentation.viewmodels.toViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
 fun RecipeDetailScreen(
     recipeId: String,
-    recipeController: RecipeController
+    recipeController: RecipeController,
+    shoppingListController: ShoppingListController
 ) {
     var recipe by remember { mutableStateOf<RecipeViewModel?>(null) }
     var selectedIngredients by remember { mutableStateOf<List<IngredientViewModel>>(emptyList()) }
     val state = rememberScrollState()
-
 
     LaunchedEffect(recipeId) {
         withContext(Dispatchers.IO) {
@@ -122,12 +132,48 @@ fun RecipeDetailScreen(
                 }
 
                 it.ingredients?.let { ingredients ->
-                    Text(
-                        text = "Ingredients:",
-                        style = MaterialTheme.typography.headlineSmall,
-                        fontWeight = FontWeight.Bold,
-                        modifier = Modifier.padding(top = 16.dp, bottom = 8.dp)
-                    )
+                    Row(horizontalArrangement = Arrangement.SpaceBetween) {
+                        Text(
+                            text = "Ingredients:",
+                            style = MaterialTheme.typography.headlineSmall,
+                            fontWeight = FontWeight.Bold,
+                            modifier = Modifier.padding(top = 16.dp, bottom = 8.dp).weight(1f)
+                        )
+                        Column(Modifier.padding(top = 16.dp, bottom = 8.dp)) {
+                            IconButton(modifier = Modifier
+                                .clip(shape = RoundedCornerShape(15.dp, 15.dp, 15.dp, 15.dp))
+                                .background(MaterialTheme.colorScheme.primary)
+                                .padding(horizontal = 5.dp)
+                                .height(35.dp)
+                                .width(100.dp)
+                                .fillMaxWidth(),
+                                onClick = {
+                                    CoroutineScope(Dispatchers.IO).launch {
+                                        try {
+                                            if (selectedIngredients.isNotEmpty()) {
+                                                shoppingListController.addIngredientListToShoppingList(
+                                                    selectedIngredients.map { it.toDomain() }
+                                                )
+
+                                                selectedIngredients = emptyList()
+                                            }
+                                        } catch (e: Exception) {
+                                            e.printStackTrace()
+                                        }
+                                    }
+                                }
+                            ) {
+                                Text(
+                                    "Add to list ✅",
+                                    textAlign = TextAlign.Center,
+                                    color = MaterialTheme.colorScheme.onBackground,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    modifier = Modifier.fillMaxWidth()
+                                )
+                            }
+                        }
+                    }
                     Spacer(modifier = Modifier.height(10.dp))
                     Column {
                         ingredients.forEach { ingredient ->
@@ -178,7 +224,9 @@ fun IngredientDetailItem(
                 onCheckedChange = {
                     onIngredientSelect(ingredient)
                 },
-                modifier = Modifier.align(Alignment.CenterVertically).padding(end = 10.dp)
+                modifier = Modifier
+                    .align(Alignment.CenterVertically)
+                    .padding(end = 10.dp)
             )
             Column {
                 Text(

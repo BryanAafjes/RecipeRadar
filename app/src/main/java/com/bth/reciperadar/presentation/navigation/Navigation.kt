@@ -242,7 +242,8 @@ fun Navigation(
                 ) { entry ->
                     RecipeDetailScreen(
                         recipeId = entry.arguments?.getString("recipeId")!!,
-                        recipeController = recipeController
+                        recipeController = recipeController,
+                        shoppingListController = shoppingListController
                     )
                 }
                 composable( route = Screen.ListScreen.route) {
