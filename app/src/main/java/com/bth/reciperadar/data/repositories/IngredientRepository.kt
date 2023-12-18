@@ -1,6 +1,8 @@
 package com.bth.reciperadar.data.repositories
 
+import com.bth.reciperadar.data.dtos.DietaryInfoDto
 import com.bth.reciperadar.data.dtos.IngredientDto
+import com.bth.reciperadar.data.dtos.RecipeDto
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
@@ -28,6 +30,23 @@ class IngredientRepository(db: FirebaseFirestore) {
 
         return ingredients
     }
+
+    suspend fun getIngredientsForReferences(document: DocumentSnapshot): List<IngredientDto> {
+        val ingredientList = ArrayList<IngredientDto>()
+        val firestoreIngredientReferences: List<DocumentReference> = document.get("ingredient_references") as List<DocumentReference>
+        firestoreIngredientReferences.forEach { ingredientReference ->
+            val ingredientId = ingredientReference.id
+            val ingredientDto: IngredientDto? = getIngredient(ingredientId)
+
+            if(ingredientDto != null) {
+                ingredientDto.id = ingredientId
+                ingredientList.add(ingredientDto)
+            }
+        }
+
+        return ingredientList
+    }
+
     suspend fun getIngredient(ingredientId: String): IngredientDto? {
         return try {
             val documentSnapshot = ingredientsCollection.document(ingredientId).get().await()
@@ -94,6 +113,21 @@ class IngredientRepository(db: FirebaseFirestore) {
                 .get()
                 .await()
             return getIngredientsFromQueryDocuments(querySnapshot.documents, getIngredientType = false)
+        } catch (e: Exception) {
+            // Handle exceptions, such as network issues or Firestore errors
+            e.printStackTrace()
+            emptyList()
+        }
+    }
+
+    suspend fun searchIngredientsByTitle(lowercaseSearchWords: List<String>): List<IngredientDto> {
+        return try {
+            val querySnapshot = ingredientsCollection
+                .whereArrayContainsAny("search_name", lowercaseSearchWords)
+                .get()
+                .await()
+
+            return getIngredientsFromQueryDocuments(querySnapshot.documents, false)
         } catch (e: Exception) {
             // Handle exceptions, such as network issues or Firestore errors
             e.printStackTrace()

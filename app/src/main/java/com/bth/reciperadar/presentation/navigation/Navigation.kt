@@ -15,7 +15,11 @@ import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -36,15 +40,23 @@ import com.bth.reciperadar.domain.controllers.CuisineController
 import com.bth.reciperadar.domain.controllers.DietaryInfoController
 import com.bth.reciperadar.domain.controllers.IngredientController
 import com.bth.reciperadar.domain.controllers.IngredientTypeController
+import com.bth.reciperadar.domain.controllers.InventoryController
 import com.bth.reciperadar.domain.controllers.ProfileController
 import com.bth.reciperadar.domain.controllers.RecipeController
+import com.bth.reciperadar.domain.controllers.ShoppingListController
+import com.bth.reciperadar.presentation.screens.shoppinglistscreen.ShoppingListScreen
 import com.bth.reciperadar.presentation.screens.profilescreens.ProfileScreen
 import com.bth.reciperadar.presentation.screens.mainscreen.MainScreen
 import com.bth.reciperadar.presentation.screens.profilescreens.EditProfileScreen
 import com.bth.reciperadar.presentation.screens.recipe.RecipeDetailScreen
 import com.bth.reciperadar.presentation.screens.recipe.RecipeSearchScreen
 import com.bth.reciperadar.presentation.screens.screen.Screen
+import com.bth.reciperadar.presentation.screens.inventoryscreen.InventoryScreen
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.withContext
 import linearGradient
+import kotlin.math.abs
 
 @Composable
 fun Navigation(
@@ -54,22 +66,35 @@ fun Navigation(
     ingredientTypeController: IngredientTypeController,
     cuisineController: CuisineController,
     dietaryInfoController: DietaryInfoController,
-    profileController: ProfileController
+    profileController: ProfileController,
+    shoppingListController: ShoppingListController,
+    inventoryController: InventoryController
 ) {
     val navController = rememberNavController()
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()
 
+    var canNavigate by remember { mutableStateOf(true) }
+
+    LaunchedEffect(canNavigate) {
+        // This was added because there was no other way to detect whether a gesture is finished
+        withContext(Dispatchers.IO) {
+            delay(500)
+        }
+        canNavigate = true
+    }
+
     val screens = listOf(
         Screen.MainScreen,
+        Screen.ListScreen,
+        Screen.StorageScreen,
         Screen.ProfileScreen
     )
 
     Scaffold(
         bottomBar = {
             BottomNavigation(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp)),
+                modifier = Modifier.clip(RoundedCornerShape(10.dp, 10.dp, 0.dp, 0.dp)),
                 backgroundColor = MaterialTheme.colorScheme.surface
             ) {
                 screens.forEach { screen ->
@@ -136,23 +161,27 @@ fun Navigation(
                             val currentIndex = screens.indexOfFirst { it.route == navBackStackEntry?.destination?.route }
                             val threshold = 100f
 
-                            if (pan.x > threshold && currentIndex > 0) {
-                                val previousScreen = screens[currentIndex - 1]
-                                navController.navigate(previousScreen.route) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
+                            if (canNavigate && abs(pan.x) > threshold) {
+                                canNavigate = false
+
+                                if (pan.x > 0 && currentIndex > 0) {
+                                    val previousScreen = screens[currentIndex - 1]
+                                    navController.navigate(previousScreen.route) {
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
                                     }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            } else if (pan.x < -threshold && currentIndex < screens.size - 1) {
-                                val nextScreen = screens[currentIndex + 1]
-                                navController.navigate(nextScreen.route) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
+                                } else if (pan.x < 0 && currentIndex < screens.size - 1) {
+                                    val nextScreen = screens[currentIndex + 1]
+                                    navController.navigate(nextScreen.route) {
+                                        popUpTo(navController.graph.findStartDestination().id) {
+                                            saveState = true
+                                        }
+                                        launchSingleTop = true
+                                        restoreState = true
                                     }
-                                    launchSingleTop = true
-                                    restoreState = true
                                 }
                             }
                         }
@@ -215,6 +244,12 @@ fun Navigation(
                         recipeId = entry.arguments?.getString("recipeId")!!,
                         recipeController = recipeController
                     )
+                }
+                composable( route = Screen.ListScreen.route) {
+                    ShoppingListScreen(ingredientController, shoppingListController)
+                }
+                composable( route = Screen.StorageScreen.route) {
+                    InventoryScreen(ingredientController, inventoryController)
                 }
             }
         }
