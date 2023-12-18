@@ -16,3 +16,6 @@ val LighterGrey = Color(0xFF2b2b2b)
 
 val LightBlue = Color(0xFF485E9D)
 val DarkerBlue = Color(0xFF313E64)
+
+val WarningRed = Color(0xFFD1483F)
+val SuccessGreen = Color(0xFF67AC3D)
