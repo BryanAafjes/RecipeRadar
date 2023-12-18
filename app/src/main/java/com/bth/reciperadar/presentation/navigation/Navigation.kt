@@ -210,24 +210,31 @@ fun Navigation(
                     )
                 }
                 composable(
-                    route = Screen.RecipeSearchScreen.route + "/{searchQuery}",
+                    route = Screen.RecipeSearchScreen.route + "/{searchQuery}" + "/{searchWithIngredients}",
                     arguments = listOf(
                         navArgument("searchQuery") {
                             type = NavType.StringType
                             defaultValue = ""
+                            nullable = true
+                        },
+                        navArgument("searchWithIngredients") {
+                            type = NavType.BoolType
+                            defaultValue = false
                             nullable = false
                         }
                     )
                 ) { entry ->
                     RecipeSearchScreen(
-                        searchQuery = entry.arguments?.getString("searchQuery")!!,
+                        searchQuery = entry.arguments?.getString("searchQuery"),
+                        searchWithIngredients = entry.arguments?.getBoolean("searchWithIngredients")!!,
                         navController = navController,
                         recipeController = recipeController,
                         ingredientController = ingredientController,
                         ingredientTypeController = ingredientTypeController,
                         cuisineController = cuisineController,
                         dietaryInfoController = dietaryInfoController,
-                        profileController = profileController
+                        profileController = profileController,
+                        inventoryController = inventoryController
                     )
                 }
                 composable(
@@ -242,11 +249,12 @@ fun Navigation(
                 ) { entry ->
                     RecipeDetailScreen(
                         recipeId = entry.arguments?.getString("recipeId")!!,
-                        recipeController = recipeController
+                        recipeController = recipeController,
+                        shoppingListController = shoppingListController
                     )
                 }
                 composable( route = Screen.ListScreen.route) {
-                    ShoppingListScreen(ingredientController, shoppingListController)
+                    ShoppingListScreen(ingredientController, shoppingListController, inventoryController)
                 }
                 composable( route = Screen.StorageScreen.route) {
                     InventoryScreen(ingredientController, inventoryController)

@@ -36,6 +36,7 @@ import com.bth.reciperadar.domain.controllers.CuisineController
 import com.bth.reciperadar.domain.controllers.DietaryInfoController
 import com.bth.reciperadar.domain.controllers.IngredientController
 import com.bth.reciperadar.domain.controllers.IngredientTypeController
+import com.bth.reciperadar.domain.controllers.InventoryController
 import com.bth.reciperadar.domain.controllers.ProfileController
 import com.bth.reciperadar.domain.controllers.RecipeController
 import com.bth.reciperadar.presentation.viewmodels.CuisineViewModel
@@ -52,14 +53,16 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun RecipeSearchScreen(
-    searchQuery: String,
+    searchQuery: String?,
+    searchWithIngredients: Boolean,
     navController: NavController,
     recipeController: RecipeController,
     ingredientController: IngredientController,
     ingredientTypeController: IngredientTypeController,
     cuisineController: CuisineController,
     dietaryInfoController: DietaryInfoController,
-    profileController: ProfileController
+    profileController: ProfileController,
+    inventoryController: InventoryController
 ) {
     var searchTerm by remember { mutableStateOf(searchQuery) }
     var recipes by remember { mutableStateOf<List<RecipeViewModel>>(emptyList()) }
@@ -79,7 +82,22 @@ fun RecipeSearchScreen(
 
     LaunchedEffect(searchQuery) {
         withContext(Dispatchers.IO) {
-            val recipeModels = recipeController.searchRecipes(searchQuery)
+            val selectedDietaryInfoModels = profileController.getProfile()?.dietaryInfo ?: emptyList()
+            selectedDietaryInfo = selectedDietaryInfoModels.map { it.toViewModel() }
+
+            if (searchWithIngredients) {
+                val selectedIngredientModels = inventoryController.getInventory()?.ingredients ?: emptyList()
+                selectedIngredients = selectedIngredientModels.map { it.toViewModel() }
+            }
+
+            val recipeModels = recipeController.searchRecipesByTitleAndFilters(
+                searchQuery,
+                selectedIngredients.map { it.toDomain() },
+                emptyList(),
+                selectedDietaryInfo.map { it.toDomain() },
+                anyRecipesWithSelectedIngredients = false,
+                dontAllowExtraIngredients = false
+            )
             recipes = recipeModels.map { it.toViewModel() }
 
             val ingredientTypeModels = ingredientTypeController.getIngredientTypes()
@@ -90,9 +108,6 @@ fun RecipeSearchScreen(
 
             val dietaryModels = dietaryInfoController.getDietaryInfo()
             dietaryInfo = dietaryModels.map { it.toViewModel() }
-
-            val selectedDietaryInfoModels = profileController.getProfile()?.dietaryInfo ?: emptyList()
-            selectedDietaryInfo = selectedDietaryInfoModels.map { it.toViewModel() }
         }
     }
 
@@ -111,7 +126,7 @@ fun RecipeSearchScreen(
         )
         Spacer(modifier = Modifier.height(20.dp))
         TextField(
-            value = searchTerm,
+            value = searchTerm ?: "",
             onValueChange = {
                 searchTerm = it
             },
@@ -329,11 +344,15 @@ fun RecipeSearchScreen(
         Button(
             onClick = {
                 CoroutineScope(Dispatchers.IO).launch {
+                    if (searchTerm == "") {
+                        searchTerm = null
+                    }
+
                     val recipeModels = recipeController.searchRecipesByTitleAndFilters(
                         searchQuery = searchTerm,
                         ingredientsList = selectedIngredients.map { it.toDomain() },
-                        cuisinesList = selectedCuisines,
-                        dietaryInfoList = selectedDietaryInfo,
+                        cuisinesList = selectedCuisines.map { it.toDomain() },
+                        dietaryInfoList = selectedDietaryInfo.map { it.toDomain() },
                         anyRecipesWithSelectedIngredients = anyRecipesWithSelectedIngredients,
                         dontAllowExtraIngredients = dontAllowExtraIngredients
                     )

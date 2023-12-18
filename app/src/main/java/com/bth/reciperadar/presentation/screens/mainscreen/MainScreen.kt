@@ -17,10 +17,12 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -57,7 +59,7 @@ fun MainScreen(
     }
 
     var searchQuery by remember {
-        mutableStateOf("")
+        mutableStateOf<String?>("")
     }
 
     var recipes by remember { mutableStateOf<List<RecipeViewModel>>(emptyList()) }
@@ -123,25 +125,47 @@ fun MainScreen(
             }
             Spacer(modifier = Modifier.height(20.dp))
         }
-        TextField(
-            value = searchQuery,
+        OutlinedTextField(
+            value = searchQuery ?: "",
             onValueChange = {
                 searchQuery = it
             },
             label = { Text("Search by recipe name") },
-            modifier = Modifier.fillMaxWidth(),
+            singleLine = true,
             trailingIcon = {
-                Icon(imageVector = Icons.Default.Search, contentDescription = null)
+                IconButton(onClick = {
+                    if (searchQuery == "") {
+                        searchQuery = null
+                    }
+                    navController.navigate(
+                        Screen.RecipeSearchScreen.withArgs(
+                            mapOf(
+                                "searchQuery" to searchQuery,
+                                "searchWithIngredients" to false
+                            )
+                        )
+                    )
+                }) {
+                    Icon(imageVector = Icons.Default.Search, contentDescription = null)
+                }
             },
+            shape = RoundedCornerShape(20.dp, 20.dp, 20.dp, 20.dp),
+            colors = OutlinedTextFieldDefaults.colors(focusedBorderColor = MaterialTheme.colorScheme.primary),
+            modifier = Modifier.fillMaxWidth()
         )
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(20.dp))
         Button(onClick = {
-            navController.navigate(Screen.RecipeSearchScreen.withArgs(searchQuery))
-        },
-            modifier = Modifier
-                .align(Alignment.End)
+            navController.navigate(
+                Screen.RecipeSearchScreen.withArgs(
+                    mapOf(
+                        "searchQuery" to null,
+                        "searchWithIngredients" to true
+                    )
+                )
+            )        },
+            modifier = Modifier.fillMaxWidth()
         ) {
-            Text(text = "Search Recipes")
+            Text(text = "Look for a recipe with your ingredients")
         }
         Spacer(modifier = Modifier.height(20.dp))
         RecipeListView(recipes = recipes, navController = navController)
