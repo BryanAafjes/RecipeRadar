@@ -69,6 +69,7 @@ fun ShoppingListScreen(
                 if (shoppingListModel != null) {
                     shoppingList = shoppingListModel.toViewModel()
                     ingredients = shoppingList?.ingredients ?: emptyList()
+                    selectedIngredients = shoppingList?.checkedIngredients ?: emptyList()
                 }
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -82,6 +83,7 @@ fun ShoppingListScreen(
                 try {
                     if (shoppingList != null) {
                         shoppingList!!.ingredients = ingredients
+                        shoppingList!!.checkedIngredients = selectedIngredients
                         shoppingListController.createOrUpdateShoppingList(shoppingList?.toDomain()!!)
                     }
                 } catch (e: Exception) {

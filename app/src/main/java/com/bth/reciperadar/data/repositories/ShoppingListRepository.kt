@@ -31,7 +31,8 @@ class ShoppingListRepository(db: FirebaseFirestore) {
             shoppingListDto.id = documentSnapshot.id
             shoppingListDto.userId = documentSnapshot.get("user_id")?.toString()!!
 
-            shoppingListDto.ingredients = ingredientRepository.getIngredientsForReferences(documentSnapshot)
+            shoppingListDto.ingredients = ingredientRepository.getIngredientsForReferences(documentSnapshot, "ingredient_references")
+            shoppingListDto.checkedIngredients = ingredientRepository.getIngredientsForReferences(documentSnapshot, "checked_ingredient_references")
 
             return shoppingListDto
         } catch (e: Exception) {
@@ -63,9 +64,14 @@ class ShoppingListRepository(db: FirebaseFirestore) {
             ingredientCollection.document(it)
         } ?: emptyList<DocumentReference>()
 
+        val shoppingListCheckedIngredientReferences = checkedIngredients.map { it.id }.map {
+            ingredientCollection.document(it)
+        } ?: emptyList<DocumentReference>()
+
         return mapOf(
             "user_id" to userId,
             "ingredient_references" to shoppingListIngredientReferences,
+            "checked_ingredient_references" to shoppingListCheckedIngredientReferences,
         )
     }
 }

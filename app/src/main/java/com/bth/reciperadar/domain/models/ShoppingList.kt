@@ -6,6 +6,7 @@ data class ShoppingList(
     var id: String = "",
     var userId: String = "",
     var ingredients: List<Ingredient> = emptyList(),
+    var checkedIngredients: List<Ingredient> = emptyList(),
 )
 
 fun ShoppingList.toDto(): ShoppingListDto {
@@ -13,6 +14,7 @@ fun ShoppingList.toDto(): ShoppingListDto {
         id = this.id,
         userId = this.userId,
         ingredients = this.ingredients.map { it.toDto() },
+        checkedIngredients = this.checkedIngredients.map { it.toDto() }
     )
 }
 
@@ -21,5 +23,6 @@ fun ShoppingListDto.toDomain(): ShoppingList {
         id = this.id,
         userId = this.userId,
         ingredients = this.ingredients.map { it.toDomain() },
+        checkedIngredients = this.checkedIngredients.map { it.toDomain() },
     )
 }

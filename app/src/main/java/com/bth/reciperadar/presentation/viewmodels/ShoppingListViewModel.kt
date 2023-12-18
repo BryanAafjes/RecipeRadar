@@ -6,6 +6,7 @@ data class ShoppingListViewModel(
     var id: String = "",
     var userId: String = "",
     var ingredients: List<IngredientViewModel> = emptyList(),
+    var checkedIngredients: List<IngredientViewModel> = emptyList(),
 )
 
 fun ShoppingList.toViewModel(): ShoppingListViewModel {
@@ -13,6 +14,7 @@ fun ShoppingList.toViewModel(): ShoppingListViewModel {
         id = this.id,
         userId = this.userId,
         ingredients = this.ingredients.map { it.toViewModel() },
+        checkedIngredients = this.checkedIngredients.map { it.toViewModel() },
     )
 }
 
@@ -21,5 +23,6 @@ fun ShoppingListViewModel.toDomain(): ShoppingList {
         id = this.id,
         userId = this.userId,
         ingredients = this.ingredients.map { it.toDomain() },
+        checkedIngredients = this.checkedIngredients.map { it.toDomain() },
     )
 }

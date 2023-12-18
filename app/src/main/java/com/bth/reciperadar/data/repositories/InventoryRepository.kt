@@ -31,7 +31,7 @@ class InventoryRepository(db: FirebaseFirestore) {
             inventoryDto.id = documentSnapshot.id
             inventoryDto.userId = documentSnapshot.get("user_id")?.toString()!!
 
-            inventoryDto.ingredients = ingredientRepository.getIngredientsForReferences(documentSnapshot)
+            inventoryDto.ingredients = ingredientRepository.getIngredientsForReferences(documentSnapshot, "ingredient_references")
 
             return inventoryDto
         } catch (e: Exception) {

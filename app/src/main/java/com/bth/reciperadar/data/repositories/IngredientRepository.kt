@@ -31,9 +31,9 @@ class IngredientRepository(db: FirebaseFirestore) {
         return ingredients
     }
 
-    suspend fun getIngredientsForReferences(document: DocumentSnapshot): List<IngredientDto> {
+    suspend fun getIngredientsForReferences(document: DocumentSnapshot, referenceName: String): List<IngredientDto> {
         val ingredientList = ArrayList<IngredientDto>()
-        val firestoreIngredientReferences: List<DocumentReference> = document.get("ingredient_references") as List<DocumentReference>
+        val firestoreIngredientReferences: List<DocumentReference> = document.get(referenceName) as List<DocumentReference>
         firestoreIngredientReferences.forEach { ingredientReference ->
             val ingredientId = ingredientReference.id
             val ingredientDto: IngredientDto? = getIngredient(ingredientId)
