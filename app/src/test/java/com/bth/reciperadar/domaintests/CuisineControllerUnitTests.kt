@@ -12,8 +12,7 @@ import org.junit.Test
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 
-class CuisineControllerTest {
-
+class CuisineControllerUnitTests {
     private lateinit var cuisineRepository: CuisineRepository
     private lateinit var cuisineController: CuisineController
 
