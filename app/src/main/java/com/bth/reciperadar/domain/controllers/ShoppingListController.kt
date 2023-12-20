@@ -14,7 +14,7 @@ class ShoppingListController(
 ) {
     suspend fun getShoppingList(): ShoppingList? {
         return withContext(Dispatchers.IO) {
-            val userId = authController.auth.currentUser?.uid
+            val userId = authController.getCurrentUserId()
 
             if (userId != null) {
                 try {
@@ -31,7 +31,7 @@ class ShoppingListController(
     suspend fun createOrUpdateShoppingList(shoppingList: ShoppingList): Boolean {
         return withContext(Dispatchers.IO) {
             try {
-                val userId = authController.auth.currentUser?.uid
+                val userId = authController.getCurrentUserId()
 
                 if (userId != null) {
                     shoppingList.userId = userId
