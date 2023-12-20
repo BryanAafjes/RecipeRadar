@@ -14,7 +14,7 @@ class InventoryController(
 ) {
     suspend fun getInventory(): Inventory? {
         return withContext(Dispatchers.IO) {
-            val userId = authController.auth.currentUser?.uid
+            val userId = authController.getCurrentUserId()
 
             if (userId != null) {
                 try {
@@ -31,7 +31,7 @@ class InventoryController(
     suspend fun createOrUpdateInventory(inventory: Inventory): Boolean {
         return withContext(Dispatchers.IO) {
             try {
-                val userId = authController.auth.currentUser?.uid
+                val userId = authController.getCurrentUserId()
 
                 if (userId != null) {
                     inventory.userId = userId

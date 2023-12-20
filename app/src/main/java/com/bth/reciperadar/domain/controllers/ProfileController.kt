@@ -18,7 +18,7 @@ class ProfileController(
 
     suspend fun getProfile(): Profile? {
         return withContext(Dispatchers.IO) {
-            val userId = authController.auth.currentUser?.uid
+            val userId = authController.getCurrentUserId()
 
             if (userId != null) {
                 try {
@@ -66,7 +66,7 @@ class ProfileController(
                     }
                 }
 
-                profile.userId = authController.auth.currentUser?.uid ?: ""
+                profile.userId = authController.getCurrentUserId() ?: ""
                 profileRepository.createOrUpdateProfile(profile.toDto())
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -76,7 +76,7 @@ class ProfileController(
     }
 
     suspend fun uploadImageToFirebaseStorage(fileUri: Uri): String? {
-        val userId = authController.auth.currentUser?.uid
+        val userId = authController.getCurrentUserId()
 
         if (userId != null) {
             val storageRef: StorageReference = FirebaseStorage.getInstance().getReference("profile_pictures")
