@@ -55,6 +55,10 @@ class AuthController(val applicationContext: Context) {
         return _currentUser.value?.uid
     }
 
+    fun getCurrentUserEmail(): String? {
+        return _currentUser.value?.email
+    }
+
     fun resetPassword(email: String) {
         auth.sendPasswordResetEmail(email);
     }

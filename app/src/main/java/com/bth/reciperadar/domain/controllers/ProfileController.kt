@@ -25,19 +25,11 @@ class ProfileController(
                     val profile = profileRepository.getProfileById(userId)?.toDomain()
 
                     if (profile != null) {
-                        profile.email = authController.auth.currentUser?.email
+                        profile.email = authController.getCurrentUserEmail()
 
                         if(profile.picturePath != null) {
                             try {
-                                val downloadURL = FirebaseStorage
-                                    .getInstance()
-                                    .getReference(profile.picturePath!!)
-                                    .downloadUrl
-                                    .await()
-
-                                if (downloadURL != null) {
-                                    profile.pictureDownloadUri = downloadURL.toString()
-                                }
+                                profile.pictureDownloadUri = getImageDownloadUrlFromFirebase(profile.picturePath!!)
                             } catch (e: Exception) {
                                 e.printStackTrace()
                                 profile.picturePath = null
@@ -91,6 +83,20 @@ class ProfileController(
                 e.printStackTrace()
             }
         }
+        return null
+    }
+
+    suspend fun getImageDownloadUrlFromFirebase(referenceString: String): String? {
+        val downloadURL = FirebaseStorage
+            .getInstance()
+            .getReference(referenceString)
+            .downloadUrl
+            .await()
+
+        if (downloadURL != null) {
+            return downloadURL.toString()
+        }
+
         return null
     }
 }
