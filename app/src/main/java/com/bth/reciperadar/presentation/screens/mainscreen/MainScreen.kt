@@ -12,8 +12,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Search
@@ -67,6 +69,8 @@ fun MainScreen(
         mutableStateOf<String?>("")
     }
 
+    val state = rememberScrollState()
+
     var recipes by remember { mutableStateOf<List<RecipeViewModel>>(emptyList()) }
 
     var showEmailVerifyNotification by remember { mutableStateOf(false) }
@@ -87,6 +91,7 @@ fun MainScreen(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 25.dp)
+            .verticalScroll(state)
     ) {
         Row(modifier = Modifier.padding(top = 40.dp, bottom = 20.dp)) {
             Text(
