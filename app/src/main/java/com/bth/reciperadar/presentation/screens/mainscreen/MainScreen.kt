@@ -32,7 +32,6 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -49,7 +48,9 @@ import com.bth.reciperadar.presentation.screens.screen.Screen
 import com.bth.reciperadar.presentation.viewmodels.ProfileViewModel
 import com.bth.reciperadar.presentation.viewmodels.RecipeViewModel
 import com.bth.reciperadar.presentation.viewmodels.toViewModel
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 @Composable
@@ -187,6 +188,20 @@ fun MainScreen(
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(text = "Look for a recipe with your ingredients")
+        }
+        Spacer(modifier = Modifier.height(20.dp))
+        Button(onClick = {
+            CoroutineScope(Dispatchers.IO).launch {
+                try {
+                    recipeController.seedRecipes()
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                }
+            }
+        },
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            Text(text = "SEED DATABASE")
         }
         Spacer(modifier = Modifier.height(20.dp))
         RecipeListView(recipes = recipes, navController = navController)

@@ -115,4 +115,13 @@ class RecipeController(private val recipeRepository: RecipeRepository) {
             emptyList()
         }
     }
+
+    suspend fun seedRecipes(): Unit = withContext(Dispatchers.IO) {
+        try {
+            recipeRepository.seedRecipes()
+        } catch (e: Exception) {
+            // Handle exceptions, such as network issues or repository errors
+            e.printStackTrace()
+        }
+    }
 }
