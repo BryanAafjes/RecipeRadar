@@ -8,7 +8,9 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
@@ -60,7 +62,7 @@ fun ShoppingListScreen(
     var ingredients by remember { mutableStateOf<List<IngredientViewModel>>(emptyList()) }
     var selectedIngredients by remember { mutableStateOf<List<IngredientViewModel>>(emptyList()) }
     var isIngredientFound by remember { mutableStateOf( true) }
-
+    val state = rememberScrollState()
 
     LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
@@ -155,7 +157,9 @@ fun ShoppingListScreen(
                 ) {
                     Text(
                         "Ingredient not found, please try again.",
-                        modifier = Modifier.align(CenterHorizontally).padding(10.dp)
+                        modifier = Modifier
+                            .align(CenterHorizontally)
+                            .padding(10.dp)
                     )
                 }
             }
@@ -163,20 +167,23 @@ fun ShoppingListScreen(
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                IngredientList(
-                    ingredientList = ingredients,
-                    selectedIngredients = selectedIngredients,
-                    onIngredientSelect = { ingredient ->
-                        selectedIngredients = if (selectedIngredients.contains(ingredient)) {
-                            selectedIngredients.minus(ingredient)
-                        } else {
-                            selectedIngredients.plus(ingredient)
+                Column(modifier = Modifier.verticalScroll(state))
+                {
+                    IngredientList(
+                        ingredientList = ingredients,
+                        selectedIngredients = selectedIngredients,
+                        onIngredientSelect = { ingredient ->
+                            selectedIngredients = if (selectedIngredients.contains(ingredient)) {
+                                selectedIngredients.minus(ingredient)
+                            } else {
+                                selectedIngredients.plus(ingredient)
+                            }
+                        },
+                        onIngredientRemove = { ingredient ->
+                            ingredients = ingredients.minus(ingredient)
                         }
-                    },
-                    onIngredientRemove = { ingredient ->
-                        ingredients = ingredients.minus(ingredient)
-                    }
-                )
+                    )
+                }
             }
 
             Row(

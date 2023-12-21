@@ -5,7 +5,9 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.Card
@@ -50,6 +52,7 @@ fun InventoryScreen(
     var inventory by remember { mutableStateOf<InventoryViewModel?>(InventoryViewModel("", "", emptyList())) }
     var ingredients by remember { mutableStateOf<List<IngredientViewModel>>(emptyList()) }
     var isIngredientFound by remember { mutableStateOf( true) }
+    val state = rememberScrollState()
 
     LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
@@ -86,6 +89,7 @@ fun InventoryScreen(
                 .padding(horizontal = 20.dp)
                 .fillMaxHeight()
                 .fillMaxWidth()
+                .verticalScroll(state)
         ) {
             Text(
                 text = "Inventory",

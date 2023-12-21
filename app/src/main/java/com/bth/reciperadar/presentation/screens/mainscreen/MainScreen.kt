@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment.Companion.CenterVertically
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
@@ -193,6 +194,16 @@ fun MainScreen(
         ) {
             Text(text = "Look for a recipe with your ingredients")
         }
+        Spacer(modifier = Modifier.height(20.dp))
+        Text(
+            text = "Recipes",
+            color = MaterialTheme.colorScheme.onBackground,
+            textAlign = TextAlign.Start,
+            style = MaterialTheme.typography.headlineMedium,
+            fontWeight = FontWeight.Bold,
+            modifier = Modifier
+                .fillMaxWidth()
+        )
         Spacer(modifier = Modifier.height(20.dp))
         RecipeListView(recipes = recipes, navController = navController)
     }

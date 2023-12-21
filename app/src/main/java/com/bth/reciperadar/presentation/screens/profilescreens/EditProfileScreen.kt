@@ -16,6 +16,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -65,6 +67,7 @@ fun EditProfileScreen(
     var loading by remember { mutableStateOf(false) }
     var selectedImageUri by remember { mutableStateOf<Uri?>(null) }
     var navigationCompleted by remember { mutableStateOf(false) }
+    val state = rememberScrollState()
 
     val pickMedia = rememberLauncherForActivityResult(contract = ActivityResultContracts.PickVisualMedia()) { uri ->
         if (uri != null) {
@@ -108,6 +111,7 @@ fun EditProfileScreen(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
+            .verticalScroll(state)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
