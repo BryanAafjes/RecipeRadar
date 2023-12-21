@@ -211,7 +211,7 @@ class RecipeRepository(private val db: FirebaseFirestore) {
          // Remove duplicates based on ingredient names
          val uniqueIngredients = ingredientsWithSearchName.distinctBy { it["name"] }
 
-        seedCollection("ingredients_test", uniqueIngredients)
+        seedCollection("ingredients", uniqueIngredients)
     }
 
     private fun seedCuisines() {
@@ -227,7 +227,7 @@ class RecipeRepository(private val db: FirebaseFirestore) {
             mapOf("name" to "Grill", "description" to "Cuisine where the food can be cooked on a grill"),
         )
 
-        seedCollection("cuisines_test", cuisines)
+        seedCollection("cuisines", cuisines)
     }
 
     private fun seedIngredientTypes() {
@@ -247,7 +247,7 @@ class RecipeRepository(private val db: FirebaseFirestore) {
             mapOf("name" to "Baking Ingredients")
         )
 
-        seedCollection("ingredient_types_test", ingredientTypes)
+        seedCollection("ingredient_types", ingredientTypes)
     }
 
 
@@ -261,7 +261,7 @@ class RecipeRepository(private val db: FirebaseFirestore) {
             mapOf("name" to "Pescatarian")
         )
 
-        seedCollection("dietary_info_test", dietaryInfo)
+        seedCollection("dietary_info", dietaryInfo)
     }
 
     private fun seedCollection(collectionName: String, data: List<Map<String, Any>>) {
@@ -277,25 +277,25 @@ class RecipeRepository(private val db: FirebaseFirestore) {
     }
 
     private suspend fun getIngredientTypeRef(ingredientTypeName: String): DocumentReference {
-        val querySnapshot = db.collection("ingredient_types_test").whereEqualTo("name", ingredientTypeName).limit(1).get().await()
+        val querySnapshot = db.collection("ingredient_types").whereEqualTo("name", ingredientTypeName).limit(1).get().await()
         val document = querySnapshot.documents.firstOrNull()
         return document?.reference ?: throw NoSuchElementException("Ingredient Type not found: $ingredientTypeName")
     }
 
     private suspend fun getCuisineRef(cuisineName: String): DocumentReference {
-        val querySnapshot = db.collection("cuisines_test").whereEqualTo("name", cuisineName).limit(1).get().await()
+        val querySnapshot = db.collection("cuisines").whereEqualTo("name", cuisineName).limit(1).get().await()
         val document = querySnapshot.documents.firstOrNull()
         return document?.reference ?: throw NoSuchElementException("Cuisine not found: $cuisineName")
     }
 
     private suspend fun getIngredientRef(ingredientName: String): DocumentReference {
-        val querySnapshot = db.collection("ingredients_test").whereEqualTo("name", ingredientName).limit(1).get().await()
+        val querySnapshot = db.collection("ingredients").whereEqualTo("name", ingredientName).limit(1).get().await()
         val document = querySnapshot.documents.firstOrNull()
         return document?.reference ?: throw NoSuchElementException("Ingredient not found: $ingredientName")
     }
 
     private suspend fun getDietaryInfoRef(dietaryInfoName: String): DocumentReference {
-        val querySnapshot = db.collection("dietary_info_test").whereEqualTo("name", dietaryInfoName).limit(1).get().await()
+        val querySnapshot = db.collection("dietary_info").whereEqualTo("name", dietaryInfoName).limit(1).get().await()
         val document = querySnapshot.documents.firstOrNull()
         return document?.reference ?: throw NoSuchElementException("Dietary Info not found: $dietaryInfoName")
     }
@@ -684,7 +684,7 @@ class RecipeRepository(private val db: FirebaseFirestore) {
 
 
     private fun addRecipeToFirestore(recipeData: Map<String, Any?>, index: Int) {
-        db.collection("recipes_test").add(recipeData)
+        db.collection("recipes").add(recipeData)
             .addOnSuccessListener { documentReference ->
                 println("Recipe $index added with ID: ${documentReference.id}")
             }
