@@ -96,7 +96,7 @@ fun MainScreen(
     ) {
         Row(modifier = Modifier.padding(top = 40.dp, bottom = 20.dp)) {
             Text(
-                text = "Hi, ${profile?.username ?: ""} \uD83D\uDC4B",
+                text = "Hi, ${profile?.username ?: "User"} \uD83D\uDC4B",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
                 modifier = Modifier.weight(1f).align(CenterVertically)
