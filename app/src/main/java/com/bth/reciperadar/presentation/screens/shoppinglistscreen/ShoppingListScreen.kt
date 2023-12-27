@@ -13,8 +13,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -31,7 +29,6 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
-import androidx.compose.ui.Alignment.Companion.CenterHorizontally
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -47,9 +44,52 @@ import com.bth.reciperadar.ui.theme.SuccessGreen
 import com.bth.reciperadar.ui.theme.WarningRed
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import androidx.compose.material3.IconButton as IconButton
+import androidx.compose.material.AlertDialog
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.layout.layout
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
+
+fun Modifier.customDialogModifier() = layout { measurable, constraints ->
+    val placeable = measurable.measure(constraints)
+    layout(constraints.maxWidth, constraints.maxHeight) { placeable.place(0, constraints.maxHeight/5, 10f) }
+}
+
+@Composable
+fun DialogWithAutoDismiss(
+    showDialog: Boolean,
+    onDismiss: () -> Unit,
+    dismissAfterMillis: Long = 1200
+) {
+    if (showDialog) {
+        AlertDialog(
+            modifier = Modifier.customDialogModifier(),
+            backgroundColor = Color.Red,
+            contentColor = Color.White,
+            shape = RoundedCornerShape(15.dp),
+            onDismissRequest = onDismiss,
+            text = {
+                Text(
+                    text = "Ingredient not found, please try again.",
+                    textAlign = TextAlign.Center,
+                    fontWeight = FontWeight(600),
+                    fontSize = 16.sp
+                )
+            },
+            buttons = {}
+        )
+
+        val coroutineScope = rememberCoroutineScope()
+        LaunchedEffect(Unit) {
+            coroutineScope.launch {
+                delay(dismissAfterMillis)
+                onDismiss()
+            }
+        }
+    }
+}
 
 @Composable
 fun ShoppingListScreen(
@@ -63,6 +103,7 @@ fun ShoppingListScreen(
     var selectedIngredients by remember { mutableStateOf<List<IngredientViewModel>>(emptyList()) }
     var isIngredientFound by remember { mutableStateOf( true) }
     val state = rememberScrollState()
+    var showDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         withContext(Dispatchers.IO) {
@@ -136,6 +177,7 @@ fun ShoppingListScreen(
                                 e.printStackTrace()
                             }
                         }
+                        showDialog = true
                     }) {
                         Icon(
                             imageVector = Icons.Default.Check,
@@ -150,19 +192,7 @@ fun ShoppingListScreen(
                     .padding(bottom = 10.dp)
             )
 
-            if (!isIngredientFound) {
-                Card(
-                    modifier = Modifier.align(CenterHorizontally),
-                    colors = CardDefaults.cardColors(containerColor = WarningRed)
-                ) {
-                    Text(
-                        "Ingredient not found, please try again.",
-                        modifier = Modifier
-                            .align(CenterHorizontally)
-                            .padding(10.dp)
-                    )
-                }
-            }
+            if (!isIngredientFound) { DialogWithAutoDismiss( showDialog = showDialog, onDismiss = { showDialog = false } ) }
 
             Row(
                 modifier = Modifier.fillMaxWidth()
