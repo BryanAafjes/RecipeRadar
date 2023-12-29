@@ -1,8 +1,10 @@
 package com.bth.reciperadar.domain.models
 
+import androidx.room.PrimaryKey
 import com.bth.reciperadar.data.dtos.StepDto
 
 data class Step (
+    @PrimaryKey(autoGenerate = false)
     var title: String = "",
     var description: String? = "",
     var number: Int? = 0,

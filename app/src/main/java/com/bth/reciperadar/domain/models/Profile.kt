@@ -1,8 +1,10 @@
 package com.bth.reciperadar.domain.models
 
+import androidx.room.PrimaryKey
 import com.bth.reciperadar.data.dtos.ProfileDto
 
 data class Profile(
+    @PrimaryKey(autoGenerate = false)
     var id: String = "",
     var userId: String = "",
     var username: String = "",

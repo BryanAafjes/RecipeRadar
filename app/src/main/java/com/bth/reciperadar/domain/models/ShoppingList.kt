@@ -1,8 +1,10 @@
 package com.bth.reciperadar.domain.models
 
+import androidx.room.PrimaryKey
 import com.bth.reciperadar.data.dtos.ShoppingListDto
 
 data class ShoppingList(
+    @PrimaryKey(autoGenerate = false)
     var id: String = "",
     var userId: String = "",
     var ingredients: List<Ingredient> = emptyList(),

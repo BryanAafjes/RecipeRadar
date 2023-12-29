@@ -1,8 +1,10 @@
 package com.bth.reciperadar.domain.models
 
+import androidx.room.PrimaryKey
 import com.bth.reciperadar.data.dtos.RecipeDto
 
 data class Recipe(
+    @PrimaryKey(autoGenerate = false)
     var id: String = "",
     var title: String = "",
     var description: String? = "",

@@ -1,8 +1,10 @@
 package com.bth.reciperadar.domain.models
 
+import androidx.room.PrimaryKey
 import com.bth.reciperadar.data.dtos.IngredientTypeDto
 
 data class IngredientType (
+    @PrimaryKey(autoGenerate = false)
     var id: String = "",
     var name: String = "",
     var ingredients: List<Ingredient>? = null
