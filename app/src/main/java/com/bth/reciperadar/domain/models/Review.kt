@@ -1,11 +1,9 @@
 package com.bth.reciperadar.domain.models
 
-import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.bth.reciperadar.data.dtos.ReviewDto
 import com.bth.reciperadar.domain.enums.ReviewRatingEnum
 
-@Entity
 data class Review (
     @PrimaryKey(autoGenerate = false)
     var id: String = "",
