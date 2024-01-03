@@ -88,6 +88,8 @@ fun RecipeSearchScreen(
             if (searchWithIngredients) {
                 val selectedIngredientModels = inventoryController.getInventory()?.ingredients ?: emptyList()
                 selectedIngredients = selectedIngredientModels.map { it.toViewModel() }
+
+                anyRecipesWithSelectedIngredients = true
             }
 
             val recipeModels = recipeController.searchRecipesByTitleAndFilters(
@@ -95,8 +97,8 @@ fun RecipeSearchScreen(
                 selectedIngredients.map { it.toDomain() },
                 emptyList(),
                 selectedDietaryInfo.map { it.toDomain() },
-                anyRecipesWithSelectedIngredients = false,
-                dontAllowExtraIngredients = false
+                anyRecipesWithSelectedIngredients = anyRecipesWithSelectedIngredients,
+                dontAllowExtraIngredients = dontAllowExtraIngredients
             )
             recipes = recipeModels.map { it.toViewModel() }
 
