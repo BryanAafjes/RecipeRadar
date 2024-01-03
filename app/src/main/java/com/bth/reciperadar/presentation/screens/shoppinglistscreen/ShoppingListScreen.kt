@@ -140,8 +140,8 @@ fun ShoppingListScreen(
         Column(
             modifier = Modifier
                 .padding(horizontal = 20.dp)
-                .fillMaxHeight()
                 .fillMaxWidth()
+                .verticalScroll(state)
         ) {
             Text(
                 text = "Shopping List",
@@ -197,33 +197,28 @@ fun ShoppingListScreen(
             Row(
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Column(modifier = Modifier.verticalScroll(state))
-                {
-                    IngredientList(
-                        ingredientList = ingredients,
-                        selectedIngredients = selectedIngredients,
-                        onIngredientSelect = { ingredient ->
-                            selectedIngredients = if (selectedIngredients.contains(ingredient)) {
-                                selectedIngredients.minus(ingredient)
-                            } else {
-                                selectedIngredients.plus(ingredient)
-                            }
-                        },
-                        onIngredientRemove = { ingredient ->
-                            ingredients = ingredients.minus(ingredient)
+                IngredientList(
+                    ingredientList = ingredients,
+                    selectedIngredients = selectedIngredients,
+                    onIngredientSelect = { ingredient ->
+                        selectedIngredients = if (selectedIngredients.contains(ingredient)) {
+                            selectedIngredients.minus(ingredient)
+                        } else {
+                            selectedIngredients.plus(ingredient)
                         }
-                    )
-                }
+                    },
+                    onIngredientRemove = { ingredient ->
+                        ingredients = ingredients.minus(ingredient)
+                    }
+                )
             }
 
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .background(Color.Transparent)
-                    .padding(vertical = 20.dp)
-                    .weight(1f),
+                    .padding(vertical = 20.dp),
                 horizontalArrangement = Arrangement.SpaceEvenly,
-                verticalAlignment = Alignment.Bottom
             ) {
                 IconButton(modifier = Modifier
                     .clip(shape = RoundedCornerShape(15.dp, 15.dp, 15.dp, 15.dp))
