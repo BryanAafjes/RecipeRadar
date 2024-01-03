@@ -38,7 +38,17 @@ class IngredientController(private val ingredientRepository: IngredientRepositor
             val ingredientList = ingredientRepository.searchIngredientsByTitle(searchWords)
                 .map { it.toDomain() }
 
-            return@withContext ingredientList.first()
+            val matchingIngredients = ingredientList.map { ingredient ->
+                val ingredientSearchWords = ingredient.name.lowercase().split(" ")
+                val userSearchWords = searchWords.toSet()
+
+                val commonSearchWords = userSearchWords.intersect(ingredientSearchWords.toSet())
+                Pair(ingredient, commonSearchWords.size)
+            }
+
+            val sortedIngredients = matchingIngredients.sortedByDescending { it.second }
+
+            return@withContext sortedIngredients.firstOrNull()?.first
         } catch (e: Exception) {
             // Handle exceptions, such as network issues or repository errors
             e.printStackTrace()
