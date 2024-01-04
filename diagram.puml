@@ -1,0 +1,736 @@
+@startuml
+left to right direction
+package data {
+    package dtos {
+        class CuisineDto {
+            - id: String = ""
+            - name: String = ""
+            - description: String?
+            + toDomain(): Cuisine
+'            + CuisineDto()
+'            + CuisineDto(id: String, name: String, description: String?)
+'            + getId(): String
+'            + setId(id: String): Unit
+'            + getName(): String
+'            + setName(name: String): Unit
+'            + getDescription(): String?
+'            + setDescription(description: String?): Unit
+        }
+        class DietaryInfoDto {
+            - id: String = ""
+            - name: String = ""
+            - description: String?
+            + toDomain(): DietaryInfo
+'            + DietaryInfoDto()
+'            + DietaryInfoDto(id: String, name: String, description: String?)
+'            + getId(): String
+'            + setId(id: String): Unit
+'            + getName(): String
+'            + setName(name: String): Unit
+'            + getDescription(): String?
+'            + setDescription(description: String?): Unit
+        }
+        class IngredientDto {
+             - id: String = ""
+             - name: String = ""
+             - description: String?
+             - ingredientType: IngredientTypeDto?
+             - amount: String?
+             + toDomain(): Ingredient
+'             + IngredientDto()
+'             + IngredientDto(id: String, name: String, description: String?, ingredientType: IngredientTypeDto?, amount: String?)
+'             + getId(): String
+'             + setId(id: String): Unit
+'             + getName(): String
+'             + setName(name: String): Unit
+'             + getDescription(): String?
+'             + setDescription(description: String?): Unit
+'             + getIngredientType(): IngredientTypeDto?
+'             + setIngredientType(ingredientType: IngredientTypeDto?): Unit
+'             + getAmount(): String?
+'             + setAmount(amount: String?): Unit
+        }
+        class IngredientTypeDto {
+             - id: String = ""
+             - name: String = ""
+             + toDomain(): IngredientType
+'             + IngredientTypeDto()
+'             + IngredientTypeDto(id: String, name: String)
+'             + getId(): String
+'             + setId(id: String): Unit
+'             + getName(): String
+'             + setName(name: String): Unit
+        }
+         class InventoryDto {
+            - id: String = ""
+            - userId: String = ""
+            - ingredients: List<IngredientDto> = emptyList()
+            + toDomain(): Inventory
+'            + InventoryDto()
+'            + InventoryDto(id: String, userId: String, ingredients: List<IngredientDto>)
+'            + getId(): String
+'            + setId(id: String): Unit
+'            + getUserId(): String
+'            + setUserId(userId: String): Unit
+'            + getIngredients(): List<IngredientDto>
+'            + setIngredients(ingredients: List<IngredientDto>): Unit
+         }
+          class ProfileDto {
+            - id: String = ""
+            - userId: String = ""
+            - username: String = ""
+            - email: String?
+            - picturePath: String?
+            - dietaryInfo: List<DietaryInfoDto> = emptyList()
+            + toDomain(): Profile
+'            + ProfileDto()
+'            + ProfileDto(id: String, userId: String, username: String, email: String?, picturePath: String?, dietaryInfo: List<DietaryInfoDto>)
+'            + getId(): String
+'            + setId(id: String): Unit
+'            + getUserId(): String
+'            + setUserId(userId: String): Unit
+'            + getUsername(): String
+'            + setUsername(username: String): Unit
+'            + getEmail(): String?
+'            + setEmail(email: String?): Unit
+'            + getPicturePath(): String?
+'            + setPicturePath(picturePath: String?): Unit
+'            + getDietaryInfo(): List<DietaryInfoDto>
+'            + setDietaryInfo(dietaryInfo: List<DietaryInfoDto>): Unit
+          }
+          class RecipeDto {
+            - id: String = ""
+            - title: String = ""
+            - description: String?
+            - userId: String?
+            - picturePath: String?
+            - prepTime: String?
+            - servingAmount: Int?
+            - cuisines: List<CuisineDto>?
+            - reviews: List<ReviewDto>?
+            - steps: List<StepDto>?
+            - dietaryInfo: List<DietaryInfoDto>?
+            - ingredients: List<IngredientDto>?
+            + toDomain(): Recipe
+'            + RecipeDto()
+'            + RecipeDto(id: String, title: String, description: String?, userId: String?, picturePath: String?, prepTime: String?, servingAmount: Int?, cuisines: List<CuisineDto>?, reviews: List<ReviewDto>?, steps: List<StepDto>?, dietaryInfo: List<DietaryInfoDto>?, ingredients: List<IngredientDto>?)
+'            + getId(): String
+'            + setId(id: String): Unit
+'            + getTitle(): String
+'            + setTitle(title: String): Unit
+'            + getDescription(): String?
+'            + setDescription(description: String?): Unit
+'            + getUserId(): String?
+'            + setUserId(userId: String?): Unit
+'            + getPicturePath(): String?
+'            + setPicturePath(picturePath: String?): Unit
+'            + getPrepTime(): String?
+'            + setPrepTime(prepTime: String?): Unit
+'            + getServingAmount(): Int?
+'            + setServingAmount(servingAmount: Int?): Unit
+'            + getCuisines(): List<CuisineDto>?
+'            + setCuisines(cuisines: List<CuisineDto>?): Unit
+'            + getReviews(): List<ReviewDto>?
+'            + setReviews(reviews: List<ReviewDto>?): Unit
+'            + getSteps(): List<StepDto>?
+'            + setSteps(steps: List<StepDto>?): Unit
+'            + getDietaryInfo(): List<DietaryInfoDto>?
+'            + setDietaryInfo(dietaryInfo: List<DietaryInfoDto>?): Unit
+'            + getIngredients(): List<IngredientDto>?
+'            + setIngredients(ingredients: List<IngredientDto>?): Unit
+          }
+          class ReviewDto {
+            - id: String = ""
+            - userId: String?
+            - rating: Int = 5
+            + toDomain(): Review
+'            + ReviewDto()
+'            + ReviewDto(id: String, userId: String?, rating: Int)
+'            + getId(): String
+'            + setId(id: String): Unit
+'            + getUserId(): String?
+'            + setUserId(userId: String?): Unit
+'            + getRating(): Int
+'            + setRating(rating: Int): Unit
+          }
+          class ShoppingListDto {
+            - id: String = ""
+            - userId: String = ""
+            - ingredients: List<IngredientDto> = emptyList()
+            - checkedIngredients: List<IngredientDto> = emptyList()
+            + toDomain(): ShoppingList
+'            + ShoppingListDto()
+'            + ShoppingListDto(id: String, userId: String, ingredients: List<IngredientDto>, checkedIngredients: List<IngredientDto>)
+'            + getId(): String
+'            + setId(id: String): Unit
+'            + getUserId(): String
+'            + setUserId(userId: String): Unit
+'            + getIngredients(): List<IngredientDto>
+'            + setIngredients(ingredients: List<IngredientDto>): Unit
+'            + getCheckedIngredients(): List<IngredientDto>
+'            + setCheckedIngredients(checkedIngredients: List<IngredientDto>): Unit
+          }
+          class StepDto {
+            - title: String = ""
+            - description: String?
+            - number: Int?
+            - picturePath: String?
+            + toDomain(): Step
+'            + StepDto()
+'            + StepDto(title: String, description: String?, number: Int?, picturePath: String?)
+'            + getTitle(): String
+'            + setTitle(title: String): Unit
+'            + getDescription(): String?
+'            + setDescription(description: String?): Unit
+'            + getNumber(): Int?
+'            + setNumber(number: Int?): Unit
+'            + getPicturePath(): String?
+'            + setPicturePath(picturePath: String?): Unit
+         }
+    }
+
+    package repositories {
+        class CuisineRepository {
+            - db: FirebaseFirestore
+            - cuisineCollection
+            + CuisineRepository(db: FirebaseFirestore)
+            + getDietaryInfoForRecipe(document: DocumentSnapshot): List<CuisineDto>
+            + getCuisine(cuisineId: String): CuisineDto?
+            + getCuisines(): List<CuisineDto>
+        }
+        CuisineDto->CuisineRepository
+        class IngredientTypeRepository {
+            - db: FirebaseFirestore
+            - ingredientTypesCollection
+            + IngredientTypeRepository(db: FirebaseFirestore)
+            + getIngredientType(ingredientTypeId: String): IngredientTypeDto?
+            + getIngredientTypes(): List<IngredientTypeDto>
+            - getIngredientTypesFromQueryDocuments(documents: List<DocumentSnapshot>): List<IngredientTypeDto>
+        }
+        IngredientTypeDto->IngredientTypeRepository
+        class IngredientRepository {
+            - db: FirebaseFirestore
+            - ingredientsCollection
+            - ingredientTypesCollection
+            - ingredientTypeRepository: IngredientTypeRepository
+            + IngredientRepository(db: FirebaseFirestore)
+            + getIngredientsForRecipe(document: DocumentSnapshot): List<IngredientDto>
+            + getIngredientsForReferences(document: DocumentSnapshot, referenceName: String): List<IngredientDto>
+            + getIngredient(ingredientId: String): IngredientDto?
+            - getIngredientsFromQueryDocuments(documents: List<DocumentSnapshot>, getIngredientType: Boolean): List<IngredientDto>
+            + getIngredients(): List<IngredientDto>
+            + getIngredientsForIngredientType(ingredientTypeId: String): List<IngredientDto>
+            + searchIngredientsByTitle(lowercaseSearchWords: List<String>): List<IngredientDto>
+        }
+        IngredientDto->IngredientRepository
+        IngredientTypeRepository->IngredientRepository
+        class DietaryInfoRepository {
+            - db: FirebaseFirestore
+            - dietaryInfoCollection
+            + DietaryInfoRepository(db: FirebaseFirestore)
+            + getDietaryInfoForReferences(document: DocumentSnapshot): List<DietaryInfoDto>
+            + getDietaryInfo(dietaryInfoDto: String): DietaryInfoDto?
+            + getDietaryInfoList(): List<DietaryInfoDto>
+        }
+        DietaryInfoDto->DietaryInfoRepository
+        class InventoryRepository {
+            - db: FirebaseFirestore
+            - inventoryCollection
+            - ingredientCollection
+            - ingredientRepository: IngredientRepository
+            + InventoryRepository(db: FirebaseFirestore)
+            + getInventoryByUserId(userId: String): InventoryDto?
+            + createOrUpdateInventory(inventoryDto: InventoryDto): Boolean
+            - InventoryDto.toFirebaseMap(): Map<String, Any?>
+        }
+        InventoryDto->InventoryRepository
+        IngredientRepository->InventoryRepository
+        class ProfileRepository {
+            - db: FirebaseFirestore
+            - profileCollection
+            - dietaryInfoCollection
+            - dietaryInfoRepository: DietaryInfoRepository
+            + ProfileRepository(db: FirebaseFirestore)
+            + getProfileById(userId: String): ProfileDto?
+            + createOrUpdateProfile(profileDto: ProfileDto): Boolean
+            - ProfileDto.toFirebaseMap(): Map<String, Any?>
+        }
+        DietaryInfoRepository->ProfileRepository
+        ProfileDto->ProfileRepository
+        class RecipeRepository {
+            - db: FirebaseFirestore
+            - recipesCollection
+            - ingredientCollection
+            - ingredientRepository: IngredientRepository
+            - reviewRepository: ReviewRepository
+            - dietaryInfoRepository: DietaryInfoRepository
+            - cuisineRepository: CuisineRepository
+            + RecipeRepository(db: FirebaseFirestore)
+            + getRecipeById(recipeId: String, includeIngredients: Boolean, includeReferences: Boolean): RecipeDto?
+            - getRecipes(includeReferences: Boolean): List<RecipeDto>
+            - getRecipesFromQueryDocuments(documents: List<DocumentSnapshot>, includeIngredients: Boolean, includeReferences: Boolean): List<RecipeDto>
+            + getRecipesWithoutReferences(): List<RecipeDto>
+            + getRecipesWithReferences(): List<RecipeDto>
+            + searchRecipesByTitle(lowercaseSearchWords: List<String>?, includeIngredients: Boolean): List<RecipeDto>
+        }
+        IngredientRepository->RecipeRepository
+        RecipeDto->RecipeRepository
+        CuisineRepository->RecipeRepository
+        class ReviewRepository {
+            - db: FirebaseFirestore
+            - reviewCollection
+            + ReviewRepository(db: FirebaseFirestore)
+            + getReviewsForRecipe(recipeId: String): List<ReviewDto>
+        }
+        ReviewDto->ReviewRepository
+        class ShoppingListRepository {
+            - db: FirebaseFirestore
+            - shoppingListCollection
+            - ingredientCollection
+            - ingredientRepository: IngredientRepository
+            + ShoppingListRepository(db: FirebaseFirestore)
+            + getShoppingListByUserId(userId: String): ShoppingListDto?
+            + createOrUpdateShoppingList(shoppingListDto: ShoppingListDto): Boolean
+            - ShoppingListDto.toFirebaseMap(): Map<String, Any?>
+        }
+        ShoppingListDto->ShoppingListRepository
+    }
+}
+
+package domain {
+    package controllers {
+        class AuthController {
+            - applicationContext: Context
+            - _auth: FirebaseAuth
+            - _currentUser: MutableStateFlow<FirebaseUser?>
+
+            + AuthController(applicationContext: Context)
+            + createAccount(email: String, password: String)
+            + authenticate(email: String, password: String)
+            + getCurrentUserId(): String?
+            + getCurrentUserEmail(): String?
+            + resetPassword(email: String)
+            + logout()
+
+            {field} auth: FirebaseAuth
+            {field} currentUser: MutableStateFlow<FirebaseUser?>
+        }
+        class CuisineController {
+            - cuisineRepository: CuisineRepository
+
+            + CuisineController(cuisineRepository: CuisineRepository)
+            + getCuisines(): List<Cuisine>
+        }
+        class DietaryInfoController {
+            - dietaryInfoRepository: DietaryInfoRepository
+
+            + DietaryInfoController(dietaryInfoRepository: DietaryInfoRepository)
+            + getDietaryInfo(): List<DietaryInfo>
+        }
+        class IngredientController {
+            - ingredientRepository: IngredientRepository
+
+            + IngredientController(ingredientRepository: IngredientRepository)
+            + getIngredients(): List<Ingredient>
+            + getIngredientsForIngredientType(ingredientTypeId: String): List<Ingredient>
+            + searchIngredientsByName(searchQuery: String): Ingredient?
+        }
+        class IngredientTypeController {
+            - ingredientTypeRepository: IngredientTypeRepository
+
+            + IngredientTypeController(ingredientTypeRepository: IngredientTypeRepository)
+            + getIngredientTypes(): List<IngredientType>
+        }
+        class InventoryController {
+            - authController: AuthController
+            - inventoryRepository: InventoryRepository
+
+            + InventoryController(authController: AuthController, inventoryRepository: InventoryRepository)
+            + getInventory(): Inventory?
+            + createOrUpdateInventory(inventory: Inventory): Boolean
+            + addIngredientListToInventory(ingredients: List<Ingredient>): Boolean
+            + removeIngredientListFromInventory(ingredients: List<Ingredient>): Boolean
+        }
+        class ProfileController {
+            - authController: AuthController
+            - profileRepository: ProfileRepository
+
+            + ProfileController(authController: AuthController, profileRepository: ProfileRepository)
+            + getProfile(): Profile?
+            + createOrUpdateProfile(profile: Profile, selectedImageUri: Uri?): Boolean
+            + uploadImageToFirebaseStorage(fileUri: Uri): String?
+            + getImageDownloadUrlFromFirebase(referenceString: String): String?
+        }
+        class RecipeController {
+            - recipeRepository: RecipeRepository
+
+            + RecipeController(recipeRepository: RecipeRepository)
+            + getRecipes(): List<Recipe>
+            + getRecipeById(recipeId: String): Recipe?
+            + searchRecipes(searchQuery: String?): List<Recipe>
+            + searchRecipesByTitleAndFilters(
+                searchQuery: String?,
+                ingredientsList: List<Ingredient>,
+                cuisinesList: List<Cuisine>,
+                dietaryInfoList: List<DietaryInfo>,
+                anyRecipesWithSelectedIngredients: Boolean,
+                dontAllowExtraIngredients: Boolean
+            ): List<Recipe>
+        }
+        class ShoppingListController {
+            - authController: AuthController
+            - shoppingListRepository: ShoppingListRepository
+
+            + ShoppingListController(authController: AuthController, shoppingListRepository: ShoppingListRepository)
+            + getShoppingList(): ShoppingList?
+            + createOrUpdateShoppingList(shoppingList: ShoppingList): Boolean
+            + addIngredientListToShoppingList(ingredients: List<Ingredient>): Boolean
+        }
+    }
+    package enums {
+        enum ReviewRatingEnum {
+            OneStar("One star", 1)
+            TwoStars("Two stars", 2)
+            ThreeStars("Three stars", 3)
+            FourStars("Four stars", 4)
+            FiveStars("Five stars", 5)
+        }
+    }
+    package models {
+        class Cuisine {
+            - id: String = ""
+            - name: String = ""
+            - description: String? = ""
+            + toDto(): CuisineDto
+            + toViewModel(): CuisineViewModel
+        }
+        Cuisine --> CuisineDto
+        CuisineDto --> Cuisine
+        class DietaryInfo {
+            - id: String = ""
+            - name: String = ""
+            - description: String? = ""
+            + toDto(): DietaryInfoDto
+            + toViewModel(): DietaryInfoViewModel
+        }
+        DietaryInfo --> DietaryInfoDto
+        DietaryInfoDto --> DietaryInfo
+        class Ingredient {
+            - id: String = ""
+            - name: String = ""
+            - description: String? = ""
+            - ingredientType: IngredientType? = null
+            - amount: String? = ""
+            + toDto(): IngredientDto
+            + toViewModel(): IngredientViewModel
+        }
+        Ingredient --> IngredientDto
+        IngredientDto --> Ingredient
+        class IngredientType {
+            id: String = ""
+            name: String = ""
+            ingredients: List<Ingredient>? = null
+            + toDto(): IngredientTypeDto
+            + toViewModel(): IngredientTypeViewModel
+        }
+        IngredientType --> IngredientTypeDto
+        IngredientTypeDto --> IngredientType
+        class Inventory {
+            id: String = ""
+            userId: String = ""
+            ingredients: List<Ingredient> = emptyList()
+            +toDto(): InventoryDto
+            + toViewModel(): InventoryViewModel
+        }
+        Inventory --> InventoryDto
+        InventoryDto --> Inventory
+        class Profile {
+            id: String = ""
+            userId: String = ""
+            username: String = ""
+            email: String? = ""
+            picturePath: String? = ""
+            pictureDownloadUri: String? = null
+            dietaryInfo: List<DietaryInfo> = emptyList()
+            + toDto(): ProfileDto
+            + toViewModel(): ProfileViewModel
+        }
+        Profile --> ProfileDto
+        ProfileDto--> Profile
+        class Review {
+            id: String = ""
+            userId: String? = ""
+            rating: ReviewRatingEnum = FiveStars
+            + toDto(): ReviewDto
+            + toViewModel(): ReviewViewModel
+        }
+        Review -->  ReviewDto
+        ReviewDto --> Review
+        class ShoppingList {
+            id: String = ""
+            userId: String = ""
+            ingredients: List<Ingredient> = emptyList()
+            checkedIngredients: List<Ingredient> = emptyList()
+            + toDto(): ShoppingListDto
+            + toViewModel(): ShoppingListViewModel
+        }
+        ShoppingList --> ShoppingListDto
+        ShoppingListDto --> ShoppingList
+        class Step {
+            title: String = ""
+            description: String? = ""
+            number: Int? = 0
+            picturePath: String? = ""
+            + toDto(): StepDto
+            + toViewModel(): StepViewModel
+        }
+        Step --> StepDto
+        StepDto --> Step
+        class Recipe {
+            - id: String
+            - title: String
+            - description: String
+            - userId: String
+            - picturePath: String
+            - prepTime: String
+            - servingAmount: Int
+            - cuisines: List<Cuisine>
+            - reviews: List<Review>
+            - steps: List<Step>
+            - dietaryInfo: List<DietaryInfo>
+            - ingredients: List<Ingredient>
+            + Recipe(...)
+            + toDto(): RecipeDto
+            + toDomain(): RecipeViewModel
+        }
+        RecipeDto --> Recipe
+        Recipe --> RecipeDto
+    }
+}
+package presentation {
+    package navigation {
+        class LinearGradient {
+            - colors: List<Color>
+            - stops: List<Float>?
+            - tileMode: TileMode
+            - normalizedAngle: Float
+            - angleInRadians: Float
+            + LinearGradient(colors: List<Color>, stops: List<Float>?, tileMode: TileMode, angleInDegrees: Float, useAsCssAngle: Boolean)
+            + createShader(size: Size): Shader
+            + getGradientCoordinates(size: Size): Pair<Offset, Offset>
+            + equals(other: Any?): Boolean
+            + hashCode(): Int
+            + toString(): String
+        }
+
+    }
+    package viewmodels {
+        class CuisineViewModel {
+            - id: String
+            - name: String
+            - description: String?
+            + CuisineViewModel(id: String, name: String, description: String?)
+            + toDomain(): Cuisine
+        }
+        CuisineViewModel --> Cuisine
+        Cuisine --> CuisineViewModel
+        class DietaryInfoViewModel {
+            - id: String
+            - name: String
+            - description: String?
+            + DietaryInfoViewModel(id: String, name: String, description: String?)
+            + toDomain(): DietaryInfo
+        }
+        DietaryInfo --> DietaryInfoViewModel
+        DietaryInfoViewModel --> DietaryInfo
+        class IngredientTypeViewModel {
+            - id: String
+            - name: String
+            - ingredients: List<IngredientViewModel>?
+            + IngredientTypeViewModel(id: String, name: String, ingredients: List<IngredientViewModel>?)
+            + toDomain(): IngredientType
+        }
+        IngredientTypeViewModel --> IngredientType
+        IngredientType --> IngredientTypeViewModel
+        class IngredientViewModel {
+            - id: String
+            - name: String
+            - description: String?
+            - ingredientType: IngredientTypeViewModel?
+            - amount: String?
+            + IngredientViewModel(id: String, name: String, description: String?, ingredientType: IngredientTypeViewModel?, amount: String?)
+            + toDomain(): Ingredient
+        }
+        Ingredient --> IngredientViewModel
+        IngredientViewModel --> Ingredient
+        class InventoryViewModel {
+            - id: String
+            - userId: String
+            - ingredients: List<IngredientViewModel>
+            + InventoryViewModel(id: String = "", userId: String = "", ingredients: List<IngredientViewModel> = emptyList())
+            + toDomain(): Inventory
+        }
+        InventoryViewModel --> Inventory
+        Inventory --> InventoryViewModel
+        class ProfileViewModel {
+            - id: String
+            - userId: String
+            - username: String
+            - email: String
+            - picturePath: String
+            - pictureDownloadUri: String
+            - dietaryInfo: List<DietaryInfoViewModel>
+            + ProfileViewModel(id: String = "", userId: String = "", username: String = "", email: String? = "", picturePath: String? = "", pictureDownloadUri: String? = null, dietaryInfo: List<DietaryInfoViewModel> = emptyList())
+            + toDomain(): Profile
+        }
+        ProfileViewModel --> Profile
+        Profile --> ProfileViewModel
+        class RecipeViewModel {
+            - id: String
+            - title: String
+            - description: String
+            - userId: String
+            - picturePath: String
+            - prepTime: String
+            - servingAmount: Int
+            - cuisines: List<CuisineViewModel>
+            - reviews: List<ReviewViewModel>
+            - steps: List<StepViewModel>
+            - dietaryInfo: List<DietaryInfoViewModel>
+            - ingredients: List<IngredientViewModel>
+            + RecipeViewModel(...)
+            + toDomain(): Recipe
+        }
+        RecipeViewModel --> Recipe
+        Recipe --> RecipeViewModel
+        class ReviewViewModel {
+            - id: String
+            - userId: String
+            - rating: ReviewRatingEnum
+            + ReviewViewModel(id: String, userId: String?, rating: ReviewRatingEnum)
+            + toDomain(): Review
+        }
+        Review --> ReviewViewModel
+        ReviewViewModel --> Review
+        class ShoppingListViewModel {
+            - id: String
+            - userId: String
+            - ingredients: List<IngredientViewModel>
+            - checkedIngredients: List<IngredientViewModel>
+            + ShoppingListViewModel(id: String = "", userId: String = "", ingredients: List<IngredientViewModel> = emptyList(), checkedIngredients: List<IngredientViewModel> = emptyList())
+            + toDomain(): ShoppingList
+        }
+        ShoppingList --> ShoppingListViewModel
+        ShoppingListViewModel --> ShoppingList
+        class StepViewModel {
+            - title: String
+            - description: String?
+            - number: Int?
+            - picturePath: String?
+            + StepViewModel(title: String, description: String?, number: Int?, picturePath: String?)
+            + toDomain(): Step
+        }
+        Step --> StepViewModel
+        StepViewModel --> Step
+    }
+
+     package screens {
+        package loginscreen {
+            class FieldState {
+                - _data: String
+                - _isInvalid: Boolean
+                {field} + data: String
+                {field} + isInvalid: Boolean
+                {method} + FieldState(_data: String = "", _isInvalid: Boolean = true)
+            }
+
+            class Credentials {
+                - _email: FieldState
+                - _password: FieldState
+                {field} + email: String
+                {field} + password: String
+                {field} + areValid: Boolean
+                {method} + Credentials(_email: FieldState, _password: FieldState)
+            }
+        }
+
+        class Screen {
+            {abstract} route: String
+            {abstract} icon: ImageVector
+            {abstract} label: String
+
+            {method} withArgs(args: Map<String, Any?>): String
+            {method} withArgs(vararg args: String): String
+        }
+
+        class MainScreen {
+            << (S,Orange) object >>
+            route = "main_screen"
+            icon = Icons.Default.Home
+            label = "MainScreen"
+        }
+
+        class DetailScreen {
+            << (S,Orange) object >>
+            route = "detail_screen"
+            icon = Icons.Default.List
+            label = "DetailScreen"
+        }
+
+        class StorageScreen {
+            << (S,Orange) object >>
+            route = "storage_screen"
+            icon = Icons.Default.List
+            label = "StorageScreen"
+        }
+        StorageScreen <|-- InventoryController
+
+        class ListScreen {
+            << (S,Orange) object >>
+            route = "list_screen"
+            icon = Icons.Default.Check
+            label = "ListScreen"
+        }
+        ListScreen <|-- ShoppingListController
+
+        class ProfileScreen {
+            << (S,Orange) object >>
+            route = "profile_screen"
+            icon = Icons.Default.Person
+            label = "ProfileScreen"
+        }
+
+        class EditProfileScreen {
+            << (S,Orange) object >>
+            route = "edit_profile_screen"
+            icon = Icons.Default.Person
+            label = "EditProfileScreen"
+        }
+        EditProfileScreen <|-- ProfileController
+
+        class RecipeSearchScreen {
+            << (S,Orange) object >>
+            route = "recipe_search_screen"
+            icon = Icons.Default.Search
+            label = "RecipeSearchScreen"
+        }
+
+        class RecipeDetailScreen {
+            << (S,Orange) object >>
+            route = "recipe_detail_screen"
+            icon = Icons.Default.Info
+            label = "RecipeDetailScreen"
+        }
+
+        Screen <|-- MainScreen
+        Screen <|-- DetailScreen
+        Screen <|-- StorageScreen
+        Screen <|-- ListScreen
+        Screen <|-- ProfileScreen
+        Screen <|-- EditProfileScreen
+        Screen <|-- RecipeSearchScreen
+        Screen <|-- RecipeDetailScreen
+
+     }
+}
+@enduml
